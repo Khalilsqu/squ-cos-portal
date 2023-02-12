@@ -1,11 +1,23 @@
 import { useContext } from "react";
 import { Layout, Button, Tooltip } from "antd";
+import Link from "next/link";
+import Image from "next/image";
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
 import { LayoutContext } from "@/components/layout/pageLayout";
 
 const { Header } = Layout;
+
+const additionalStyles = {
+  position: "fixed",
+  height: "64px",
+  width: "100%",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "25px 25px 25px 25px",
+};
 
 export default function HeaderComponent(props) {
   const { collapsed, handleBreakPoint, isBreakPoint, handleThemeChange } =
@@ -16,11 +28,18 @@ export default function HeaderComponent(props) {
     <Header
       style={
         themeColor === "light"
-          ? { backgroundColor: "#fff" }
-          : { backgroundColor: "#001529" }
+          ? { backgroundColor: "#fff", ...additionalStyles }
+          : { backgroundColor: "#001529", ...additionalStyles }
       }
-      className="flex justify-between items-center fixed w-full h-24"
+      // className={"flex justify-between items-center fixed w-full h-24 bg-slate-400"}
     >
+      <Link
+        href="https://www.squ.edu.om/"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <Image src="/squ-2.png" alt="Logo" width={150} height={100} />
+      </Link>
       {isBreakPoint ? (
         <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
           <MenuUnfoldOutlined onClick={handleBreakPoint} />

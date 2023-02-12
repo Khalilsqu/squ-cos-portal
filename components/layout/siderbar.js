@@ -26,13 +26,6 @@ export default function SiderComponent(props) {
         marginTop: "64px",
       }}
     >
-      <Link
-        href="https://www.squ.edu.om/"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <Image src="/squ.png" alt="Logo" width={50} height={100} />
-      </Link>
     </Sider>
   );
 }
