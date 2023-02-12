@@ -1,36 +1,44 @@
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Home() {
-  const { data: session } = useSession();
-  if (session) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          flexDirection: "column",
-        }}
-      >
-        Welcome user
-        <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </div>
-    );
-  }
+  const { data: session, status } = useSession();
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
-    >
-      Click to sign into your user account <br />
-      <button onClick={() => signIn()}>Sign in</button>
+    <div>
+      {!session && (
+        <>
+          Not signed in <br />
+          <button onClick={() => signIn()}>Sign in</button>
+        </>
+      )}
+      {session && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "1rem",
+          }}
+        >
+          Signed in as {session.user.name}
+          <br />
+          with email {session.user.email}
+          <img src={session.user.image} alt={session.user.name} />
+          <button
+            onClick={() => signOut()}
+            style={{
+              padding: "0.5rem 1rem",
+              border: "none",
+              borderRadius: "0.5rem",
+              backgroundColor: "red",
+              color: "white",
+              cursor: "pointer",
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
     </div>
   );
 }

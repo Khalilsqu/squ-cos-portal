@@ -1,4 +1,4 @@
-import { Layout, theme, ConfigProvider, Divider } from "antd";
+import { Layout, theme, ConfigProvider } from "antd";
 import { useState, createContext } from "react";
 
 import HeaderComponent from "./header";
@@ -71,8 +71,10 @@ export default function PageLayout({ children }) {
               >
                 {children}
               </Content>
-              <Divider />
-              <FooterComponent />
+              <FooterComponent
+                isBreakPoint={isBreakPoint}
+                collapsed={collapsed}
+              />
             </Layout>
           </Layout>
         </Layout>
