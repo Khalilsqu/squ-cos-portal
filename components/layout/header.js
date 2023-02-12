@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Layout, Button, Tooltip, Col, Row } from "antd";
+import { Layout, Button, Tooltip, Col, Row, Switch } from "antd";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,10 +14,7 @@ const additionalStyles = {
   top: 0,
   height: "64px",
   width: "100%",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "25px 25px 25px 25px",
+  padding: "0 10px",
 };
 
 export default function HeaderComponent(props) {
@@ -32,27 +29,33 @@ export default function HeaderComponent(props) {
           ? { backgroundColor: "#fff", ...additionalStyles }
           : { backgroundColor: "#001529", ...additionalStyles }
       }
-      // className={"flex justify-between items-center fixed w-full h-24 bg-slate-400"}
     >
-      {/* <Link
-        href="https://www.squ.edu.om/"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <Image src="/squ-2.png" alt="Logo" fill />
-      </Link> */}
-      {isBreakPoint ? (
-        <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
-          <MenuUnfoldOutlined onClick={handleBreakPoint} />
-        </Tooltip>
-      ) : collapsed ? (
-        <Tooltip title="Close Sidebar" mouseLeaveDelay={0} placement="right">
-          <MenuFoldOutlined onClick={handleBreakPoint} />
-        </Tooltip>
-      ) : null}
-      <Button type="default" onClick={handleThemeChange}>
-        Change color
-      </Button>
+      <Row align={"middle"} justify={"start"}>
+        <Col>
+          <Link href="/">
+            <Image src="/squ.png" alt="Logo" fill loading="lazy" />
+          </Link>
+          {isBreakPoint ? (
+            <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
+              <MenuUnfoldOutlined onClick={handleBreakPoint} />
+            </Tooltip>
+          ) : collapsed ? (
+            <Tooltip
+              title="Close Sidebar"
+              mouseLeaveDelay={0}
+              placement="right"
+            >
+              <MenuFoldOutlined onClick={handleBreakPoint} />
+            </Tooltip>
+          ) : null}
+        </Col>
+        <Switch
+          checkedChildren="Light"
+          unCheckedChildren="Dark"
+          defaultChecked
+          onChange={handleThemeChange}
+        />
+      </Row>
     </Header>
   );
 }

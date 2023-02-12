@@ -21,8 +21,7 @@ export default function SiderComponent(props) {
       hidden={isBreakPoint ? true : false}
       style={{
         position: "fixed",
-        display: "flex",
-        flexDirection: "column",
+        overflow: "auto",
         height: "100vh",
         top: "64px",
       }}
