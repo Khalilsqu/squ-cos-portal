@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Layout, Button, Tooltip } from "antd";
+import { Layout, Button, Tooltip, Col, Row } from "antd";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -10,7 +10,8 @@ import { LayoutContext } from "@/components/layout/pageLayout";
 const { Header } = Layout;
 
 const additionalStyles = {
-  position: "fixed",
+  position: "sticky",
+  top: 0,
   height: "64px",
   width: "100%",
   display: "flex",
@@ -33,13 +34,13 @@ export default function HeaderComponent(props) {
       }
       // className={"flex justify-between items-center fixed w-full h-24 bg-slate-400"}
     >
-      <Link
+      {/* <Link
         href="https://www.squ.edu.om/"
         rel="noopener noreferrer"
         target="_blank"
       >
-        <Image src="/squ-2.png" alt="Logo" width={150} height={100} />
-      </Link>
+        <Image src="/squ-2.png" alt="Logo" fill />
+      </Link> */}
       {isBreakPoint ? (
         <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
           <MenuUnfoldOutlined onClick={handleBreakPoint} />

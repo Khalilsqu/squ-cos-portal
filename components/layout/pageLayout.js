@@ -56,17 +56,18 @@ export default function PageLayout({ children }) {
             />
             <Layout>
               <Content
-                className="flex flex-col justify-center items-center"
+                // className="flex flex-col justify-center items-center"
                 style={{
-                  marginTop: "64px",
-                  marginLeft: isBreakPoint
-                    ? "0px"
-                    : collapsed
-                    ? "80px"
-                    : "200px",
+                  // marginTop: "64px",
+                  height: "100vh",
+                  // marginLeft: isBreakPoint
+                  //   ? "0px"
+                  //   : collapsed
+                  //   ? "80px"
+                  //   : "200px",
                   transition: "all 0.5s",
-                  paddingLeft: "24px",
-                  paddingRight: "24px",
+                  // paddingLeft: "24px",
+                  // paddingRight: "24px",
                 }}
               >
                 {children}

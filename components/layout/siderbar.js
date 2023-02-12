@@ -22,10 +22,9 @@ export default function SiderComponent(props) {
       style={{
         overflow: "auto",
         height: "100vh",
-        position: "fixed",
-        marginTop: "64px",
+        position: "sticky",
+        // marginTop: "64px",
       }}
-    >
-    </Sider>
+    ></Sider>
   );
 }

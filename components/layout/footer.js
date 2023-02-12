@@ -8,8 +8,8 @@ export default function FooterComponent(props) {
   return (
     <div
       style={{
-        marginTop: "64px",
-        marginLeft: isBreakPoint ? "0px" : collapsed ? "80px" : "200px",
+        // marginTop: "64px",
+        // marginLeft: isBreakPoint ? "0px" : collapsed ? "80px" : "200px",
         transition: "all 0.5s",
         paddingLeft: "24px",
         paddingRight: "24px",
@@ -20,8 +20,6 @@ export default function FooterComponent(props) {
         Ant Design ©2018 Created by Ant UED
       </Footer>
       {/* add visitor counter */}
-      
-
     </div>
   );
 }
