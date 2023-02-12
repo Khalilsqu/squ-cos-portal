@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Layout, Typography } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,11 +20,32 @@ export default function SiderComponent(props) {
       }}
       hidden={isBreakPoint ? true : false}
       style={{
-        overflow: "auto",
+        position: "fixed",
+        display: "flex",
+        flexDirection: "column",
         height: "100vh",
-        position: "sticky",
-        // marginTop: "64px",
+        top: "64px",
       }}
-    ></Sider>
+    >
+      <Typography.Title
+        level={3}
+        style={{
+          color: "white",
+          textAlign: "center",
+          marginTop: "1rem",
+        }}
+      >
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={50}
+          height={50}
+          style={{ borderRadius: "50%" }}
+        />
+        <Link href="/" style={{ color: "white" }}>
+          NextJS
+        </Link>
+      </Typography.Title>
+    </Sider>
   );
 }
