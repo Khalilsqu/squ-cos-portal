@@ -1,7 +1,8 @@
 import { useContext } from "react";
-import { Layout, Button, Tooltip, Col, Row, Switch } from "antd";
+import { Layout, Tooltip, Col, Row, Switch, Avatar, Button, Space } from "antd";
 import Link from "next/link";
 import Image from "next/image";
+import Authentication from "../authentication/auth";
 
 import {
   MenuFoldOutlined,
@@ -35,47 +36,46 @@ export default function HeaderComponent(props) {
       }
     >
       <Row align={"middle"}>
-        <Col
-          flex={1}
-          style={{
-            justifyContent: "flex-start",
-            display: "flex",
-            gap: "1rem",
-          }}
-        >
-          {isBreakPoint ? (
-            <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
-              <MenuUnfoldOutlined
-                onClick={handleBreakPoint}
+        <Col flex={1}>
+          <Space>
+            {isBreakPoint ? (
+              <Tooltip
+                title="Open Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuUnfoldOutlined
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "28px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </Tooltip>
+            ) : collapsed ? (
+              <Tooltip
+                title="Close Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuFoldOutlined
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "28px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </Tooltip>
+            ) : null}
+            <Link href="/">
+              <HomeOutlined
                 style={{
                   fontSize: "28px",
                   color: themeColor === "light" ? "#001529" : "#fff",
                 }}
               />
-            </Tooltip>
-          ) : collapsed ? (
-            <Tooltip
-              title="Close Sidebar"
-              mouseLeaveDelay={0}
-              placement="right"
-            >
-              <MenuFoldOutlined
-                onClick={handleBreakPoint}
-                style={{
-                  fontSize: "28px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
-            </Tooltip>
-          ) : null}
-          <Link href="/">
-            <HomeOutlined
-              style={{
-                fontSize: "28px",
-                color: themeColor === "light" ? "#001529" : "#fff",
-              }}
-            />
-          </Link>
+            </Link>
+          </Space>
         </Col>
         <Col
           flex={4}
@@ -93,12 +93,15 @@ export default function HeaderComponent(props) {
             display: "flex",
           }}
         >
-          <Switch
-            checkedChildren="Light"
-            unCheckedChildren="Dark"
-            defaultChecked
-            onChange={handleThemeChange}
-          />
+          <Space>
+            <Authentication />
+            <Switch
+              checkedChildren="Light"
+              unCheckedChildren="Dark"
+              defaultChecked
+              onChange={handleThemeChange}
+            />
+          </Space>
         </Col>
       </Row>
     </Header>

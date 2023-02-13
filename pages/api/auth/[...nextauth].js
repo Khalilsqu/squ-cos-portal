@@ -15,6 +15,9 @@ export default NextAuth({
           response_type: "code",
         },
       },
+      httpOptions: {
+        timeout: 40000,
+      },
     }),
 
     // ...add more providers here
