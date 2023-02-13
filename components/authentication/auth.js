@@ -1,8 +1,11 @@
-import { Avatar, Dropdown, Tooltip } from "antd";
+import { Avatar, Dropdown } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { GoSignOut } from "react-icons/go";
 import { AiOutlineUser } from "react-icons/ai";
+import Image from "next/image";
+
+import CustomTooltip from "../tooltip/customtooltip";
 
 export default function Authentication() {
   const { data: session, status } = useSession();
@@ -31,21 +34,21 @@ export default function Authentication() {
           trigger={["click"]}
         >
           <Avatar
-            size={40}
+            size={50}
             src={session.user.image}
             alt={session.user.name}
             style={{ cursor: "pointer" }}
           />
         </Dropdown>
       ) : router.pathname !== "/auth/signin" ? (
-        <Tooltip title="Click to sign-in" mouseLeaveDelay={0}>
+        <CustomTooltip title="Click to sign-in">
           <Avatar
-            size={40}
+            size={50}
             icon={<AiOutlineUser />}
             style={{ cursor: "pointer" }}
             onClick={handleSignIn}
           />
-        </Tooltip>
+        </CustomTooltip>
       ) : null}
     </>
   );

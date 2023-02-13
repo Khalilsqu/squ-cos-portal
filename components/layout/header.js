@@ -1,8 +1,9 @@
-import { useContext, useRef, useEffect } from "react";
-import { Layout, Tooltip, Col, Row, Switch, Space } from "antd";
+import { useContext } from "react";
+import { Layout, Col, Row, Switch, Space } from "antd";
 import Link from "next/link";
 import Authentication from "../authentication/auth";
 import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
+import CustomTooltip from "../tooltip/customtooltip";
 
 import {
   MenuFoldOutlined,
@@ -27,14 +28,6 @@ export default function HeaderComponent(props) {
     props;
   const { themeColor } = useContext(LayoutContext);
 
-  const switchRef = useRef();
-
-  useEffect(() => {
-    setInterval(() => {
-      switchRef.current.props.visible && switchRef.current.close();
-    }, 2000);
-  }, []);
-
   return (
     <Header
       style={
@@ -47,7 +40,7 @@ export default function HeaderComponent(props) {
         <Col flex={1}>
           <Space>
             {isBreakPoint ? (
-              <Tooltip
+              <CustomTooltip
                 title="Open Sidebar"
                 mouseLeaveDelay={0}
                 placement="right"
@@ -59,9 +52,9 @@ export default function HeaderComponent(props) {
                     color: themeColor === "light" ? "#001529" : "#fff",
                   }}
                 />
-              </Tooltip>
+              </CustomTooltip>
             ) : collapsed ? (
-              <Tooltip
+              <CustomTooltip
                 title="Close Sidebar"
                 mouseLeaveDelay={0}
                 placement="right"
@@ -73,15 +66,17 @@ export default function HeaderComponent(props) {
                     color: themeColor === "light" ? "#001529" : "#fff",
                   }}
                 />
-              </Tooltip>
+              </CustomTooltip>
             ) : null}
             <Link href="/">
-              <HomeOutlined
-                style={{
-                  fontSize: "28px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
+              <CustomTooltip title="Go to Home" placement="right">
+                <HomeOutlined
+                  style={{
+                    fontSize: "28px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </CustomTooltip>
             </Link>
           </Space>
         </Col>
@@ -103,15 +98,13 @@ export default function HeaderComponent(props) {
         >
           <Space>
             <Authentication />
-            <Tooltip
+            <CustomTooltip
               title={
                 themeColor === "light"
                   ? "Switch to Dark Mode"
                   : " Switch to Light Mode"
               }
-              mouseLeaveDelay={0}
               placement="left"
-              ref={switchRef}
             >
               <Switch
                 checkedChildren={
@@ -138,7 +131,7 @@ export default function HeaderComponent(props) {
                   justifyContent: "center",
                 }}
               />
-            </Tooltip>
+            </CustomTooltip>
           </Space>
         </Col>
       </Row>
