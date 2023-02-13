@@ -1,5 +1,6 @@
-import { Layout, theme, ConfigProvider } from "antd";
+import { Layout, theme, ConfigProvider, FloatButton } from "antd";
 import { useState, createContext } from "react";
+import Head from "next/head";
 
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
@@ -39,6 +40,15 @@ export default function PageLayout({ children }) {
             : { algorithm: theme.darkAlgorithm }
         }
       >
+        <Head>
+          <title>College of Sciences Portal</title>
+          <meta name="description" content="College of Sciences Portal" />
+          <link rel="icon" href="/squ.ico" />
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width"
+          />
+        </Head>
         <Layout className="min-h-screen">
           <HeaderComponent
             collapsed={collapsed}
@@ -57,8 +67,6 @@ export default function PageLayout({ children }) {
             <Layout>
               <Content
                 style={{
-                  // marginTop: "64px",
-                  height: "100vh",
                   marginLeft: isBreakPoint
                     ? "0px"
                     : collapsed
@@ -70,6 +78,13 @@ export default function PageLayout({ children }) {
                 }}
               >
                 {children}
+                <FloatButton.BackTop
+                  style={{
+                    bottom: "20px",
+                    right: "20px",
+                    zIndex: "1000",
+                  }}
+                />
               </Content>
               <FooterComponent
                 isBreakPoint={isBreakPoint}

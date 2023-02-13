@@ -1,9 +1,17 @@
-import { Layout, Divider } from "antd";
+import { Layout, Divider, Typography } from "antd";
+import { useState, useEffect } from "react";
 
 const { Footer } = Layout;
 
 export default function FooterComponent(props) {
   const { collapsed, isBreakPoint } = props;
+  const [year, setYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setInterval(() => {
+      setYear(new Date().getFullYear());
+    }, 24 * 60 * 60 * 1000);
+  }, []);
 
   return (
     <div
@@ -15,8 +23,10 @@ export default function FooterComponent(props) {
       }}
     >
       <Divider />
-      <Footer className="text-center">
-        Ant Design ©2018 Created by Ant UED
+      <Footer style={{ textAlign: "center", opacity: 0.5 }}>
+        <Typography.Text>
+          © {year} College of Sciences, Sultan Qaboos University | All Rights
+        </Typography.Text>
       </Footer>
       {/* add visitor counter */}
     </div>

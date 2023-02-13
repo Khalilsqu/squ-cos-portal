@@ -1,13 +1,21 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Typography } from "antd";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleSignIn = () => {
+    router.push("/auth/signin");
+  };
+
   return (
     <div>
       {!session && (
         <>
           Not signed in <br />
-          <button onClick={() => signIn()}>Sign in</button>
+          <button onClick={handleSignIn}>Sign in</button>
         </>
       )}
       {session && (
@@ -39,6 +47,16 @@ export default function Home() {
           </button>
         </div>
       )}
+      {Array(100)
+        .fill(0)
+        .map((_, i) => (
+          <p key={i}>
+            <Typography.Text>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+              quae.
+            </Typography.Text>
+          </p>
+        ))}
     </div>
   );
 }

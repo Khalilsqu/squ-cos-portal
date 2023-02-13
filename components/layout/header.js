@@ -3,7 +3,11 @@ import { Layout, Button, Tooltip, Col, Row, Switch } from "antd";
 import Link from "next/link";
 import Image from "next/image";
 
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -30,14 +34,24 @@ export default function HeaderComponent(props) {
           : { backgroundColor: "#001529", ...additionalStyles }
       }
     >
-      <Row align={"middle"} justify={"start"}>
-        <Col>
-          <Link href="/">
-            <Image src="/squ.png" alt="Logo" fill loading="lazy" />
-          </Link>
+      <Row align={"middle"}>
+        <Col
+          flex={1}
+          style={{
+            justifyContent: "flex-start",
+            display: "flex",
+            gap: "1rem",
+          }}
+        >
           {isBreakPoint ? (
             <Tooltip title="Open Sidebar" mouseLeaveDelay={0} placement="right">
-              <MenuUnfoldOutlined onClick={handleBreakPoint} />
+              <MenuUnfoldOutlined
+                onClick={handleBreakPoint}
+                style={{
+                  fontSize: "28px",
+                  color: themeColor === "light" ? "#001529" : "#fff",
+                }}
+              />
             </Tooltip>
           ) : collapsed ? (
             <Tooltip
@@ -45,16 +59,47 @@ export default function HeaderComponent(props) {
               mouseLeaveDelay={0}
               placement="right"
             >
-              <MenuFoldOutlined onClick={handleBreakPoint} />
+              <MenuFoldOutlined
+                onClick={handleBreakPoint}
+                style={{
+                  fontSize: "28px",
+                  color: themeColor === "light" ? "#001529" : "#fff",
+                }}
+              />
             </Tooltip>
           ) : null}
+          <Link href="/">
+            <HomeOutlined
+              style={{
+                fontSize: "28px",
+                color: themeColor === "light" ? "#001529" : "#fff",
+              }}
+            />
+          </Link>
         </Col>
-        <Switch
-          checkedChildren="Light"
-          unCheckedChildren="Dark"
-          defaultChecked
-          onChange={handleThemeChange}
-        />
+        <Col
+          flex={4}
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          PASS
+        </Col>
+        <Col
+          flex={1}
+          style={{
+            justifyContent: "flex-end",
+            display: "flex",
+          }}
+        >
+          <Switch
+            checkedChildren="Light"
+            unCheckedChildren="Dark"
+            defaultChecked
+            onChange={handleThemeChange}
+          />
+        </Col>
       </Row>
     </Header>
   );

@@ -35,7 +35,7 @@ export default function SiderComponent(props) {
         }}
       >
         <Image
-          src="/logo.png"
+          src="/squ.png"
           alt="logo"
           width={50}
           height={50}
