@@ -5,10 +5,14 @@ import {
   getCsrfToken,
 } from "next-auth/react";
 import { Button } from "antd";
+import Head from "next/head";
 
 function signin({ providers }) {
   return (
     <div>
+      <Head>
+        <title>Sign in to CSDB</title>
+      </Head>
       {Object.values(providers).map((provider) => {
         return (
           <div key={provider.name}>

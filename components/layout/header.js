@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { Layout, Tooltip, Col, Row, Switch, Avatar, Button, Space } from "antd";
+import { useContext, useRef, useEffect } from "react";
+import { Layout, Tooltip, Col, Row, Switch, Space } from "antd";
 import Link from "next/link";
-import Image from "next/image";
 import Authentication from "../authentication/auth";
+import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 
 import {
   MenuFoldOutlined,
@@ -27,6 +27,14 @@ export default function HeaderComponent(props) {
     props;
   const { themeColor } = useContext(LayoutContext);
 
+  const switchRef = useRef();
+
+  useEffect(() => {
+    setInterval(() => {
+      switchRef.current.props.visible && switchRef.current.close();
+    }, 2000);
+  }, []);
+
   return (
     <Header
       style={
@@ -47,7 +55,7 @@ export default function HeaderComponent(props) {
                 <MenuUnfoldOutlined
                   onClick={handleBreakPoint}
                   style={{
-                    fontSize: "28px",
+                    fontSize: "24px",
                     color: themeColor === "light" ? "#001529" : "#fff",
                   }}
                 />
@@ -61,7 +69,7 @@ export default function HeaderComponent(props) {
                 <MenuFoldOutlined
                   onClick={handleBreakPoint}
                   style={{
-                    fontSize: "28px",
+                    fontSize: "24px",
                     color: themeColor === "light" ? "#001529" : "#fff",
                   }}
                 />
@@ -95,12 +103,42 @@ export default function HeaderComponent(props) {
         >
           <Space>
             <Authentication />
-            <Switch
-              checkedChildren="Light"
-              unCheckedChildren="Dark"
-              defaultChecked
-              onChange={handleThemeChange}
-            />
+            <Tooltip
+              title={
+                themeColor === "light"
+                  ? "Switch to Dark Mode"
+                  : " Switch to Light Mode"
+              }
+              mouseLeaveDelay={0}
+              placement="left"
+              ref={switchRef}
+            >
+              <Switch
+                checkedChildren={
+                  <MdOutlineWbSunny
+                    style={{
+                      fontSize: "18px",
+                      top: "2px",
+                    }}
+                  />
+                }
+                unCheckedChildren={
+                  <MdOutlineDarkMode
+                    style={{
+                      fontSize: "18px",
+                    }}
+                  />
+                }
+                defaultChecked
+                onChange={handleThemeChange}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Tooltip>
           </Space>
         </Col>
       </Row>
