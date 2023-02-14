@@ -4,39 +4,70 @@ import {
   getSession,
   getCsrfToken,
 } from "next-auth/react";
-import { Button, Typography } from "antd";
+import { Button, Space, Typography } from "antd";
 import Head from "next/head";
+import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
 export default function Signin({ providers }) {
   return (
-    <div>
+    <div
+      style={{
+        marginTop: "64px",
+      }}
+    >
       <Head>
-        <title>Sign in to CoS Portal</title>
+        <title>Sign in to CoS Portal </title>
       </Head>
-      <Typography.Title>Sign in to College of Science Portal</Typography.Title>
-      {Array(100)
-        .fill(0)
-        .map((_, i) => (
-          <p key={i}>
-            <Typography.Text>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-              quae Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Quisquam.
-            </Typography.Text>
-          </p>
-        ))}
-      {Object.values(providers).map((provider) => {
-        return (
-          <div key={provider.name}>
-            <Button
-              onClick={() => signIn(provider.id)}
-              style={{ zIndex: 5000000, marginBottom: 10 }}
-            >
-              Sign in with {provider.name}
-            </Button>
-          </div>
-        );
-      })}
+      {/* <Typography.Title>Sign in to College of Science Portal</Typography.Title>
+      <Player
+        autoplay
+        loop
+        src="/lottie/google_signin.json"
+        style={{ height: "300px", width: "300px" }}
+      >
+        <Controls
+          visible={false}
+          buttons={["play", "repeat", "frame", "debug"]}
+        />
+      </Player>
+      <Space
+        direction="vertical"
+        size="large"
+        style={{ width: "100%", marginTop: "1rem" }}
+      >
+        {Object.values(providers).map((provider) => {
+          return (
+            <div key={provider.name}>
+              <Button onClick={() => signIn(provider.id)}>
+                Sign in with your SQU {provider.name} account
+              </Button>
+            </div>
+          );
+        })}
+        {Array.isArray(providers) && providers.length === 0 && (
+          <Typography.Text>
+            No authentication providers are configured.{" "}
+            <a href="https://next-auth.js.org/configuration/providers">
+              Learn more
+            </a>
+          </Typography.Text>
+        )}
+        {Array.isArray(providers) && providers.length > 0 && (
+          <Typography.Text>
+            No authentication providers are configured.{" "}
+            <a href="https://next-auth.js.org/configuration/providers">
+              Learn more
+            </a>
+          </Typography.Text>
+        )} */}
+
+      {providers.google && (
+        <Button onClick={() => signIn("google")}>
+          Sign in with your SQU Google account
+        </Button>
+      )}
+
+      {/* </Space> */}
     </div>
   );
 }
@@ -54,7 +85,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       providers: await getProviders(context),
-      csrfToken: await getCsrfToken(context),
+      // csrfToken: await getCsrfToken(context),
     },
   };
 }

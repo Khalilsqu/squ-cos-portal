@@ -38,7 +38,13 @@ export default function HeaderComponent(props) {
     >
       <Row align={"middle"}>
         <Col flex={1}>
-          <Space>
+          <Space
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              gap: "30px",
+            }}
+          >
             {isBreakPoint ? (
               <CustomTooltip
                 title="Open Sidebar"
