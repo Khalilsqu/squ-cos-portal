@@ -61,11 +61,18 @@ export default function Signin({ providers }) {
           </Typography.Text>
         )} */}
 
-      {providers.google && (
-        <Button onClick={() => signIn("google")}>
-          Sign in with your SQU Google account
-        </Button>
-      )}
+      {providers &&
+        Object.values(providers).map((provider) => (
+          <div key={provider.name} style={{ marginBottom: 0 }}>
+            <Button
+              onClick={() => signIn(provider.id)}
+              style={{ width: "100%", marginBottom: 0 }}
+              size="large"
+            >
+              Sign in with {provider.name}
+            </Button>
+          </div>
+        ))}
 
       {/* </Space> */}
     </div>

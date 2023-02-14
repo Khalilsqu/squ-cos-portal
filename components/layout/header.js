@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Layout, Col, Row, Switch, Space } from "antd";
 import Link from "next/link";
 import Authentication from "../authentication/auth";
@@ -21,12 +21,19 @@ const additionalStyles = {
   height: "64px",
   width: "100%",
   padding: "0 10px",
+  zIndex: 100,
 };
 
 export default function HeaderComponent(props) {
   const { collapsed, handleBreakPoint, isBreakPoint, handleThemeChange } =
     props;
   const { themeColor } = useContext(LayoutContext);
+
+  const [spaceGap, setSpaceGap] = useState(10);
+
+  useEffect(() => {
+    setSpaceGap(30);
+  }, [isBreakPoint, collapsed]);
 
   return (
     <Header
@@ -42,7 +49,7 @@ export default function HeaderComponent(props) {
             style={{
               display: "flex",
               justifyContent: "flex-start",
-              gap: "30px",
+              gap: spaceGap,
             }}
           >
             {isBreakPoint ? (
