@@ -67,6 +67,7 @@ export default function PageLayout({ children }) {
             <Layout>
               <Content
                 style={{
+                  display: "flex",
                   marginLeft: isBreakPoint
                     ? "0px"
                     : collapsed
@@ -75,6 +76,9 @@ export default function PageLayout({ children }) {
                   transition: "all 0.5s",
                   paddingLeft: "24px",
                   paddingRight: "24px",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  minHeight: "100vh",
                 }}
               >
                 {children}

@@ -25,26 +25,6 @@ export default function SiderComponent(props) {
         height: "100vh",
         top: "64px",
       }}
-    >
-      <Typography.Title
-        level={3}
-        style={{
-          color: "white",
-          textAlign: "center",
-          marginTop: "1rem",
-        }}
-      >
-        <Image
-          src="/squ.png"
-          alt="logo"
-          width={50}
-          height={50}
-          style={{ borderRadius: "50%" }}
-        />
-        <Link href="/" style={{ color: "white" }}>
-          NextJS
-        </Link>
-      </Typography.Title>
-    </Sider>
+    ></Sider>
   );
 }
