@@ -1,12 +1,9 @@
-import {
-  getProviders,
-  signIn,
-  getSession,
-  getCsrfToken,
-} from "next-auth/react";
+import { getProviders, signIn, getSession } from "next-auth/react";
 import { Button, Space, Typography } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
+
+import { FcGoogle } from "react-icons/fc";
 
 export default function Signin({ providers }) {
   return (
@@ -18,7 +15,7 @@ export default function Signin({ providers }) {
       <Head>
         <title>Sign in to CoS Portal </title>
       </Head>
-      {/* <Typography.Title>Sign in to College of Science Portal</Typography.Title>
+      <Typography.Title>Sign in to College of Science Portal</Typography.Title>
       <Player
         autoplay
         loop
@@ -30,37 +27,6 @@ export default function Signin({ providers }) {
           buttons={["play", "repeat", "frame", "debug"]}
         />
       </Player>
-      <Space
-        direction="vertical"
-        size="large"
-        style={{ width: "100%", marginTop: "1rem" }}
-      >
-        {Object.values(providers).map((provider) => {
-          return (
-            <div key={provider.name}>
-              <Button onClick={() => signIn(provider.id)}>
-                Sign in with your SQU {provider.name} account
-              </Button>
-            </div>
-          );
-        })}
-        {Array.isArray(providers) && providers.length === 0 && (
-          <Typography.Text>
-            No authentication providers are configured.{" "}
-            <a href="https://next-auth.js.org/configuration/providers">
-              Learn more
-            </a>
-          </Typography.Text>
-        )}
-        {Array.isArray(providers) && providers.length > 0 && (
-          <Typography.Text>
-            No authentication providers are configured.{" "}
-            <a href="https://next-auth.js.org/configuration/providers">
-              Learn more
-            </a>
-          </Typography.Text>
-        )} */}
-
       {providers &&
         Object.values(providers).map((provider) => (
           <div key={provider.name} style={{ marginBottom: 0 }}>
@@ -68,6 +34,7 @@ export default function Signin({ providers }) {
               onClick={() => signIn(provider.id)}
               style={{ width: "100%", marginBottom: 0 }}
               size="large"
+              icon={<FcGoogle />}
             >
               Sign in with {provider.name}
             </Button>
