@@ -31,6 +31,7 @@ export default function PageLayout({ children }) {
     <LayoutContext.Provider
       value={{
         themeColor,
+        handleThemeChange,
       }}
     >
       <ConfigProvider

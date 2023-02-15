@@ -4,6 +4,7 @@ import Link from "next/link";
 import Authentication from "../authentication/auth";
 import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 import CustomTooltip from "../tooltip/customtooltip";
+import ThemeSwitch from "../themeSwitch";
 
 import {
   MenuFoldOutlined,
@@ -32,7 +33,7 @@ export default function HeaderComponent(props) {
   const [spaceGap, setSpaceGap] = useState(10);
 
   useEffect(() => {
-    setSpaceGap(30);
+    setSpaceGap(20);
   }, [isBreakPoint, collapsed]);
 
   return (
@@ -119,31 +120,7 @@ export default function HeaderComponent(props) {
               }
               placement="left"
             >
-              <Switch
-                checkedChildren={
-                  <MdOutlineWbSunny
-                    style={{
-                      fontSize: "18px",
-                      top: "2px",
-                    }}
-                  />
-                }
-                unCheckedChildren={
-                  <MdOutlineDarkMode
-                    style={{
-                      fontSize: "18px",
-                    }}
-                  />
-                }
-                defaultChecked
-                onChange={handleThemeChange}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              />
+              <ThemeSwitch handleThemeChange={handleThemeChange} />
             </CustomTooltip>
           </Space>
         </Col>

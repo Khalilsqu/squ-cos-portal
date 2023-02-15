@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@handsontable/react": "^12.3.1",
     "@lottiefiles/react-lottie-player": "^3.5.2",
     "@next/font": "13.1.6",
     "antd": "^5.2.0",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
+    "handsontable": "^12.3.1",
     "next": "13.1.6",
     "next-auth": "^4.19.2",
     "react": "18.2.0",
