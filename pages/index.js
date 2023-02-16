@@ -1,9 +1,14 @@
 import { useRef } from "react";
-import HotTable from "@/components/hotTable";
+import HotTable from "@/lib/hotTable";
+import { Button } from "antd";
 
 function Home(props) {
   const hotRef = useRef(null);
 
+  const handleClick = () => {
+    const hotInstance = hotRef.current.hotInstance;
+    hotInstance.selectCell(1, 1);
+  };
   return (
     <div
       style={{
@@ -31,11 +36,8 @@ function Home(props) {
         manualRowMove={true}
         contextMenu={true}
         columnSorting={true}
-        nestedHeaders={[
-          ["", { label: "Car brands", colspan: 4 }],
-          ["Year", "Kia", "Nissan", "Toyota", "Honda"],
-        ]}
       />
+      <Button onClick={handleClick}>click me</Button>
     </div>
   );
 }

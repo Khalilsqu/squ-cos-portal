@@ -38,6 +38,7 @@ export default function Authentication() {
             src={session.user.image}
             alt={session.user.name}
             style={{ cursor: "pointer" }}
+            title={session.user.name}
           />
         </Dropdown>
       ) : router.pathname !== "/auth/signin" ? (
