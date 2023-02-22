@@ -67,8 +67,6 @@ export default function Signin({ providers }) {
             </Button>
           </div>
         ))}
-
-      {/* </Space> */}
     </div>
   );
 }
