@@ -1,11 +1,9 @@
 import { useContext, useState, useEffect } from "react";
-import { Layout, Col, Row, Switch, Space } from "antd";
+import { Layout, Col, Row, Space } from "antd";
 import Link from "next/link";
 import Authentication from "../authentication/auth";
-import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 import CustomTooltip from "../tooltip/customtooltip";
-import ThemeSwitch from "../themeSwitch";
-import { SettingOutlined } from "@ant-design/icons";
+import SettingGear from "../setting";
 
 import {
   MenuFoldOutlined,
@@ -113,23 +111,14 @@ export default function HeaderComponent(props) {
         >
           <Space
             style={{
-              gap: 10,
+              gap: 20,
             }}
           >
             <Authentication />
-            <CustomTooltip
-              title={
-                themeColor === "light"
-                  ? "Switch to Dark Mode"
-                  : " Switch to Light Mode"
-              }
-              placement="left"
-            >
-              <ThemeSwitch
-                handleThemeChange={handleThemeChange}
-                themeColor={themeColor}
-              />
-            </CustomTooltip>
+            <SettingGear
+              themeColor={themeColor}
+              handleThemeChange={handleThemeChange}
+            />
           </Space>
         </Col>
       </Row>

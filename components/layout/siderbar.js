@@ -6,7 +6,6 @@ const { Sider } = Layout;
 export default function SiderComponent(props) {
   const { collapsed, handleCollapse, themeColor, isBreakPoint, setBreakPoint } =
     props;
-  console.log(collapsed);
 
   return (
     <Sider

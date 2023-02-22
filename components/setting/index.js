@@ -1,20 +1,74 @@
 import { SettingOutlined } from "@ant-design/icons";
+import { Dropdown, Space, Switch } from "antd";
+import ThemeSwitch from "../themeSwitch";
+import CustomTooltip from "../tooltip/customtooltip";
+import { menuModeState } from "@/components/sideBarContents";
 
-const Setting = (props) => {
-  const { themeColor } = props;
+const SettingGear = (props) => {
+  const { themeColor, handleThemeChange } = props;
+  const [menuMode, setMenuModeChange] = menuModeState((state) => [
+    state.menuMode,
+    state.setMenuModeChange,
+  ]);
+
+  const items = [
+    {
+      key: "0",
+      icon: (
+        <ThemeSwitch
+          themeColor={themeColor}
+          handleThemeChange={handleThemeChange}
+        />
+      ),
+    },
+    {
+      key: "1",
+      icon: (
+        <CustomTooltip
+          title={
+            menuMode === "inline"
+              ? "Change sidebar menu mode to vertical"
+              : "Change sidebar menu mode to inline"
+          }
+          placement="right"
+        >
+          <Switch
+            checkedChildren="inline"
+            unCheckedChildren="vertical"
+            defaultChecked
+            onChange={setMenuModeChange}
+          />
+        </CustomTooltip>
+      ),
+    },
+  ];
+
   return (
-    <SettingOutlined
-      style={{
-        fontSize: "28px",
-        cursor: "pointer",
-        color: themeColor === "light" ? "#001529" : "#fff",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    />
+    <CustomTooltip title="Settings" placement="right">
+      <Dropdown
+        menu={{
+          items,
+        }}
+        trigger={["click"]}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+        }}
+      >
+        <SettingOutlined
+          style={{
+            fontSize: "25px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        />
+      </Dropdown>
+    </CustomTooltip>
   );
 };
 
-export default Setting;
+export default SettingGear;

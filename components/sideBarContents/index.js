@@ -1,5 +1,6 @@
 import { Menu, Space, Switch } from "antd";
 import { useState } from "react";
+import { create } from "zustand";
 
 import { FaUniversity } from "react-icons/fa";
 import { GiTeacher } from "react-icons/gi";
@@ -20,13 +21,23 @@ function getItem(label, key, icon, children, title) {
   };
 }
 
-const SideBarContents = (props) => {
-  const { themeColor, collapsed } = props;
-  const [mode, setMode] = useState("inline");
+export const menuModeState = create((set) => ({
+  menuMode: "inline",
+  setMenuModeChange: () =>
+    set((state) => ({
+      menuMode: state.menuMode === "inline" ? "vertical" : "inline",
+    })),
+}));
 
-  const style = {
-    backgroundColor: themeColor === "light" ? "#fff" : "#001529",
-    color: themeColor === "light" ? "#001529" : "#fff",
+export const SideBarContents = (props) => {
+  const { themeColor, collapsed } = props;
+  const [menuMode, setMenuModeChange] = menuModeState((state) => [
+    state.menuMode,
+    state.setMenuModeChange,
+  ]);
+
+  const changeMode = (value) => {
+    setMode(value ? "vertical" : "inline");
   };
 
   const items = [
@@ -36,21 +47,21 @@ const SideBarContents = (props) => {
         "1.1",
         <GiTeacher />,
         null,
-        collapsed === false ? "Faculty" : null
+        (collapsed === false) & (menuMode === "inline") ? "Faculty" : null
       ),
       getItem(
         "Technician",
         "1.2",
         <MdOutlineEngineering />,
         null,
-        collapsed === false ? "Technician" : null
+        (collapsed === false) & (menuMode === "inline") ? "Technician" : null
       ),
       getItem(
         "Adminstrator",
         "1.3",
         <RiAdminLine />,
         null,
-        collapsed === false ? "Adminstrator" : null
+        (collapsed === false) & (menuMode === "inline") ? "Adminstrator" : null
       ),
     ]),
     getItem("Students", "2", <IoIosSchool />, [
@@ -59,14 +70,14 @@ const SideBarContents = (props) => {
         "2.1",
         <MdEmojiPeople />,
         null,
-        collapsed === false ? "Undergraduate" : null
+        (collapsed === false) & (menuMode === "inline") ? "Undergraduate" : null
       ),
       getItem(
         "Postgraduate",
         "2.2",
         <FaUserGraduate />,
         null,
-        collapsed === false ? "Postgraduate" : null
+        (collapsed === false) & (menuMode === "inline") ? "Postgraduate" : null
       ),
     ]),
     getItem(
@@ -74,26 +85,22 @@ const SideBarContents = (props) => {
       "3",
       <MdOutlineAdminPanelSettings />,
       null,
-      collapsed === false ? "Adminstrative" : null
+      (collapsed === false) & (menuMode === "inline") ? "Adminstrative" : null
     ),
   ];
 
-  const changeMode = (value) => {
-    setMode(value ? "vertical" : "inline");
-  };
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
-      <Switch onChange={changeMode} />
       <Menu
         theme={themeColor}
-        mode={mode}
+        mode={menuMode}
         defaultSelectedKeys={["1"]}
         items={items}
         style={{
-          height: "100%",
           borderRight: 20,
           padding: 12,
           borderRadius: 20,
+          justifyContent: "left",
         }}
       />
     </Space>
