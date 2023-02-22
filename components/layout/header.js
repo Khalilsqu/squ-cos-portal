@@ -120,7 +120,10 @@ export default function HeaderComponent(props) {
               }
               placement="left"
             >
-              <ThemeSwitch handleThemeChange={handleThemeChange} />
+              <ThemeSwitch
+                handleThemeChange={handleThemeChange}
+                themeColor={themeColor}
+              />
             </CustomTooltip>
           </Space>
         </Col>

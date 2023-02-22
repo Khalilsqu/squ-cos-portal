@@ -33,12 +33,14 @@ export default function Authentication() {
           }}
           trigger={["click"]}
         >
-          <Avatar
-            size={50}
-            src={session.user.image}
-            alt={session.user.name}
-            style={{ cursor: "pointer" }}
-          />
+          <CustomTooltip title="Click to sign-out" placement="right">
+            <Avatar
+              size={50}
+              src={session.user.image}
+              alt={session.user.name}
+              style={{ cursor: "pointer" }}
+            />
+          </CustomTooltip>
         </Dropdown>
       ) : router.pathname !== "/auth/signin" ? (
         <CustomTooltip title="Click to sign-in">
