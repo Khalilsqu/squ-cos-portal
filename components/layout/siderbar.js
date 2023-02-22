@@ -1,12 +1,12 @@
-import { Layout, Typography } from "antd";
-import Image from "next/image";
-import Link from "next/link";
+import { Layout } from "antd";
+import SideBarContents from "../sideBarContents";
 
 const { Sider } = Layout;
 
 export default function SiderComponent(props) {
   const { collapsed, handleCollapse, themeColor, isBreakPoint, setBreakPoint } =
     props;
+  console.log(collapsed);
 
   return (
     <Sider
@@ -25,6 +25,8 @@ export default function SiderComponent(props) {
         height: "100vh",
         top: "64px",
       }}
-    ></Sider>
+    >
+      <SideBarContents themeColor={themeColor} collapsed={collapsed} />
+    </Sider>
   );
 }

@@ -5,6 +5,7 @@ import Authentication from "../authentication/auth";
 import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 import CustomTooltip from "../tooltip/customtooltip";
 import ThemeSwitch from "../themeSwitch";
+import { SettingOutlined } from "@ant-design/icons";
 
 import {
   MenuFoldOutlined,
@@ -110,7 +111,11 @@ export default function HeaderComponent(props) {
             display: "flex",
           }}
         >
-          <Space>
+          <Space
+            style={{
+              gap: 10,
+            }}
+          >
             <Authentication />
             <CustomTooltip
               title={
