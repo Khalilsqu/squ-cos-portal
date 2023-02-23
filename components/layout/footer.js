@@ -1,11 +1,13 @@
 import { Layout, Divider, Typography, Space } from "antd";
 import { useState, useEffect } from "react";
+import UseWindowSize from "@/utils/useWindowSize";
 
 const { Footer } = Layout;
 
 export default function FooterComponent(props) {
   const { collapsed, isBreakPoint } = props;
   const [year, setYear] = useState(new Date().getFullYear());
+  const windowSize = UseWindowSize();
 
   useEffect(() => {
     setInterval(() => {
@@ -30,32 +32,37 @@ export default function FooterComponent(props) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          opacity: 0.5,
+          alignItems: "center",
         }}
       >
-        <Typography.Text
-          style={{
-            width: "15%",
-            textAlign: "left",
-          }}
-        >
-          © {year} College of Sciences, Sultan Qaboos University | All Rights
-        </Typography.Text>
+        {windowSize.width > 768 && (
+          <Typography.Text
+            style={{
+              width: "15%",
+              textAlign: "left",
+            }}
+          >
+            © {year} College of Sciences, Sultan Qaboos University | All Rights
+          </Typography.Text>
+        )}
+
         <Typography.Link
           href="https://www.squ.edu.om/science/"
           target={"_blank"}
         >
           SQU College of Sciences
         </Typography.Link>
-        <Typography.Text
-          style={{
-            width: "15%",
-            textAlign: "right",
-          }}
-        >
-          This site is not affiliated with Sultan Qaboos University, but
-          Developed by DataBase Team in College of Sciences
-        </Typography.Text>
+        {windowSize.width > 768 && (
+          <Typography.Text
+            style={{
+              width: "15%",
+              textAlign: "right",
+            }}
+          >
+            This site is not affiliated with Sultan Qaboos University, but
+            Developed by DataBase Team in College of Sciences
+          </Typography.Text>
+        )}
       </Footer>
     </div>
   );
