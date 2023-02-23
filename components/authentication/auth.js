@@ -1,4 +1,4 @@
-import { Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown, Space } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { GoSignOut } from "react-icons/go";

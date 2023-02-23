@@ -1,5 +1,5 @@
 import { getProviders, signIn, getSession } from "next-auth/react";
-import { Button, Typography } from "antd";
+import { Button, Typography, Space } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
@@ -11,7 +11,7 @@ export default function Signin({ providers }) {
   const themeColor = useContext(LayoutContext);
 
   return (
-    <div
+    <Space
       style={{
         display: "flex",
         flexDirection: "column",
@@ -21,6 +21,7 @@ export default function Signin({ providers }) {
         backgroundColor:
           themeColor === "light" ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.8)",
         gap: "20px",
+        padding: "10px",
       }}
     >
       <Head>
@@ -29,6 +30,8 @@ export default function Signin({ providers }) {
       <Typography.Title
         style={{
           color: themeColor === "light" ? "black" : "white",
+          fontSize: "30px",
+          textAlign: "center",
         }}
       >
         Sign in to College of Science Portal
@@ -45,7 +48,10 @@ export default function Signin({ providers }) {
         />
       </Player>
       <Typography.Text
-        style={{ color: themeColor === "light" ? "black" : "white" }}
+        style={{
+          color: themeColor === "light" ? "black" : "white",
+          textAlign: "center",
+        }}
       >
         You will be redirected to Google Account to sign in
       </Typography.Text>
@@ -67,7 +73,7 @@ export default function Signin({ providers }) {
             </Button>
           </div>
         ))}
-    </div>
+    </Space>
   );
 }
 
