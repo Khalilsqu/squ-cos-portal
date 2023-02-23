@@ -1,4 +1,4 @@
-import { Avatar, Dropdown, Space } from "antd";
+import { Avatar, Dropdown } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { GoSignOut } from "react-icons/go";
@@ -57,8 +57,8 @@ export default function Authentication() {
           <Avatar
             size={50}
             icon={<AiOutlineUser />}
-            style={{ cursor: "pointer" }}
             onClick={handleSignIn}
+            className="cursor-pointer content-center items-center"
           />
         </CustomTooltip>
       ) : null}

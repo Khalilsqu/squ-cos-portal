@@ -1,13 +1,11 @@
 import { Layout, Divider, Typography, Space } from "antd";
 import { useState, useEffect } from "react";
-import UseWindowSize from "@/utils/useWindowSize";
 
 const { Footer } = Layout;
 
 export default function FooterComponent(props) {
   const { collapsed, isBreakPoint } = props;
   const [year, setYear] = useState(new Date().getFullYear());
-  const windowSize = UseWindowSize();
 
   useEffect(() => {
     setInterval(() => {
@@ -35,16 +33,9 @@ export default function FooterComponent(props) {
           alignItems: "center",
         }}
       >
-        {windowSize.width > 768 && (
-          <Typography.Text
-            style={{
-              width: "15%",
-              textAlign: "left",
-            }}
-          >
-            © {year} College of Sciences, Sultan Qaboos University | All Rights
-          </Typography.Text>
-        )}
+        <Typography.Text className="invisible md:visible w-1/6 text-start">
+          © {year} College of Sciences, Sultan Qaboos University | All Rights
+        </Typography.Text>
 
         <Typography.Link
           href="https://www.squ.edu.om/science/"
@@ -52,17 +43,10 @@ export default function FooterComponent(props) {
         >
           SQU College of Sciences
         </Typography.Link>
-        {windowSize.width > 768 && (
-          <Typography.Text
-            style={{
-              width: "15%",
-              textAlign: "right",
-            }}
-          >
-            This site is not affiliated with Sultan Qaboos University, but
-            Developed by DataBase Team in College of Sciences
-          </Typography.Text>
-        )}
+        <Typography.Text className="invisible md:visible w-1/6 text-end">
+          This site is not affiliated with Sultan Qaboos University, but
+          Developed by DataBase Team in College of Sciences
+        </Typography.Text>
       </Footer>
     </div>
   );
