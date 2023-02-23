@@ -18,7 +18,7 @@ export default function ThemeSwitch(props) {
           <MdOutlineWbSunny
             style={{
               fontSize: "18px",
-              top: "2px",
+              color: themeColor === "light" ? "#001529" : "#fff",
             }}
           />
         }
@@ -36,6 +36,8 @@ export default function ThemeSwitch(props) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
+          textAlign: "center",
+          color: themeColor === "light" ? "#001529" : "#fff",
         }}
       />
     </CustomTooltip>

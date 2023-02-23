@@ -114,7 +114,7 @@ export default function HeaderComponent(props) {
               gap: 20,
             }}
           >
-            <Authentication />
+            <Authentication themeColor={themeColor} />
             <SettingGear
               themeColor={themeColor}
               handleThemeChange={handleThemeChange}

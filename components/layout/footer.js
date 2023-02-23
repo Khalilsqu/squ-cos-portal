@@ -15,35 +15,25 @@ export default function FooterComponent(props) {
 
   return (
     <div
-      style={{
-        marginLeft: isBreakPoint ? "0px" : collapsed ? "80px" : "200px",
-        transition: "all 0.5s",
-        paddingLeft: "24px",
-        paddingRight: "24px",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      className={
+        "transition-all duration-500 px-6 flex flex-col " +
+        (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
+      }
     >
       <Divider />
-      <Footer
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography.Text className="invisible md:visible w-1/6 text-start">
+      <Footer className="w-full flex flex-row justify-center items-center md:justify-between">
+        <Typography.Text className="hidden md:flex w-1/6 text-start">
           © {year} College of Sciences, Sultan Qaboos University | All Rights
         </Typography.Text>
 
         <Typography.Link
+          className="text-center"
           href="https://www.squ.edu.om/science/"
           target={"_blank"}
         >
           SQU College of Sciences
         </Typography.Link>
-        <Typography.Text className="invisible md:visible w-1/6 text-end">
+        <Typography.Text className="hidden md:flex w-1/6 text-end">
           This site is not affiliated with Sultan Qaboos University, but
           Developed by DataBase Team in College of Sciences
         </Typography.Text>

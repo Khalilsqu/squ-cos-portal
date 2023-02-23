@@ -8,10 +8,12 @@ import { useRef } from "react";
 import CustomTooltip from "../tooltip/customtooltip";
 import LogOutModal from "./logOutModal";
 
-export default function Authentication() {
+export default function Authentication(props) {
   const { data: session, status } = useSession();
   const childRef = useRef();
   const router = useRouter();
+
+  const { themeColor } = props;
 
   const logOutNotification = () => {
     childRef.current.countDown();
@@ -56,9 +58,16 @@ export default function Authentication() {
         <CustomTooltip title="Click to sign-in">
           <Avatar
             size={50}
-            icon={<AiOutlineUser />}
             onClick={handleSignIn}
-            className="cursor-pointer content-center items-center"
+            className="cursor-pointer"
+            icon={
+              <AiOutlineUser
+                className={
+                  "text-center text-5xl " +
+                  (themeColor === "dark" ? "text-white" : "text-stone-900")
+                }
+              />
+            }
           />
         </CustomTooltip>
       ) : null}

@@ -3,7 +3,7 @@ import { Button, Typography, Space } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
-import { FcGoogle } from "react-icons/fc";
+import { GoogleOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -60,6 +60,7 @@ export default function Signin({ providers }) {
           <div key={provider.name} style={{ marginBottom: 0 }}>
             <Button
               onClick={() => signIn(provider.id)}
+              className="text-center align-middle content-center items-center"
               style={{
                 width: "100%",
                 marginBottom: 0,
@@ -67,9 +68,9 @@ export default function Signin({ providers }) {
                 color: themeColor === "light" ? "white" : "black",
               }}
               size="large"
-              icon={<FcGoogle />}
+              icon={<GoogleOutlined className="text-xl" />}
             >
-              Sign in with {provider.name}
+              Click to sign in with {provider.name}
             </Button>
           </div>
         ))}
