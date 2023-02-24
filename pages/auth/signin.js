@@ -59,7 +59,7 @@ export default function Signin({ providers }) {
         Object.values(providers).map((provider) => (
           <div key={provider.name} style={{ marginBottom: 0 }}>
             <Button
-              onClick={() => signIn(provider.id)}
+              onClick={() => signIn(provider.id, { prompt: "select_account" })}
               className="text-center align-middle content-center items-center"
               style={{
                 width: "100%",
