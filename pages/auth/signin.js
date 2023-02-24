@@ -3,7 +3,7 @@ import { Button, Typography, Space } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
-import { GoogleOutlined } from "@ant-design/icons";
+import { FcGoogle } from "react-icons/fc";
 import { useContext } from "react";
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -48,27 +48,22 @@ export default function Signin({ providers }) {
         />
       </Player>
       <Typography.Text
-        style={{
-          color: themeColor === "light" ? "black" : "white",
-          textAlign: "center",
-        }}
+        className="flex first-letter:uppercase
+      text-center align-middle content-center items-center
+      dark:text-white
+      "
       >
-        You will be redirected to Google Account to sign in
+        You will be redirected to Google Account to sign in. Acess is resitrcted
+        to SQU accounts.
       </Typography.Text>
       {providers &&
         Object.values(providers).map((provider) => (
           <div key={provider.name} style={{ marginBottom: 0 }}>
             <Button
               onClick={() => signIn(provider.id, { prompt: "select_account" })}
-              className="text-center align-middle content-center items-center"
-              style={{
-                width: "100%",
-                marginBottom: 0,
-                backgroundColor: themeColor === "light" ? "#4285f4" : "#1a73e8",
-                color: themeColor === "light" ? "white" : "black",
-              }}
+              className="flex text-center align-middle content-center items-center rounded-md"
               size="large"
-              icon={<GoogleOutlined className="text-xl" />}
+              icon={<FcGoogle className="text-xl" />}
             >
               Click to sign in with {provider.name}
             </Button>
