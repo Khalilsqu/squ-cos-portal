@@ -1,4 +1,4 @@
-import { getProviders, signIn, getSession, useSession } from "next-auth/react";
+import { getProviders, signIn, getSession } from "next-auth/react";
 import { Button, Typography, Space } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
@@ -6,20 +6,9 @@ import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { FcGoogle } from "react-icons/fc";
 import { useContext } from "react";
 import { LayoutContext } from "@/components/layout/pageLayout";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
-export default function SignIn() {
+export default function Signin({ providers }) {
   const themeColor = useContext(LayoutContext);
-  const router = useRouter();
-  const { providers } = getProviders();
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/");
-    }
-  }, [status]);
 
   return (
     <Space
@@ -37,8 +26,6 @@ export default function SignIn() {
     >
       <Head>
         <title>Sign in to CoS Portal </title>
-        <meta name="description" content="Sign in to CoS Portal" />
-        <link rel="icon" href="/squ.ico" />
       </Head>
       <Typography.Title
         style={{
@@ -86,20 +73,20 @@ export default function SignIn() {
   );
 }
 
-// export async function getServerSideProps(context) {
-//   const { req } = context;
-//   const session = await getSession({ req });
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
 
-//   if (session) {
-//     return {
-//       redirect: { destination: "/" },
-//     };
-//   }
+  if (session) {
+    return {
+      redirect: { destination: "/" },
+    };
+  }
 
-//   return {
-//     props: {
-//       providers: await getProviders(context),
-//       // csrfToken: await getCsrfToken(context),
-//     },
-//   };
-// }
+  return {
+    props: {
+      providers: await getProviders(context),
+      // csrfToken: await getCsrfToken(context),
+    },
+  };
+}
