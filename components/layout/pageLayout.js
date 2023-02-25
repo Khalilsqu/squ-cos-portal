@@ -44,7 +44,7 @@ export default function PageLayout({ children }) {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
     setBreakPoint(getCookie("isBreakPoint"));
-  }, []);
+  }, [themeColor, collapsed, isBreakPoint]);
 
   return (
     <LayoutContext.Provider
@@ -86,20 +86,10 @@ export default function PageLayout({ children }) {
             />
             <Layout>
               <Content
-                style={{
-                  display: "flex",
-                  marginLeft: isBreakPoint
-                    ? "0px"
-                    : collapsed
-                    ? "80px"
-                    : "200px",
-                  transition: "all 0.5s",
-                  paddingLeft: "24px",
-                  paddingRight: "24px",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  minHeight: "100vh",
-                }}
+                className={
+                  (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50") +
+                  " flex flex-col justify-center items-center min-h-screen transition-all ease-in-out duration-500"
+                }
               >
                 {children}
                 <FloatButton.BackTop
