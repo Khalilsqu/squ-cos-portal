@@ -1,4 +1,4 @@
-import { getProviders, signIn, getSession, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Button, Typography, Space } from "antd";
@@ -11,7 +11,6 @@ import { LayoutContext } from "@/components/layout/pageLayout";
 
 export default function Signin(props) {
   const themeColor = useContext(LayoutContext);
-  const { data: session, status } = useSession();
 
   return (
     <Space
@@ -69,40 +68,9 @@ export default function Signin(props) {
       >
         Click to sign in with Google
       </Button>
-      {/* {providers &&
-        Object.values(providers).map((provider) => (
-          <div key={provider.name} style={{ marginBottom: 0 }}>
-            <Button
-              onClick={() => signIn(provider.id, { prompt: "select_account" })}
-              className="flex text-center align-middle content-center items-center rounded-md"
-              size="large"
-              icon={<FcGoogle className="text-xl" />}
-            >
-              Click to sign-in with {provider.name}
-            </Button>
-          </div>
-        ))} */}
     </Space>
   );
 }
-
-// export async function getServerSideProps(context) {
-//   const { req } = context;
-//   const session = await getSession({ req });
-
-//   if (session) {
-//     return {
-//       redirect: { destination: "/" },
-//     };
-//   }
-
-//   return {
-//     props: {
-//       providers: await getProviders(context),
-//       // csrfToken: await getCsrfToken(context),
-//     },
-//   };
-// }
 
 export async function getServerSideProps(context) {
   const { res } = context;

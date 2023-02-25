@@ -1,5 +1,4 @@
-import { Menu, Space, Switch } from "antd";
-import { useState } from "react";
+import { Menu, Space } from "antd";
 import { create } from "zustand";
 
 import { FaUniversity } from "react-icons/fa";
@@ -10,6 +9,7 @@ import { FaUserGraduate } from "react-icons/fa";
 import { IoIosSchool } from "react-icons/io";
 import { MdEmojiPeople } from "react-icons/md";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import Image from "next/image";
 
 function getItem(label, key, icon, children, title) {
   return {
@@ -30,15 +30,11 @@ export const menuModeState = create((set) => ({
 }));
 
 export const SideBarContents = (props) => {
-  const { themeColor, collapsed } = props;
+  const { themeColor, collapsed, isBreakPoint } = props;
   const [menuMode, setMenuModeChange] = menuModeState((state) => [
     state.menuMode,
     state.setMenuModeChange,
   ]);
-
-  const changeMode = (value) => {
-    setMode(value ? "vertical" : "inline");
-  };
 
   const items = [
     getItem("Staff", "1", <FaUniversity />, [
@@ -90,18 +86,34 @@ export const SideBarContents = (props) => {
   ];
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <Space
+      direction="vertical"
+      className="
+      w-full
+    "
+    >
+      <Space className="w-full justify-center">
+        <Image
+          src="/squ.png"
+          width={60}
+          height={80}
+          alt="SQU Logo"
+          // hide the image from screen readers when collapsed or isBreakPoint
+          className={
+            (isBreakPoint
+              ? "hidden"
+              : collapsed
+              ? "w-5 h-7 rotate-[360deg]"
+              : "flex") + " mt-4 transition-all duration-1000"
+          }
+        />
+      </Space>
       <Menu
         theme={themeColor}
         mode={menuMode}
         defaultSelectedKeys={["1"]}
         items={items}
-        style={{
-          borderRight: 20,
-          padding: 12,
-          borderRadius: 20,
-          justifyContent: "left",
-        }}
+        className="w-full"
       />
     </Space>
   );

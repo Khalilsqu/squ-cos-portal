@@ -25,7 +25,11 @@ export default function SiderComponent(props) {
         top: "64px",
       }}
     >
-      <SideBarContents themeColor={themeColor} collapsed={collapsed} />
+      <SideBarContents
+        themeColor={themeColor}
+        collapsed={collapsed}
+        isBreakPoint={isBreakPoint}
+      />
     </Sider>
   );
 }

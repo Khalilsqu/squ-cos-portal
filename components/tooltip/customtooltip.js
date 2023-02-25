@@ -1,8 +1,11 @@
 import { Tooltip } from "antd";
 import { useRef } from "react";
 
+import { useWindowSize } from "../utils/windowSize";
+
 export default function CustomTooltip(props) {
   const { title, placement, children } = props;
+  const { width } = useWindowSize();
 
   const switchRef = useRef();
 
@@ -15,6 +18,10 @@ export default function CustomTooltip(props) {
       }, 2000);
     }
   };
+
+  if (width < 768) {
+    return <>{children}</>;
+  }
 
   return (
     <>
