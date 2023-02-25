@@ -1,4 +1,4 @@
-import { signIn } from "next-auth/react";
+import { signIn, getProviders } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Button, Typography, Space } from "antd";
@@ -9,7 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useContext } from "react";
 import { LayoutContext } from "@/components/layout/pageLayout";
 
-export default function Signin(props) {
+export default function Signin({ providers }) {
   const themeColor = useContext(LayoutContext);
 
   return (
@@ -61,7 +61,7 @@ export default function Signin(props) {
         to SQU accounts.
       </Typography.Text>
       <Button
-        onClick={() => signIn("google")}
+        onClick={() => signIn("google", { callbackUrl: "/" })}
         className="flex text-center align-middle content-center items-center rounded-md"
         size="large"
         icon={<FcGoogle className="text-xl" />}
@@ -85,9 +85,9 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const providers = await getProviders(context);
+
   return {
-    props: {
-      session,
-    },
+    props: { providers: providers ?? [] },
   };
 }

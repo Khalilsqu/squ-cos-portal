@@ -33,6 +33,11 @@ export const authOptions = {
       }
       return true; // Do different verification for other providers that don't have `email_verified`
     },
+    async redirect({url, baseUrl}) {
+      return url.startsWith(baseUrl)
+        ? Promise.resolve(url)
+        : Promise.resolve(baseUrl);
+    },
   },
   pages: {
     signIn: "/auth/signin",
