@@ -21,6 +21,9 @@ export const authOptions = {
     // ...add more providers here
   ],
 
+  session: {
+    maxAge: 60 * 60, // 1 hour session expiry when idle
+  },
   secret: process.env.JWT_SECRET,
 
   callbacks: {
@@ -34,6 +37,8 @@ export const authOptions = {
   pages: {
     signIn: "/auth/signin",
   },
+
+  site: process.env.NEXTAUTH_URL,
 };
 
 export default NextAuth(authOptions);
