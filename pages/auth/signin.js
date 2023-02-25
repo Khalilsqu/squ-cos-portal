@@ -9,7 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useContext } from "react";
 import { LayoutContext } from "@/components/layout/pageLayout";
 
-export default function Signin() {
+export default function Signin(props) {
   const themeColor = useContext(LayoutContext);
   const { data: session, status } = useSession();
 
@@ -29,6 +29,8 @@ export default function Signin() {
     >
       <Head>
         <title>Sign in to CoS Portal </title>
+        <meta name="description" content="Sign in to CoS Portal" />
+        <link rel="icon" href="/squ.ico" />
       </Head>
       <Typography.Title
         style={{
