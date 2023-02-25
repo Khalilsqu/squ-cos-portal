@@ -61,7 +61,7 @@ export default function Signin(props) {
         to SQU accounts.
       </Typography.Text>
       <Button
-        onClick={() => signIn("google", { prompt: "select_account" })}
+        onClick={() => signIn("google")}
         className="flex text-center align-middle content-center items-center rounded-md"
         size="large"
         icon={<FcGoogle className="text-xl" />}
