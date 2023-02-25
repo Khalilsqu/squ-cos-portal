@@ -105,6 +105,10 @@ export default function Signin(props) {
 // }
 
 export async function getServerSideProps(context) {
+  const { res } = context;
+
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
+
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (session) {
