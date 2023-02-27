@@ -8,18 +8,15 @@ export default function LottiePlayer() {
         autoplay
         loop
         src="/lottie/underConstruction.json"
-        style={{ height: "300px", width: "300px" }}
+        className="flex justify-center items-center"
       >
         <Controls
           visible={false}
           buttons={["play", "repeat", "frame", "debug"]}
         />
       </Player>
-      <Typography.Title
-        className="flex first-letter:uppercase
-        text-center align-middle content-center items-center"
-      >
-        This page is under construction
+      <Typography.Title className="flex justify-center items-center">
+        Under Construction
       </Typography.Title>
     </Space>
   );

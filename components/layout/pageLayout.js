@@ -2,15 +2,11 @@ import { Layout, theme, ConfigProvider, FloatButton } from "antd";
 import { useState, createContext, useEffect } from "react";
 import Head from "next/head";
 import { setCookie, getCookie } from "cookies-next";
-
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import SiderComponent from "./siderbar";
-
 const { Content } = Layout;
-
 export const LayoutContext = createContext();
-
 export default function PageLayout({ children }) {
   let themeColorValue = "dark";
   let collapsedValue = false;
@@ -18,34 +14,29 @@ export default function PageLayout({ children }) {
   const [collapsed, setCollapsed] = useState(collapsedValue);
   const [themeColor, setThemeColor] = useState(themeColorValue);
   const [isBreakPoint, setBreakPoint] = useState(isBreakPointValue);
-
   const handleThemeChange = () => {
     setThemeColor((prev) => (prev === "light" ? "dark" : "light"));
     setCookie("themeColor", themeColor === "light" ? "dark" : "light", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
-
   const handleCollapse = () => {
     setCollapsed((prev) => !prev);
     setCookie("collapsed", collapsed ? "false" : "true", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
-
   const handleBreakPoint = () => {
     setBreakPoint((prev) => !prev);
     setCookie("isBreakPoint", isBreakPoint ? "false" : "true", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
-
   useEffect(() => {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
     setBreakPoint(getCookie("isBreakPoint"));
   }, [themeColor, collapsed, isBreakPoint]);
-
   return (
     <LayoutContext.Provider
       value={{
@@ -88,7 +79,7 @@ export default function PageLayout({ children }) {
               <Content
                 className={
                   (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50") +
-                  " flex flex-col flex-1 justify-center items-center min-h-screen transition-all ease-in-out duration-500"
+                  " flex flex-col justify-center items-center min-h-screen transition-all ease-in-out duration-500"
                 }
               >
                 {children}
