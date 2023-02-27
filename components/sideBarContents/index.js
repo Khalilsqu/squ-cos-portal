@@ -10,6 +10,7 @@ import { IoIosSchool } from "react-icons/io";
 import { MdEmojiPeople } from "react-icons/md";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 function getItem(label, key, icon, children, title) {
   return {
@@ -36,49 +37,86 @@ export const SideBarContents = (props) => {
     state.setMenuModeChange,
   ]);
 
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    if (e.keyPath.length === 1) {
+      router.push("/" + e.key);
+    } else {
+      router.push("/" + e.keyPath[1] + "/" + e.key);
+    }
+  };
+
   const items = [
-    getItem("Staff", "1", <FaUniversity />, [
-      getItem(
-        "Faculty",
-        "1.1",
-        <GiTeacher />,
-        null,
-        (collapsed === false) & (menuMode === "inline") ? "Faculty" : null
-      ),
-      getItem(
-        "Technician",
-        "1.2",
-        <MdOutlineEngineering />,
-        null,
-        (collapsed === false) & (menuMode === "inline") ? "Technician" : null
-      ),
-      getItem(
-        "Adminstrator",
-        "1.3",
-        <RiAdminLine />,
-        null,
-        (collapsed === false) & (menuMode === "inline") ? "Adminstrator" : null
-      ),
-    ]),
-    getItem("Students", "2", <IoIosSchool />, [
-      getItem(
-        "Undergraduate",
-        "2.1",
-        <MdEmojiPeople />,
-        null,
-        (collapsed === false) & (menuMode === "inline") ? "Undergraduate" : null
-      ),
-      getItem(
-        "Postgraduate",
-        "2.2",
-        <FaUserGraduate />,
-        null,
-        (collapsed === false) & (menuMode === "inline") ? "Postgraduate" : null
-      ),
-    ]),
+    getItem(
+      <Space
+        onClick={(e) => {
+          router.push("/staff");
+        }}
+      >
+        Staff
+      </Space>,
+      "staff",
+      <FaUniversity
+        onClick={(e) => {
+          router.push("/staff");
+        }}
+      />,
+      [
+        getItem(
+          "Faculty",
+          "faculty",
+          <GiTeacher />,
+          null,
+          (collapsed === false) & (menuMode === "inline") ? "Faculty" : null
+        ),
+        getItem(
+          "Technician",
+          "technician",
+          <MdOutlineEngineering />,
+          null,
+          (collapsed === false) & (menuMode === "inline") ? "Technician" : null
+        ),
+        getItem(
+          "Adminstrator",
+          "adminstrator",
+          <RiAdminLine />,
+          null,
+          (collapsed === false) & (menuMode === "inline")
+            ? "Adminstrator"
+            : null
+        ),
+      ],
+      (collapsed === false) & (menuMode === "inline") ? "Staff" : null
+    ),
+    getItem(
+      <Space onClick={(e) => router.push("/students")}>Students</Space>,
+      "students",
+      <IoIosSchool onClick={(e) => router.push("/students")} />,
+      [
+        getItem(
+          "Undergraduate",
+          "undergraduate",
+          <MdEmojiPeople />,
+          null,
+          (collapsed === false) & (menuMode === "inline")
+            ? "Undergraduate"
+            : null
+        ),
+        getItem(
+          "Postgraduate",
+          "postgraduate",
+          <FaUserGraduate />,
+          null,
+          (collapsed === false) & (menuMode === "inline")
+            ? "Postgraduate"
+            : null
+        ),
+      ]
+    ),
     getItem(
       "Adminstrative",
-      "3",
+      "adminstrative",
       <MdOutlineAdminPanelSettings />,
       null,
       (collapsed === false) & (menuMode === "inline") ? "Adminstrative" : null
@@ -103,9 +141,13 @@ export const SideBarContents = (props) => {
             (isBreakPoint
               ? "hidden"
               : collapsed
-              ? "w-5 h-7 rotate-[360deg]"
-              : "flex") + " mt-4 transition-all duration-1000"
+              ? "w-5 h-7 rotate-[360deg] hover:cursor-pointer"
+              : "flex") +
+            " mt-4 transition-all duration-1000 hover:cursor-pointer"
           }
+          onClick={() => {
+            router.push("/");
+          }}
         />
       </Space>
       <Menu
@@ -114,6 +156,7 @@ export const SideBarContents = (props) => {
         defaultSelectedKeys={["1"]}
         items={items}
         className="w-full"
+        onClick={handleClick}
       />
     </Space>
   );
