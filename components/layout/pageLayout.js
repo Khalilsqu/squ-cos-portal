@@ -77,11 +77,11 @@ export default function PageLayout({ children }) {
             />
             <Layout
               className={
-                "transition-all duration-500 px-6 flex flex-col " +
+                "transition-all px-2 duration-500 flex flex-col " +
                 (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
               }
             >
-              <Content>
+              <Content className="flex justify-center">
                 {children}
                 <FloatButton.BackTop
                   style={{
