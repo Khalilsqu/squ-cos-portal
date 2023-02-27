@@ -18,12 +18,12 @@ export default function SiderComponent(props) {
         setBreakPoint(broken);
       }}
       hidden={isBreakPoint ? true : false}
-      style={{
-        position: "fixed",
-        overflow: "auto",
-        height: "100vh",
-        top: "64px",
-      }}
+      // style={{
+      //   position: "fixed",
+      //   overflow: "auto",
+      //   height: "100vh",
+      //   top: "64px",
+      // }}
     >
       <SideBarContents
         themeColor={themeColor}

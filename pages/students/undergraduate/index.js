@@ -1,3 +1,9 @@
+import { Space, Typography } from "antd";
+
 export default function Undergraduate() {
-  return <div>Undergraduate</div>;
+  return (
+    <Space>
+      <Typography.Title>Undergraduate</Typography.Title>
+    </Space>
+  );
 }

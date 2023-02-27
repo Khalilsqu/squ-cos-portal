@@ -1,3 +1,9 @@
+import { Space, Typography } from "antd";
+
 export default function Staff() {
-  return <div>Staff</div>;
+  return (
+    <Space>
+      <Typography.Title>Staff</Typography.Title>
+    </Space>
+  );
 }

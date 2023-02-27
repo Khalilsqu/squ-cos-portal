@@ -1,3 +1,9 @@
+import { Space, Typography } from "antd";
+
 export default function Adminstrator() {
-  return <div>Adminstrator</div>;
+  return (
+    <Space>
+      <Typography.Title>Adminstrator</Typography.Title>
+    </Space>
+  );
 }

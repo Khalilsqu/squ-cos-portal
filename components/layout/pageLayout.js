@@ -88,7 +88,7 @@ export default function PageLayout({ children }) {
               <Content
                 className={
                   (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50") +
-                  " flex flex-col justify-center items-center min-h-screen transition-all ease-in-out duration-500"
+                  " flex flex-col flex-1 justify-center items-center min-h-screen transition-all ease-in-out duration-500"
                 }
               >
                 {children}

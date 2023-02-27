@@ -14,12 +14,7 @@ export default function FooterComponent(props) {
   }, []);
 
   return (
-    <div
-      className={
-        "transition-all duration-500 px-6 flex flex-col " +
-        (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
-      }
-    >
+    <div className={"transition-all duration-500 px-6 flex flex-col"}>
       <Divider />
       <Footer className="w-full flex flex-row justify-center items-center md:justify-between">
         <Typography.Text className="hidden md:flex w-1/6 text-start">
@@ -31,7 +26,7 @@ export default function FooterComponent(props) {
           href="https://www.squ.edu.om/science/"
           target={"_blank"}
         >
-          SQU College of Sciences
+          SQU College of Science
         </Typography.Link>
         <Typography.Text className="hidden md:flex w-1/6 text-end">
           This site is not affiliated with Sultan Qaboos University, but
