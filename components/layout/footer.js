@@ -15,10 +15,10 @@ export default function FooterComponent(props) {
 
   return (
     <div
-      className={
-        "transition-all duration-500 px-6 flex flex-col " +
-        (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
-      }
+      // className={
+      //   "transition-all duration-500 px-6 flex flex-col " +
+      //   (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
+      // }
     >
       <Divider />
       <Footer className="w-full flex flex-row justify-center items-center md:justify-between">

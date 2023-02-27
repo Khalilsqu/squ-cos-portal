@@ -75,13 +75,13 @@ export default function PageLayout({ children }) {
               isBreakPoint={isBreakPoint}
               setBreakPoint={setBreakPoint}
             />
-            <Layout>
-              <Content
-                className={
-                  (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50") +
-                  " flex flex-col justify-center items-center min-h-screen transition-all ease-in-out duration-500"
-                }
-              >
+            <Layout
+              className={
+                "transition-all duration-500 px-6 flex flex-col " +
+                (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
+              }
+            >
+              <Content>
                 {children}
                 <FloatButton.BackTop
                   style={{

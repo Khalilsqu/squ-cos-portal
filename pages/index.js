@@ -8,7 +8,7 @@ export default function LottiePlayer() {
         autoplay
         loop
         src="/lottie/underConstruction.json"
-        className="flex justify-center items-center"
+        className="flex justify-center items-center max-w-2xl"
       >
         <Controls
           visible={false}
