@@ -1,4 +1,4 @@
-import { Menu, Space } from "antd";
+import { Button, Menu, Space, Typography } from "antd";
 import { create } from "zustand";
 
 import { FaUniversity } from "react-icons/fa";
@@ -9,8 +9,10 @@ import { FaUserGraduate } from "react-icons/fa";
 import { IoIosSchool } from "react-icons/io";
 import { MdEmojiPeople } from "react-icons/md";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import CustomTooltip from "../tooltip/customtooltip";
 
 function getItem(label, key, icon, children, title) {
@@ -33,6 +35,8 @@ export const menuModeState = create((set) => ({
 
 export const SideBarContents = (props) => {
   const { themeColor, collapsed, isBreakPoint } = props;
+  const [selectedKey, setSelectedKey] = useState([]);
+  const [openKeys, setOpenKeys] = useState([]);
   const [menuMode, setMenuModeChange] = menuModeState((state) => [
     state.menuMode,
     state.setMenuModeChange,
@@ -47,22 +51,43 @@ export const SideBarContents = (props) => {
       router.push("/" + e.keyPath[1] + "/" + e.key);
     }
   };
+  const handleSelectionStaff = () => {
+    router.push("/staff");
+    setSelectedKey(["staff"]);
+    console.log(selectedKey);
+  };
+
+  const handleSelectionStudents = () => {
+    router.push("/students");
+    setSelectedKey(["students"]);
+  };
+
+  const handleOpenKeys = (keys) => {
+    setOpenKeys(keys);
+  };
 
   const items = [
     getItem(
-      <Space
-        onClick={(e) => {
-          router.push("/staff");
-        }}
-      >
-        Staff
+      <Space className="flex justify-between">
+        <Typography.Text
+          className={
+            (selectedKey[0] === "staff") & (themeColor === "light")
+              ? "text-blue-500"
+              : (selectedKey[0] === "staff") & (themeColor === "dark") &&
+                "text-stone-100 bg-blue-400 rounded-lg px-2"
+          }
+        >
+          Staff
+        </Typography.Text>
+        <Button
+          onClick={handleSelectionStaff}
+          shape="circle"
+          size="small"
+          icon={<AiOutlineUsergroupAdd />}
+        />
       </Space>,
       "staff",
-      <FaUniversity
-        onClick={(e) => {
-          router.push("/staff");
-        }}
-      />,
+      <FaUniversity />,
       [
         getItem(
           "Faculty",
@@ -91,7 +116,24 @@ export const SideBarContents = (props) => {
       (collapsed === false) & (menuMode === "inline") ? "Staff" : null
     ),
     getItem(
-      <Space onClick={(e) => router.push("/students")}>Students</Space>,
+      <Space className="flex justify-between">
+        <Typography.Text
+          className={
+            (selectedKey[0] === "students") & (themeColor === "light")
+              ? "text-blue-500"
+              : (selectedKey[0] === "students") & (themeColor === "dark") &&
+                "text-stone-100 bg-blue-400 rounded-lg px-2"
+          }
+        >
+          Students
+        </Typography.Text>
+        <Button
+          onClick={handleSelectionStudents}
+          shape="circle"
+          size="small"
+          icon={<AiOutlineUsergroupAdd />}
+        />
+      </Space>,
       "students",
       <IoIosSchool onClick={(e) => router.push("/students")} />,
       [
@@ -156,10 +198,15 @@ export const SideBarContents = (props) => {
       <Menu
         theme={themeColor}
         mode={menuMode}
-        defaultSelectedKeys={["1"]}
+        selectedKeys={selectedKey}
         items={items}
         className="w-full"
         onClick={handleClick}
+        onSelect={(e) => {
+          setSelectedKey([e.key]);
+        }}
+        onOpenChange={handleOpenKeys}
+        openKeys={openKeys}
       />
     </Space>
   );
