@@ -1,15 +1,10 @@
-import { useContext, useState, useEffect } from "react";
-import { Layout, Col, Row, Space } from "antd";
-import Link from "next/link";
+import { useContext } from "react";
+import { Layout, Space } from "antd";
 import Authentication from "../authentication/auth";
 import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
 
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -25,15 +20,14 @@ const additionalStyles = {
 };
 
 export default function HeaderComponent(props) {
-  const { collapsed, handleBreakPoint, isBreakPoint, handleThemeChange } =
-    props;
+  const { handleBreakPoint, isBreakPoint, handleThemeChange } = props;
   const { themeColor } = useContext(LayoutContext);
 
-  const [spaceGap, setSpaceGap] = useState(10);
+  // const [spaceGap, setSpaceGap] = useState(10);
 
-  useEffect(() => {
-    setSpaceGap(20);
-  }, [isBreakPoint, collapsed]);
+  // useEffect(() => {
+  //   setSpaceGap(20);
+  // }, [isBreakPoint, collapsed]);
 
   return (
     <Header
@@ -43,85 +37,66 @@ export default function HeaderComponent(props) {
           : { backgroundColor: "#001529", ...additionalStyles }
       }
     >
-      <Row align={"middle"}>
-        <Col flex={1}>
-          <Space
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              gap: spaceGap,
-            }}
-          >
-            {isBreakPoint ? (
-              <CustomTooltip
-                title="Open Sidebar"
-                mouseLeaveDelay={0}
-                placement="right"
-              >
-                <MenuUnfoldOutlined
-                  onClick={handleBreakPoint}
-                  style={{
-                    fontSize: "24px",
-                    color: themeColor === "light" ? "#001529" : "#fff",
-                  }}
-                />
-              </CustomTooltip>
-            ) : collapsed ? (
-              <CustomTooltip
-                title="Close Sidebar"
-                mouseLeaveDelay={0}
-                placement="right"
-              >
-                <MenuFoldOutlined
-                  onClick={handleBreakPoint}
-                  style={{
-                    fontSize: "24px",
-                    color: themeColor === "light" ? "#001529" : "#fff",
-                  }}
-                />
-              </CustomTooltip>
-            ) : null}
-            <Link href="/">
-              <CustomTooltip title="Go to Home" placement="right">
-                <HomeOutlined
-                  style={{
-                    fontSize: "28px",
-                    color: themeColor === "light" ? "#001529" : "#fff",
-                  }}
-                />
-              </CustomTooltip>
-            </Link>
-          </Space>
-        </Col>
-        <Col
-          flex={4}
+      <Space className="flex justify-between">
+        <Space
           style={{
-            justifyContent: "center",
             display: "flex",
+            justifyContent: "flex-start",
+            gap: 20,
           }}
         >
-          PASS
-        </Col>
-        <Col
-          flex={1}
+          {isBreakPoint ? (
+            <CustomTooltip
+              title="Open Sidebar"
+              mouseLeaveDelay={0}
+              placement="right"
+            >
+              <MenuUnfoldOutlined
+                onClick={handleBreakPoint}
+                style={{
+                  fontSize: "24px",
+                  color: themeColor === "light" ? "#001529" : "#fff",
+                }}
+              />
+            </CustomTooltip>
+          ) : (
+            <CustomTooltip
+              title="Close Sidebar"
+              mouseLeaveDelay={0}
+              placement="right"
+            >
+              <MenuFoldOutlined
+                onClick={handleBreakPoint}
+                style={{
+                  fontSize: "24px",
+                  color: themeColor === "light" ? "#001529" : "#fff",
+                }}
+              />
+            </CustomTooltip>
+          )}
+          {/* <Link href="/">
+            <CustomTooltip title="Go to Home" placement="right">
+              <HomeOutlined
+                style={{
+                  fontSize: "28px",
+                  color: themeColor === "light" ? "#001529" : "#fff",
+                }}
+              />
+            </CustomTooltip>
+          </Link> */}
+        </Space>
+        <Space
           style={{
-            justifyContent: "flex-end",
-            display: "flex",
+            gap: 20,
           }}
         >
-          <Space
-            style={{
-              gap: 20,
-            }}
-          >
-            <Authentication themeColor={themeColor} />
-            <SettingGear
-              themeColor={themeColor}
-              handleThemeChange={handleThemeChange}
-            />
-          </Space>
-        </Col>
-      </Row>
+          <Authentication themeColor={themeColor} />
+          <SettingGear
+            themeColor={themeColor}
+            handleThemeChange={handleThemeChange}
+          />
+        </Space>
+      </Space>
     </Header>
   );
 }

@@ -11,6 +11,7 @@ import { MdEmojiPeople } from "react-icons/md";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import CustomTooltip from "../tooltip/customtooltip";
 
 function getItem(label, key, icon, children, title) {
   return {
@@ -131,24 +132,26 @@ export const SideBarContents = (props) => {
     "
     >
       <Space className="w-full justify-center">
-        <Image
-          src="/squ.png"
-          width={60}
-          height={80}
-          alt="SQU Logo"
-          // hide the image from screen readers when collapsed or isBreakPoint
-          className={
-            (isBreakPoint
-              ? "hidden"
-              : collapsed
-              ? "w-5 h-7 rotate-[360deg] hover:cursor-pointer"
-              : "flex") +
-            " mt-4 transition-all duration-1000 hover:cursor-pointer"
-          }
-          onClick={() => {
-            router.push("/");
-          }}
-        />
+        <CustomTooltip title="Home " placement="right">
+          <Image
+            src="/squ.png"
+            width={60}
+            height={80}
+            alt="SQU Logo"
+            // hide the image from screen readers when collapsed or isBreakPoint
+            className={
+              (isBreakPoint
+                ? "hidden"
+                : collapsed
+                ? "w-5 h-7 rotate-[360deg] hover:cursor-pointer"
+                : "flex") +
+              " mt-4 transition-all duration-1000 hover:cursor-pointer"
+            }
+            onClick={() => {
+              router.push("/");
+            }}
+          />
+        </CustomTooltip>
       </Space>
       <Menu
         theme={themeColor}
