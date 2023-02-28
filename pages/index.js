@@ -1,5 +1,6 @@
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { Space, Typography } from "antd";
+import Link from "next/link";
 
 export default function LottiePlayer() {
   return (
@@ -18,6 +19,11 @@ export default function LottiePlayer() {
       <Typography.Title className="flex justify-center items-center">
         Under Construction
       </Typography.Title>
+      <Link href="/testingssp">
+        <Typography.Link className="flex justify-center items-center">
+          Testing Server Side Rendering
+        </Typography.Link>
+      </Link>
     </Space>
   );
 }
