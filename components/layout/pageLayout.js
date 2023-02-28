@@ -10,7 +10,7 @@ const { Content } = Layout;
 export const LayoutContext = createContext();
 
 export const colorThemeState = create((set) => ({
-  themeColor: "dark",
+  themeColor: "light",
   setThemeColorChange: (themeColor) =>
     set((state) => ({
       themeColor: themeColor,
@@ -18,7 +18,6 @@ export const colorThemeState = create((set) => ({
 }));
 
 export default function PageLayout({ children }) {
-  let themeColorValue = "dark";
   let collapsedValue = false;
   let isBreakPointValue = false;
   const [collapsed, setCollapsed] = useState(collapsedValue);

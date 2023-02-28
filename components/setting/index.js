@@ -2,14 +2,14 @@ import { SettingOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Switch } from "antd";
 import ThemeSwitch from "../themeSwitch";
 import CustomTooltip from "../tooltip/customtooltip";
-import { menuModeState } from "@/components/sideBarContents";
+// import { menuModeState } from "@/components/sideBarContents";
 
 const SettingGear = (props) => {
   const { themeColor, handleThemeChange } = props;
-  const [menuMode, setMenuModeChange] = menuModeState((state) => [
-    state.menuMode,
-    state.setMenuModeChange,
-  ]);
+  // const [menuMode, setMenuModeChange] = menuModeState((state) => [
+  //   state.menuMode,
+  //   state.setMenuModeChange,
+  // ]);
 
   const items = [
     {
@@ -21,26 +21,26 @@ const SettingGear = (props) => {
         />
       ),
     },
-    {
-      key: "1",
-      icon: (
-        <CustomTooltip
-          title={
-            menuMode === "inline"
-              ? "Change sidebar menu mode to vertical"
-              : "Change sidebar menu mode to inline"
-          }
-          placement="right"
-        >
-          <Switch
-            checkedChildren="inline"
-            unCheckedChildren="vertical"
-            defaultChecked
-            onChange={setMenuModeChange}
-          />
-        </CustomTooltip>
-      ),
-    },
+    // {
+    //   key: "1",
+    //   icon: (
+    //     <CustomTooltip
+    //       title={
+    //         menuMode === "inline"
+    //           ? "Change sidebar menu mode to vertical"
+    //           : "Change sidebar menu mode to inline"
+    //       }
+    //       placement="right"
+    //     >
+    //       <Switch
+    //         checkedChildren="inline"
+    //         unCheckedChildren="vertical"
+    //         defaultChecked
+    //         onChange={setMenuModeChange}
+    //       />
+    //     </CustomTooltip>
+    //   ),
+    // },
   ];
 
   return (

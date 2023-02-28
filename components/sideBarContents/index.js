@@ -25,22 +25,22 @@ function getItem(label, key, icon, children, title) {
   };
 }
 
-export const menuModeState = create((set) => ({
-  menuMode: "inline",
-  setMenuModeChange: () =>
-    set((state) => ({
-      menuMode: state.menuMode === "inline" ? "vertical" : "inline",
-    })),
-}));
+// export const menuModeState = create((set) => ({
+//   menuMode: "inline",
+//   setMenuModeChange: () =>
+//     set((state) => ({
+//       menuMode: state.menuMode === "inline" ? "vertical" : "inline",
+//     })),
+// }));
 
 export const SideBarContents = (props) => {
   const { themeColor, collapsed, isBreakPoint } = props;
   const [selectedKey, setSelectedKey] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
-  const [menuMode, setMenuModeChange] = menuModeState((state) => [
-    state.menuMode,
-    state.setMenuModeChange,
-  ]);
+  // const [menuMode, setMenuModeChange] = menuModeState((state) => [
+  //   state.menuMode,
+  //   state.setMenuModeChange,
+  // ]);
 
   const router = useRouter();
 
@@ -94,26 +94,24 @@ export const SideBarContents = (props) => {
           "faculty",
           <GiTeacher />,
           null,
-          (collapsed === false) & (menuMode === "inline") ? "Faculty" : null
+          collapsed === false ? "Faculty" : null
         ),
         getItem(
           "Technician",
           "technician",
           <MdOutlineEngineering />,
           null,
-          (collapsed === false) & (menuMode === "inline") ? "Technician" : null
+          collapsed === false ? "Technician" : null
         ),
         getItem(
           "Adminstrator",
           "adminstrator",
           <RiAdminLine />,
           null,
-          (collapsed === false) & (menuMode === "inline")
-            ? "Adminstrator"
-            : null
+          collapsed === false ? "Adminstrator" : null
         ),
       ],
-      (collapsed === false) & (menuMode === "inline") ? "Staff" : null
+      collapsed === false ? "Staff" : null
     ),
     getItem(
       <Space className="flex justify-between">
@@ -142,18 +140,14 @@ export const SideBarContents = (props) => {
           "undergraduate",
           <MdEmojiPeople />,
           null,
-          (collapsed === false) & (menuMode === "inline")
-            ? "Undergraduate"
-            : null
+          collapsed === false ? "Undergraduate" : null
         ),
         getItem(
           "Postgraduate",
           "postgraduate",
           <FaUserGraduate />,
           null,
-          (collapsed === false) & (menuMode === "inline")
-            ? "Postgraduate"
-            : null
+          collapsed === false ? "Postgraduate" : null
         ),
       ]
     ),
@@ -162,7 +156,7 @@ export const SideBarContents = (props) => {
       "adminstrative",
       <MdOutlineAdminPanelSettings />,
       null,
-      (collapsed === false) & (menuMode === "inline") ? "Adminstrative" : null
+      collapsed === false ? "Adminstrative" : null
     ),
   ];
 
@@ -197,7 +191,8 @@ export const SideBarContents = (props) => {
       </Space>
       <Menu
         theme={themeColor}
-        mode={menuMode}
+        // mode={menuMode}
+        mode="inline"
         selectedKeys={selectedKey}
         items={items}
         className="w-full"
