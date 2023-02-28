@@ -6,11 +6,19 @@ import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
 import { FcGoogle } from "react-icons/fc";
-import { useContext } from "react";
-import { LayoutContext } from "@/components/layout/pageLayout";
+import { colorThemeState } from "@/components/layout/pageLayout";
+import { useEffect } from "react";
+import { getCookie } from "cookies-next";
 
 export default function Signin({ providers }) {
-  const themeColor = useContext(LayoutContext);
+  const [themeColor, setThemeColor] = colorThemeState((state) => [
+    state.themeColor,
+    state.setThemeColorChange,
+  ]);
+
+  useEffect(() => {
+    setThemeColor(getCookie("themeColor"));
+  }, [themeColor]);
 
   return (
     <Space
@@ -22,7 +30,7 @@ export default function Signin({ providers }) {
         height: "100vh",
         backgroundColor:
           themeColor === "light" ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.8)",
-        gap: "20px",
+        columnGap: "20px",
         padding: "10px",
       }}
     >
@@ -52,10 +60,10 @@ export default function Signin({ providers }) {
         />
       </Player>
       <Typography.Text
-        className="flex first-letter:uppercase
-      text-center align-middle content-center items-center
-      dark:text-white
-      "
+        className={
+          (themeColor === "light" ? "text-black" : "text-white") +
+          " flex first-letter:uppercase text-center align-middle content-center items-center"
+        }
       >
         You will be redirected to Google Account to sign in. Acess is resitrcted
         to SQU accounts.
@@ -73,15 +81,11 @@ export default function Signin({ providers }) {
 }
 
 export async function getServerSideProps(context) {
-  const { res } = context;
-
-  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (session) {
     return {
-      redirect: { destination: "/", permanent: false },
+      redirect: { destination: "/" },
     };
   }
 

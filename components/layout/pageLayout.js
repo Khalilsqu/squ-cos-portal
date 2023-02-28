@@ -2,17 +2,31 @@ import { Layout, theme, ConfigProvider, FloatButton } from "antd";
 import { useState, createContext, useEffect } from "react";
 import Head from "next/head";
 import { setCookie, getCookie } from "cookies-next";
+import { create } from "zustand";
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import SiderComponent from "./siderbar";
 const { Content } = Layout;
 export const LayoutContext = createContext();
+
+export const colorThemeState = create((set) => ({
+  themeColor: "dark",
+  setThemeColorChange: (themeColor) =>
+    set((state) => ({
+      themeColor: themeColor,
+    })),
+}));
+
 export default function PageLayout({ children }) {
   let themeColorValue = "dark";
   let collapsedValue = false;
   let isBreakPointValue = false;
   const [collapsed, setCollapsed] = useState(collapsedValue);
-  const [themeColor, setThemeColor] = useState(themeColorValue);
+  // const [themeColor, setThemeColor] = useState(themeColorValue);
+  const [themeColor, setThemeColor] = colorThemeState((state) => [
+    state.themeColor,
+    state.setThemeColorChange,
+  ]);
   const [isBreakPoint, setBreakPoint] = useState(isBreakPointValue);
   const handleThemeChange = () => {
     setThemeColor((prev) => (prev === "light" ? "dark" : "light"));
