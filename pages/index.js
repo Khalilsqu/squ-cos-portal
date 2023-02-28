@@ -19,11 +19,6 @@ export default function LottiePlayer() {
       <Typography.Title className="flex justify-center items-center">
         Under Construction
       </Typography.Title>
-      <Link href="/testingssp">
-        <Typography.Link className="flex justify-center items-center">
-          Testing Server Side Rendering
-        </Typography.Link>
-      </Link>
     </Space>
   );
 }
