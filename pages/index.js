@@ -1,6 +1,5 @@
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { Space, Typography } from "antd";
-import Link from "next/link";
 
 export default function LottiePlayer() {
   return (

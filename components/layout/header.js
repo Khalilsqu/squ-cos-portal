@@ -1,10 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { useRouter } from "next/router";
 import { Layout, Space } from "antd";
 import Authentication from "../authentication/auth";
 import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { useSession } from "next-auth/react";
 
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -20,8 +23,16 @@ const additionalStyles = {
 };
 
 export default function HeaderComponent(props) {
-  const { handleBreakPoint, isBreakPoint, handleThemeChange } = props;
+  const {
+    handleBreakPoint,
+    isBreakPoint,
+    handleThemeChange,
+    handleShowAdminPanel,
+  } = props;
   const { themeColor } = useContext(LayoutContext);
+  const { data: session, status } = useSession();
+
+  const router = useRouter();
 
   // const [spaceGap, setSpaceGap] = useState(10);
 
@@ -42,7 +53,7 @@ export default function HeaderComponent(props) {
           style={{
             display: "flex",
             justifyContent: "flex-start",
-            gap: 20,
+            rowGap: 20,
           }}
         >
           {isBreakPoint ? (
@@ -87,10 +98,24 @@ export default function HeaderComponent(props) {
         </Space>
         <Space
           style={{
-            gap: 20,
+            rowGap: 20,
           }}
         >
-          <Authentication themeColor={themeColor} />
+          {status === "authenticated" && (
+            <CustomTooltip title="Admin Dashboard" placement="left">
+              <MdOutlineDashboardCustomize
+                onClick={() => {
+                  handleShowAdminPanel(true);
+                  router.push("/admin-dashboard");
+                }}
+                className="flex cursor-pointer text-2xl"
+              />
+            </CustomTooltip>
+          )}
+          <Authentication
+            themeColor={themeColor}
+            handleShowAdminPanel={handleShowAdminPanel}
+          />
           <SettingGear
             themeColor={themeColor}
             handleThemeChange={handleThemeChange}

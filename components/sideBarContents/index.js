@@ -1,6 +1,5 @@
 import { Button, Menu, Space, Typography } from "antd";
-import { create } from "zustand";
-
+import { useSession } from "next-auth/react";
 import { FaUniversity } from "react-icons/fa";
 import { GiTeacher } from "react-icons/gi";
 import { MdOutlineEngineering } from "react-icons/md";
@@ -14,8 +13,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import CustomTooltip from "../tooltip/customtooltip";
+import { AdminMenu } from "./adminOptions";
 
-function getItem(label, key, icon, children, title) {
+export function getItem(label, key, icon, children, title) {
   return {
     key,
     icon,
@@ -25,22 +25,20 @@ function getItem(label, key, icon, children, title) {
   };
 }
 
-// export const menuModeState = create((set) => ({
-//   menuMode: "inline",
-//   setMenuModeChange: () =>
-//     set((state) => ({
-//       menuMode: state.menuMode === "inline" ? "vertical" : "inline",
-//     })),
-// }));
+const dashboardBaths = ["admin-dashboard", "news", "admins"];
 
 export const SideBarContents = (props) => {
-  const { themeColor, collapsed, isBreakPoint } = props;
+  const {
+    themeColor,
+    collapsed,
+    isBreakPoint,
+    showAdminPanel,
+    handleShowAdminPanel,
+  } = props;
   const [selectedKey, setSelectedKey] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
-  // const [menuMode, setMenuModeChange] = menuModeState((state) => [
-  //   state.menuMode,
-  //   state.setMenuModeChange,
-  // ]);
+
+  const { data: session, status } = useSession();
 
   const router = useRouter();
 
@@ -54,7 +52,6 @@ export const SideBarContents = (props) => {
   const handleSelectionStaff = () => {
     router.push("/staff");
     setSelectedKey(["staff"]);
-    console.log(selectedKey);
   };
 
   const handleSelectionStudents = () => {
@@ -185,24 +182,34 @@ export const SideBarContents = (props) => {
             }
             onClick={() => {
               router.push("/");
+              handleShowAdminPanel(false);
             }}
           />
         </CustomTooltip>
       </Space>
-      <Menu
-        theme={themeColor}
-        // mode={menuMode}
-        mode="inline"
-        selectedKeys={selectedKey}
-        items={items}
-        className="w-full"
-        onClick={handleClick}
-        onSelect={(e) => {
-          setSelectedKey([e.key]);
-        }}
-        onOpenChange={handleOpenKeys}
-        openKeys={openKeys}
-      />
+      {!showAdminPanel ? (
+        <Menu
+          theme={themeColor}
+          mode="inline"
+          selectedKeys={selectedKey}
+          items={items}
+          className="w-full"
+          onClick={handleClick}
+          onSelect={(e) => {
+            setSelectedKey([e.key]);
+          }}
+          onOpenChange={handleOpenKeys}
+          openKeys={openKeys}
+        />
+      ) : (
+        status === "authenticated" && (
+          <AdminMenu
+            themeColor={themeColor}
+            collapsed={collapsed}
+            isBreakPoint={isBreakPoint}
+          />
+        )
+      )}
     </Space>
   );
 };

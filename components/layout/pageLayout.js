@@ -20,36 +20,51 @@ export const colorThemeState = create((set) => ({
 export default function PageLayout({ children }) {
   let collapsedValue = false;
   let isBreakPointValue = false;
+  let showAdminPanelValue = false;
+
+  const [showAdminPanel, setShowAdminPanel] = useState(showAdminPanelValue);
   const [collapsed, setCollapsed] = useState(collapsedValue);
-  // const [themeColor, setThemeColor] = useState(themeColorValue);
   const [themeColor, setThemeColor] = colorThemeState((state) => [
     state.themeColor,
     state.setThemeColorChange,
   ]);
   const [isBreakPoint, setBreakPoint] = useState(isBreakPointValue);
+
   const handleThemeChange = () => {
     setThemeColor((prev) => (prev === "light" ? "dark" : "light"));
     setCookie("themeColor", themeColor === "light" ? "dark" : "light", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
+
   const handleCollapse = () => {
     setCollapsed((prev) => !prev);
     setCookie("collapsed", collapsed ? "false" : "true", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
+
   const handleBreakPoint = () => {
     setBreakPoint((prev) => !prev);
     setCookie("isBreakPoint", isBreakPoint ? "false" : "true", {
       maxAge: 60 * 60 * 24 * 90,
     }); // 90 days
   };
+
+  const handleShowAdminPanel = (value) => {
+    setShowAdminPanel(value);
+    setCookie("showAdminPanel", value ? "true" : "false", {
+      maxAge: 60 * 60 * 24 * 1,
+    }); // 1 day
+  };
+
   useEffect(() => {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
     setBreakPoint(getCookie("isBreakPoint"));
+    setShowAdminPanel(getCookie("showAdminPanel"));
   }, [themeColor, collapsed, isBreakPoint]);
+
   return (
     <LayoutContext.Provider
       value={{
@@ -79,6 +94,7 @@ export default function PageLayout({ children }) {
             handleBreakPoint={handleBreakPoint}
             isBreakPoint={isBreakPoint}
             handleThemeChange={handleThemeChange}
+            handleShowAdminPanel={handleShowAdminPanel}
           />
           <Layout hasSider>
             <SiderComponent
@@ -87,6 +103,8 @@ export default function PageLayout({ children }) {
               themeColor={themeColor}
               isBreakPoint={isBreakPoint}
               setBreakPoint={setBreakPoint}
+              showAdminPanel={showAdminPanel}
+              handleShowAdminPanel={handleShowAdminPanel}
             />
             <Layout
               className={

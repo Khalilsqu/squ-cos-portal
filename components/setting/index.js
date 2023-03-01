@@ -54,7 +54,7 @@ const SettingGear = (props) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: "10px",
+          rowGap: "10px",
         }}
       >
         <SettingOutlined

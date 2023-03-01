@@ -2,8 +2,15 @@ import { Layout } from "antd";
 import SideBarContents from "../sideBarContents";
 const { Sider } = Layout;
 export default function SiderComponent(props) {
-  const { collapsed, handleCollapse, themeColor, isBreakPoint, setBreakPoint } =
-    props;
+  const {
+    collapsed,
+    handleCollapse,
+    themeColor,
+    isBreakPoint,
+    setBreakPoint,
+    showAdminPanel,
+    handleShowAdminPanel,
+  } = props;
   return (
     <Sider
       collapsible
@@ -26,6 +33,8 @@ export default function SiderComponent(props) {
         themeColor={themeColor}
         collapsed={collapsed}
         isBreakPoint={isBreakPoint}
+        showAdminPanel={showAdminPanel}
+        handleShowAdminPanel={handleShowAdminPanel}
       />
     </Sider>
   );

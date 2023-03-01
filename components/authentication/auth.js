@@ -13,7 +13,7 @@ export default function Authentication(props) {
   const childRef = useRef();
   const router = useRouter();
 
-  const { themeColor } = props;
+  const { themeColor, handleShowAdminPanel } = props;
 
   const logOutNotification = () => {
     childRef.current.countDown();
@@ -30,7 +30,10 @@ export default function Authentication(props) {
       label: "Sign Out",
       key: "1",
       icon: <GoSignOut />,
-      onClick: () => signOut(),
+      onClick: () => {
+        signOut();
+        handleShowAdminPanel(false);
+      },
     },
   ];
 

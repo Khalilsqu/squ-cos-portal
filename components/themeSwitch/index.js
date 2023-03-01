@@ -1,5 +1,5 @@
 import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
-import { Switch } from "antd";
+import { Switch, Typography } from "antd";
 import CustomTooltip from "../tooltip/customtooltip";
 
 export default function ThemeSwitch(props) {
@@ -15,16 +15,18 @@ export default function ThemeSwitch(props) {
     >
       <Switch
         checkedChildren={
+          // <Typography.Text className="text-sm">🌞</Typography.Text>
           <MdOutlineWbSunny
             style={{
               fontSize: "18px",
-              color: themeColor === "light" ? "#001529" : "#fff",
+              paddingTop: "2px",
             }}
           />
         }
         unCheckedChildren={
           <MdOutlineDarkMode
             style={{
+              display: "flex",
               fontSize: "18px",
             }}
           />
