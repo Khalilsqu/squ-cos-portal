@@ -1,85 +1,21 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import {
-  Form,
-  Table,
-  Card,
-  Button,
-  Modal,
-  Input,
-  DatePicker,
-  Popconfirm,
-  message,
-} from "antd";
-import { useState } from "react";
+import { Form, Table, Card, Button, message } from "antd";
+import { useState, useEffect } from "react";
 
 import ModalData from "./addModalNews";
-
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-
-export function columnsData({ handleDelete, handleEdit }) {
-  return [
-    {
-      key: "id",
-      title: "Title",
-      dataIndex: "title",
-      key: "1",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "2",
-    },
-    {
-      title: "Date Posted",
-      dataIndex: "date",
-      key: "3",
-    },
-    {
-      title: "Image",
-      dataIndex: "image",
-      key: "4",
-    },
-    {
-      title: "Expiry Date",
-      dataIndex: "expiryDate",
-      key: "5",
-    },
-    {
-      title: "Action",
-      render: (text, record) => (
-        <div className="flex flex-row justify-between">
-          <Popconfirm
-            title="Sure to delete?"
-            okType="danger"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() => handleDelete(record.key)}
-          >
-            <DeleteOutlined className="text-red-700 cursor-pointer" />
-          </Popconfirm>
-          <EditOutlined
-            className="cursor-pointer"
-            onClick={() => handleEdit(record.key)}
-          >
-            Edit
-          </EditOutlined>
-        </div>
-      ),
-      key: "6",
-    },
-  ];
-}
+import { columnsData } from "./editTableData";
 
 export default function News(props) {
   const [formAdd] = Form.useForm();
   const [formEdit] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalVisibleEdit, setIsModalVisibleEdit] = useState(false);
-  const [editingData, setEditingData] = useState({});
   const [data, setData] = useState([]);
+  const [editingRowKey, setEditingRowKey] = useState(null);
+  const [editingRow, setEditingRow] = useState(null);
 
   const currentdate = new Date();
+  const myDate = new Date("2021-05-24T10:30:00");
 
   const handleDelete = (key) => {
     const dataSource = [...data];
@@ -88,14 +24,31 @@ export default function News(props) {
     message.success("News Deleted", 1);
   };
 
-  const handleEdit = (key) => {
-    const dataSource = [...data];
-    const editingData = dataSource.filter((item) => item.key === key);
-    setEditingData(editingData[0]);
-    setIsModalVisibleEdit(true);
+  const handleEditFormFinish = (values) => {
+    values.expiryDate = values.expiryDate.format("ddd, MMM Do YYYY"); // format date
+
+    const newData = [...data];
+    const index = newData.findIndex((item) => editingRowKey === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, {
+      ...item,
+      ...values,
+    });
+    setData(newData);
+    setEditingRowKey(null);
+    setEditingRow(null);
+    message.success("News Edited", 1);
   };
 
-  const columns = columnsData({ handleDelete, handleEdit });
+  const columns = columnsData({
+    handleDelete,
+    editingRowKey,
+    setEditingRowKey,
+    editingRow,
+    setEditingRow,
+    formEdit,
+    handleEditFormFinish,
+  });
 
   const handleAddFormFinish = (values) => {
     setData([
@@ -111,15 +64,34 @@ export default function News(props) {
     ]);
   };
 
-  const handleEditFormFinish = (values) => {
-    const dataSource = [...data];
-    const editingData = dataSource.filter((item) => item.key === values.key);
-    editingData[0].title = values.title;
-    editingData[0].description = values.description;
-    editingData[0].image = values.image;
-    editingData[0].expiryDate = values.expiryDate;
-    setData(dataSource);
-  };
+  useEffect(() => {
+    setData([
+      {
+        key: 1,
+        title: "SQU Students Win 1rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "2021-05-12",
+      },
+      {
+        key: 2,
+        title: "SQU Students Win 2rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "2021-05-12",
+      },
+      {
+        key: 3,
+        title: "SQU Students Win 3rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "2021-05-12",
+      },
+    ]);
+  }, []);
 
   return (
     <Card className="flex my-4 rounded-2xl shadow-xl">
@@ -132,92 +104,10 @@ export default function News(props) {
         setIsModalVisible={setIsModalVisible}
         handleAddFormFinish={handleAddFormFinish}
       />
-      <ModalEdit
-        formEdit={formEdit}
-        isModalVisibleEdit={isModalVisibleEdit}
-        setIsModalVisibleEdit={setIsModalVisibleEdit}
-        handleEditFormFinish={handleEditFormFinish}
-        editingData={editingData}
-      />
       <Table columns={columns} dataSource={data} className="flex" />
     </Card>
   );
 }
-
-const ModalEdit = ({
-  formEdit,
-  isModalVisibleEdit,
-  setIsModalVisibleEdit,
-  handleEditFormFinish,
-  editingData,
-}) => {
-  const handleCancel = () => {
-    setIsModalVisibleEdit(false);
-    formEdit.resetFields();
-  };
-
-  const handleOk = () => {
-    setIsModalVisibleEdit(false);
-    formEdit.submit();
-  };
-
-  return (
-    <Modal
-      title="Edit News"
-      open={isModalVisibleEdit}
-      onCancel={handleCancel}
-      onOk={handleOk}
-      okText="Update"
-    >
-      <Form
-        form={formEdit}
-        name="editNews"
-        layout="vertical"
-        initialValues={{
-          title: editingData.title,
-          description: editingData.description,
-          image: editingData.image,
-          expiryDate: editingData.expiryDate,
-        }}
-        onFinish={handleEditFormFinish}
-      >
-        <Form.Item
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: "Please input title!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Please input description!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Image"
-          name="image"
-          rules={[{ required: true, message: "Please input image!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Expiry Date"
-          name="expiryDate"
-          rules={[{ required: true, message: "Please input expiry date!" }]}
-        >
-          <DatePicker />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Edit
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-};
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
