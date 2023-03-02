@@ -1,12 +1,23 @@
-import { Modal, Form, Input, Upload, Button, DatePicker } from "antd";
+import { Modal, Form, Input, Upload, Button, DatePicker, message } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 const ModalData = (props) => {
-  const { formAdd, isModalVisible, setIsModalVisible, handleAddFormFinish } =
-    props;
+  const {
+    formAdd,
+    isModalVisible,
+    setIsModalVisible,
+    handleAddFormFinish,
+    uploadedFile,
+    setUploadedFile,
+  } = props;
 
   const handleOk = () => {
-    setIsModalVisible(false);
-    formAdd.submit();
+    // check if form is valid before submitting it and closing the modal
+    formAdd.validateFields().then((values) => {
+      formAdd.resetFields();
+      setIsModalVisible(false);
+      handleAddFormFinish(values);
+    });
   };
 
   const handleCancel = () => {
@@ -14,21 +25,20 @@ const ModalData = (props) => {
     formAdd.resetFields();
   };
 
+  const handleChange = ({ fileList: newFileList }) => {
+    setUploadedFile(newFileList);
+  };
+
   return (
     <Modal
-      title="Add a News to the News Feed"
+      title="Add a article to the News Feed"
       open={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
       closable={false}
       okText="Add News"
     >
-      <Form
-        onFinish={handleAddFormFinish}
-        form={formAdd}
-        layout="vertical"
-        name="Add News"
-      >
+      <Form form={formAdd} layout="vertical" name="Add News">
         <Form.Item
           label="Title"
           name="title"
@@ -52,8 +62,15 @@ const ModalData = (props) => {
           name="image"
           rules={[{ required: true, message: "Please input image!" }]}
         >
-          <Upload>
-            <Button>Upload</Button>
+          <Upload
+            listType="picture"
+            accept=".png,.jpg,.jpeg"
+            multiple={false}
+            maxCount={1}
+            fileList={uploadedFile}
+            onChange={handleChange}
+          >
+            <Button icon={<UploadOutlined />}>Upload</Button>
           </Upload>
         </Form.Item>
         <Form.Item

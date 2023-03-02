@@ -1,5 +1,5 @@
 import { EditOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
-import { Form, Input, Popconfirm, Button, DatePicker } from "antd";
+import { Form, Input, Popconfirm, Button, DatePicker, Image } from "antd";
 import dayjs from "dayjs";
 
 export function columnsData({
@@ -10,6 +10,7 @@ export function columnsData({
   setEditingRow,
   formEdit,
   handleEditFormFinish,
+  uploadedFile,
 }) {
   return [
     {
@@ -76,8 +77,43 @@ export function columnsData({
     },
     {
       title: "Image",
-      dataIndex: "image",
+      // dataIndex: "image",
+
       key: "4",
+      render: (text, record) => {
+        return (
+          <div className="flex flex-col justify-center items-center">
+            {record.key === editingRowKey && (
+              <Form form={formEdit} onFinish={handleEditFormFinish}>
+                <Form.Item
+                  name="image"
+                  initialValue={
+                    uploadedFile !== null
+                      ? uploadedFile[0].thumbUrl
+                      : record.image
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input image!",
+                    },
+                  ]}
+                >
+                  <Image
+                    width={100}
+                    src={
+                      uploadedFile !== null
+                        ? uploadedFile[0].thumbUrl
+                        : record.image
+                    }
+                    alt="Uploaded Image"
+                  />
+                </Form.Item>
+              </Form>
+            )}
+          </div>
+        );
+      },
     },
     {
       title: "Expiry Date",
@@ -89,7 +125,16 @@ export function columnsData({
             <Form form={formEdit} onFinish={handleEditFormFinish}>
               <Form.Item
                 name="expiryDate"
-                initialValue={dayjs(editingRow.expiryDate)}
+                initialValue={() => {
+                  // get date only  full Date without time
+                  const dateObject = dayjs(
+                    editingRow.expiryDate,
+                    "ddd, MMM Do YYYY"
+                  );
+
+                  console.log("datepares", dateObject);
+                  return dateObject;
+                }}
                 rules={[
                   {
                     required: true,

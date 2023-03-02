@@ -6,6 +6,15 @@ import { useState, useEffect } from "react";
 import ModalData from "./addModalNews";
 import { columnsData } from "./editTableData";
 
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export default function News(props) {
   const [formAdd] = Form.useForm();
   const [formEdit] = Form.useForm();
@@ -13,9 +22,9 @@ export default function News(props) {
   const [data, setData] = useState([]);
   const [editingRowKey, setEditingRowKey] = useState(null);
   const [editingRow, setEditingRow] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const currentdate = new Date();
-  const myDate = new Date("2021-05-24T10:30:00");
 
   const handleDelete = (key) => {
     const dataSource = [...data];
@@ -48,6 +57,7 @@ export default function News(props) {
     setEditingRow,
     formEdit,
     handleEditFormFinish,
+    uploadedFile,
   });
 
   const handleAddFormFinish = (values) => {
@@ -64,35 +74,6 @@ export default function News(props) {
     ]);
   };
 
-  useEffect(() => {
-    setData([
-      {
-        key: 1,
-        title: "SQU Students Win 1rd ",
-        description: "SQU students won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "2021-05-12",
-      },
-      {
-        key: 2,
-        title: "SQU Students Win 2rd ",
-        description: "SQU students won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "2021-05-12",
-      },
-      {
-        key: 3,
-        title: "SQU Students Win 3rd ",
-        description: "SQU students won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "2021-05-12",
-      },
-    ]);
-  }, []);
-
   return (
     <Card className="flex my-4 rounded-2xl shadow-xl">
       <Button type="primary" onClick={() => setIsModalVisible(true)}>
@@ -103,6 +84,8 @@ export default function News(props) {
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         handleAddFormFinish={handleAddFormFinish}
+        uploadedFile={uploadedFile}
+        setUploadedFile={setUploadedFile}
       />
       <Table columns={columns} dataSource={data} className="flex" />
     </Card>
