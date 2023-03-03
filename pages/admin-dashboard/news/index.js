@@ -3,7 +3,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Form, Table, Card, Button, message } from "antd";
 import { useState, useEffect } from "react";
 import moment from "moment/moment";
-import dayjs from "dayjs";
 
 import ModalData from "./addModalNews";
 import { columnsData } from "./editTableData";
@@ -35,13 +34,7 @@ export default function News(props) {
   };
 
   const handleEditFormFinish = (values) => {
-    // values.expiryDate = dayjs(
-    //   moment(values.expiryDate).format("ddd, MMM Do YYYY")
-    // );
-
-    values.expiryDate = values.expiryDate.format("ddd, MMM Do YYYY");
-
-    console.log(values.expiryDate);
+    values.expiryDate = moment(values.expiryDate).format("ddd, MMM Do YYYY");
 
     const newData = [...data];
     const index = newData.findIndex((item) => editingRowKey === item.key);

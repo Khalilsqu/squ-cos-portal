@@ -128,33 +128,31 @@ export function columnsData({
       dataIndex: "expiryDate",
       key: "5",
       render: (text, record) => {
-        // console.log(
-        //   record.expiryDate,
-        //   typeof record.expiryDate,
-        //   dayjs(
-        //     moment(record.expiryDate, "ddd, MMM Do YYYY").format("YYYY-MM-DD")
-        //   )
-        // );
+        const date = moment(record.expiryDate, "ddd, MMM Do YYYY");
         if (record.key === editingRowKey) {
           return (
             <Form form={formEdit} onFinish={handleEditFormFinish}>
               <Form.Item
                 name="expiryDate"
-                // initialValue={() =>
-                //   dayjs(
-                //     moment(record.expiryDate, "ddd, MMM Do YYYY").format(
-                //       "YYYY-MM-DD"
-                //     )
-                //   )
-                // }
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: "Please input expiry date!",
-                //   },
-                // ]}
+                getValueFromEvent={(e) =>
+                  e
+                    ? e.format("YYYY-MM-DD")
+                    : moment(record.expiryDate, "ddd, MMM Do YYYY")
+                }
+                getValueProps={(i) => ({
+                  value: dayjs(
+                    moment(i, "ddd, MMM Do YYYY").format("YYYY-MM-DD")
+                  ),
+                })}
+                initialValue={date}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input expiry date!",
+                  },
+                ]}
               >
-                <DatePicker />
+                <DatePicker format="YYYY-MM-DD" />
               </Form.Item>
             </Form>
           );
