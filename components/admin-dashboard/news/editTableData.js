@@ -216,14 +216,3 @@ export function columnsData({
     },
   ];
 }
-
-const DatePickerOutside = (props) => {
-  return (
-    <DatePicker
-      defaultValue={dayjs(
-        moment(props.record.expiryDate, "ddd, MMM Do YYYY").format("YYYY-MM-DD")
-      )}
-      format="YYYY-MM-DD"
-    />
-  );
-};

@@ -7,8 +7,8 @@ import moment from "moment/moment";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 import { collapsedState } from "@/components/layout/pageLayout";
 
-import ModalData from "./addModalNews";
-import { columnsData } from "./editTableData";
+import ModalData from "../../../components/admin-dashboard/news/addModalNews";
+import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
 
 const getBase64 = (file) => {
   return new Promise((resolve, reject) => {
