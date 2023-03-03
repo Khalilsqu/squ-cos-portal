@@ -129,10 +129,10 @@ export default function News(props) {
         scroll={{ x: true }}
         tableLayout="auto"
         bordered
-        className={
-          "py-2 px-4 items-center justify-center " +
-          (width > 768 ? "max-w-full" : width > 500 ? "max-w-md" : "max-w-xs")
-        }
+        style={{
+          maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
+        }}
+        className="py-2 px-4 items-center justify-center "
       />
     </Space>
   );

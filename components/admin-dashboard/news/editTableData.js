@@ -157,7 +157,7 @@ export function columnsData({
                   },
                 ]}
               >
-                <DatePicker format="YYYY-MM-DD" />
+                <DatePicker format="YYYY-MM-DD" inputReadOnly />
               </Form.Item>
             </Form>
           );
