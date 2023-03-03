@@ -171,7 +171,7 @@ export function columnsData({
       render: (text, record) => (
         <Space
           direction="vertical"
-          className="flex flex-col justify-between items-center gap-y-2"
+          className="flex flex-col gap-y-4 justify-between items-center align-middle"
         >
           <Space
             direction="horizontal"
@@ -206,7 +206,7 @@ export function columnsData({
             cancelText="No"
             onConfirm={() => handleDelete(record.key)}
           >
-            <DeleteOutlined className="flex text-red-700 cursor-pointer" />
+            <DeleteOutlined className="flex text-red-700 cursor-pointer mt-4" />
           </Popconfirm>
         </Space>
       ),

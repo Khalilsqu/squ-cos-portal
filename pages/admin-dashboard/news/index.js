@@ -4,11 +4,10 @@ import { Form, Table, Card, Button, message, Space } from "antd";
 import { useState, useEffect } from "react";
 import moment from "moment/moment";
 
-import { isBreakPointState } from "@/components/layout/pageLayout";
-import { collapsedState } from "@/components/layout/pageLayout";
-
 import ModalData from "../../../components/admin-dashboard/news/addModalNews";
 import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
+
+import { useWindowSize } from "@/components/utils/windowSize";
 
 const getBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -27,8 +26,7 @@ export default function News(props) {
   const [editingRowKey, setEditingRowKey] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  const isBreakPoint = isBreakPointState().isBreakPoint;
-  const collapsed = collapsedState().collapsed;
+  const { width } = useWindowSize();
 
   const currentdate = new Date();
 
@@ -82,7 +80,11 @@ export default function News(props) {
       {
         key: 1,
         title: "SQU Students Win 1rd ",
-        description: "SQU students won the 3rd place in the 2021",
+        description:
+          "SQU students won the 3rd place in the 2021 SQU\
+           students won the 3rd place in the 2021 SQU\
+            students won the 3rd place in the 2021 SQU students\
+             won the 3rd place in the 2021",
         date: currentdate.toLocaleString(),
         image: "https:/",
         expiryDate: "Wed, Mar 22nd 2023",
@@ -124,17 +126,13 @@ export default function News(props) {
         dataSource={data}
         pagination={false}
         size="small"
-        scroll={{ x: "content" }}
+        scroll={{ x: true }}
         tableLayout="auto"
-        // style={
-        //   isBreakPoint
-        //     ? { width: "100%" }
-        //     : collapsed
-        //     ? { width: "calc(100% - 80px)" }
-        //     : { width: "calc(100% - 200px)" }
-        // }
         bordered
-        className="flex p-2 items-start justify-center w-full"
+        className={
+          "py-2 px-4 items-center justify-center " +
+          (width > 768 ? "max-w-full" : width > 500 ? "max-w-md" : "max-w-xs")
+        }
       />
     </Space>
   );
