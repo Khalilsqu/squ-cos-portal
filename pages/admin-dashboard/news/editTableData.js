@@ -26,6 +26,7 @@ export function columnsData({
       title: "Title",
       dataIndex: "title",
       key: "1",
+      width: "20%",
       render: (text, record) => {
         if (record.key === editingRowKey) {
           return (
@@ -54,6 +55,7 @@ export function columnsData({
       title: "Description",
       dataIndex: "description",
       key: "2",
+      width: "30%",
       render: (text, record) => {
         if (record.key === editingRowKey) {
           return (
@@ -82,12 +84,14 @@ export function columnsData({
       title: "Date Posted",
       dataIndex: "date",
       key: "3",
+      width: "15%",
     },
     {
       title: "Image",
       // dataIndex: "image",
 
       key: "4",
+      width: "15%",
       render: (text, record) => {
         return (
           <div className="flex flex-col justify-center items-center">
@@ -127,6 +131,7 @@ export function columnsData({
       title: "Expiry Date",
       dataIndex: "expiryDate",
       key: "5",
+      width: "15%",
       render: (text, record) => {
         const date = moment(record.expiryDate, "ddd, MMM Do YYYY");
         if (record.key === editingRowKey) {
@@ -164,8 +169,14 @@ export function columnsData({
     {
       title: "Action",
       render: (text, record) => (
-        <Space direction="vertical" className="flex justify-between gap-y-2">
-          <Space direction="horizontal" className="flex gap-x-2">
+        <Space
+          direction="vertical"
+          className="flex flex-col justify-between items-center gap-y-2"
+        >
+          <Space
+            direction="horizontal"
+            className="flex flex-row gap-x-2 justify-between items-center align-middle"
+          >
             <EditOutlined
               className="flex cursor-pointer"
               onClick={() => {
@@ -183,7 +194,7 @@ export function columnsData({
                 <Button
                   icon={<SaveOutlined />}
                   htmlType="submit"
-                  className="flex border-hidden bg-transparent"
+                  className="flex border-hidden bg-transparent justify-center items-center"
                 />
               </Popconfirm>
             )}
@@ -200,6 +211,8 @@ export function columnsData({
         </Space>
       ),
       key: "6",
+      fixed: "right",
+      width: "5%",
     },
   ];
 }

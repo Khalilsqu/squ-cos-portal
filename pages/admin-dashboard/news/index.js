@@ -1,8 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Card, Button, message } from "antd";
+import { Form, Table, Card, Button, message, Space } from "antd";
 import { useState, useEffect } from "react";
 import moment from "moment/moment";
+
+import { isBreakPointState } from "@/components/layout/pageLayout";
+import { collapsedState } from "@/components/layout/pageLayout";
 
 import ModalData from "./addModalNews";
 import { columnsData } from "./editTableData";
@@ -24,13 +27,16 @@ export default function News(props) {
   const [editingRowKey, setEditingRowKey] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
+  const isBreakPoint = isBreakPointState().isBreakPoint;
+  const collapsed = collapsedState().collapsed;
+
   const currentdate = new Date();
 
   const handleDelete = (key) => {
     const dataSource = [...data];
     setData(dataSource.filter((item) => item.key !== key));
 
-    message.success("News Deleted", 1);
+    message.success("News deleted successfully", 2);
   };
 
   const handleEditFormFinish = (values) => {
@@ -45,7 +51,7 @@ export default function News(props) {
     });
     setData(newData);
     setEditingRowKey(null);
-    message.success("News Edited", 1);
+    message.success("News edited succesfully", 2);
   };
 
   const columns = columnsData({
@@ -101,10 +107,10 @@ export default function News(props) {
   }, []);
 
   return (
-    <Card className="flex my-4 rounded-2xl shadow-xl">
-      <Button type="primary" onClick={() => setIsModalVisible(true)}>
+    <Space>
+      {/* <Button type="primary" onClick={() => setIsModalVisible(true)}>
         Add News
-      </Button>
+      </Button> */}
       <ModalData
         formAdd={formAdd}
         isModalVisible={isModalVisible}
@@ -113,8 +119,24 @@ export default function News(props) {
         uploadedFile={uploadedFile}
         setUploadedFile={setUploadedFile}
       />
-      <Table columns={columns} dataSource={data} className="flex" />
-    </Card>
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        size="small"
+        scroll={{ x: "content" }}
+        tableLayout="auto"
+        // style={
+        //   isBreakPoint
+        //     ? { width: "100%" }
+        //     : collapsed
+        //     ? { width: "calc(100% - 80px)" }
+        //     : { width: "calc(100% - 200px)" }
+        // }
+        bordered
+        className="flex p-2 items-start justify-center w-full"
+      />
+    </Space>
   );
 }
 

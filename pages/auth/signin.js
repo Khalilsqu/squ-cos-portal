@@ -6,19 +6,13 @@ import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
 import { FcGoogle } from "react-icons/fc";
+import { FcHome } from "react-icons/fc";
 import { colorThemeState } from "@/components/layout/pageLayout";
-import { useEffect } from "react";
-import { getCookie } from "cookies-next";
+import { useRouter } from "next/router";
 
 export default function Signin({ providers }) {
-  const [themeColor, setThemeColor] = colorThemeState((state) => [
-    state.themeColor,
-    state.setThemeColorChange,
-  ]);
-
-  useEffect(() => {
-    setThemeColor(getCookie("themeColor"));
-  }, [themeColor]);
+  const themeColor = colorThemeState().colorTheme;
+  const router = useRouter();
 
   return (
     <Space
@@ -75,6 +69,22 @@ export default function Signin({ providers }) {
         icon={<FcGoogle className="text-xl" />}
       >
         Click to sign in with Google
+      </Button>
+      <Typography.Text
+        className={
+          (themeColor === "light" ? "text-black" : "text-white") +
+          " flex first-letter:uppercase text-center align-middle content-center items-center mt-6"
+        }
+      >
+        If you are not a SQU student or staff, explore the portal as a guest.
+      </Typography.Text>
+      <Button
+        onClick={() => router.push("/")}
+        className="flex text-center align-middle content-center items-center rounded-md"
+        size="large"
+        icon={<FcHome className="text-xl" />}
+      >
+        Go to Home Page
       </Button>
     </Space>
   );

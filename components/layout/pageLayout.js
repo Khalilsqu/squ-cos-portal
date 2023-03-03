@@ -17,18 +17,39 @@ export const colorThemeState = create((set) => ({
     })),
 }));
 
+export const collapsedState = create((set) => ({
+  collapsed: false,
+  setCollapsedChange: (collapsed) =>
+    set((state) => ({
+      collapsed: collapsed,
+    })),
+}));
+
+export const isBreakPointState = create((set) => ({
+  isBreakPoint: false,
+  setIsBreakPointChange: (isBreakPoint) =>
+    set((state) => ({
+      isBreakPoint: isBreakPoint,
+    })),
+}));
+
 export default function PageLayout({ children }) {
-  let collapsedValue = false;
-  let isBreakPointValue = false;
   let showAdminPanelValue = false;
 
   const [showAdminPanel, setShowAdminPanel] = useState(showAdminPanelValue);
-  const [collapsed, setCollapsed] = useState(collapsedValue);
+  const [collapsed, setCollapsed] = collapsedState((state) => [
+    state.collapsed,
+    state.setCollapsedChange,
+  ]);
+
   const [themeColor, setThemeColor] = colorThemeState((state) => [
     state.themeColor,
     state.setThemeColorChange,
   ]);
-  const [isBreakPoint, setBreakPoint] = useState(isBreakPointValue);
+  const [isBreakPoint, setBreakPoint] = isBreakPointState((state) => [
+    state.isBreakPoint,
+    state.setIsBreakPointChange,
+  ]);
 
   const handleThemeChange = () => {
     setThemeColor((prev) => (prev === "light" ? "dark" : "light"));
