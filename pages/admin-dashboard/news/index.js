@@ -2,6 +2,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Form, Table, Card, Button, message } from "antd";
 import { useState, useEffect } from "react";
+import moment from "moment/moment";
+import dayjs from "dayjs";
 
 import ModalData from "./addModalNews";
 import { columnsData } from "./editTableData";
@@ -21,7 +23,6 @@ export default function News(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState([]);
   const [editingRowKey, setEditingRowKey] = useState(null);
-  const [editingRow, setEditingRow] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
   const currentdate = new Date();
@@ -34,7 +35,13 @@ export default function News(props) {
   };
 
   const handleEditFormFinish = (values) => {
-    values.expiryDate = values.expiryDate.format("ddd, MMM Do YYYY"); // format date
+    // values.expiryDate = dayjs(
+    //   moment(values.expiryDate).format("ddd, MMM Do YYYY")
+    // );
+
+    values.expiryDate = values.expiryDate.format("ddd, MMM Do YYYY");
+
+    console.log(values.expiryDate);
 
     const newData = [...data];
     const index = newData.findIndex((item) => editingRowKey === item.key);
@@ -45,7 +52,6 @@ export default function News(props) {
     });
     setData(newData);
     setEditingRowKey(null);
-    setEditingRow(null);
     message.success("News Edited", 1);
   };
 
@@ -53,8 +59,6 @@ export default function News(props) {
     handleDelete,
     editingRowKey,
     setEditingRowKey,
-    editingRow,
-    setEditingRow,
     formEdit,
     handleEditFormFinish,
     uploadedFile,
@@ -73,6 +77,35 @@ export default function News(props) {
       },
     ]);
   };
+
+  useEffect(() => {
+    setData([
+      {
+        key: 1,
+        title: "SQU Students Win 1rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "Wed, Mar 22nd 2023",
+      },
+      {
+        key: 2,
+        title: "SQU Students Win 2rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "Wed, Mar 22nd 2023",
+      },
+      {
+        key: 3,
+        title: "SQU Students Win 3rd ",
+        description: "SQU students won the 3rd place in the 2021",
+        date: currentdate.toLocaleString(),
+        image: "https:/",
+        expiryDate: "Wed, Mar 22nd 2023",
+      },
+    ]);
+  }, []);
 
   return (
     <Card className="flex my-4 rounded-2xl shadow-xl">

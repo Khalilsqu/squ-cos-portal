@@ -70,7 +70,9 @@ const ModalData = (props) => {
             fileList={uploadedFile}
             onChange={handleChange}
           >
-            <Button icon={<UploadOutlined />}>Upload</Button>
+            <Button block icon={<UploadOutlined />}>
+              Upload
+            </Button>
           </Upload>
         </Form.Item>
         <Form.Item
