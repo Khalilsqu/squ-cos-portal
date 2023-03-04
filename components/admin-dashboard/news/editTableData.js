@@ -19,12 +19,6 @@ import {
 import dayjs from "dayjs";
 import moment from "moment/moment";
 
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
-
 export function columnsData({
   handleDelete,
   editingRowKey,
@@ -32,6 +26,7 @@ export function columnsData({
   formEdit,
   handleEditFormFinish,
 }) {
+  const currentTime = dayjs().format("YYYY-MMM-DD h:mm:ss A");
   return [
     {
       key: uuidv4(),
@@ -91,8 +86,10 @@ export function columnsData({
     },
     {
       title: "Date Posted",
-      dataIndex: "date",
       key: uuidv4(),
+      render: (text, record) => {
+        return <p>{currentTime}</p>;
+      },
     },
     {
       title: "Image",

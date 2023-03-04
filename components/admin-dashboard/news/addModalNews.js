@@ -84,7 +84,7 @@ const ModalData = (props) => {
           rules={[{ required: true, message: "Please input expiry date!" }]}
           className="flex justify-left items-center"
         >
-          <DatePicker />
+          <DatePicker inputReadOnly />
         </Form.Item>
       </Form>
     </Modal>

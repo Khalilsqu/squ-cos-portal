@@ -1,9 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Form, Table, Button, message, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
+import useSWR from "swr";
 
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
 
@@ -66,6 +67,39 @@ export default function News(props) {
       },
     ]);
   };
+
+  // save data to database
+  // useEffect(() => {
+  //   const saveData = async () => {
+  //     const res = await fetch("/api/news", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+  //     const json = await res.json();
+  //     if (!res.ok) throw Error(json.message);
+  //   };
+  //   saveData();
+  // }, [data]);
+
+  // // fetch data from database
+
+  // const { data: newsData, error } = useSWR("/api/news", async (url) => {
+  //   const res = await fetch(url);
+  //   const json = await res.json();
+  //   if (!res.ok) throw Error(json.message);
+  //   return json;
+  // });
+
+  // useEffect(() => {
+  //   if (newsData) {
+  //     setData(newsData);
+  //   }
+  // }, [newsData]);
+
+  // if (error) return <div>failed to load</div>;
 
   return (
     <Space>
