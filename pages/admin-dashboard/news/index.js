@@ -19,6 +19,7 @@ export default function News(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState([]);
   const [editingRowKey, setEditingRowKey] = useState(null);
+  const [rowData, setRowData] = useState([]);
 
   const { width } = useWindowSize();
 
@@ -55,51 +56,55 @@ export default function News(props) {
   });
 
   const handleAddFormFinish = (values) => {
-    setData([
-      ...data,
-      {
-        key: uuidv4(),
-        title: values.title,
-        description: values.description,
-        date: currentdate.toLocaleString(),
-        image: values.image,
-        expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
-      },
-    ]);
+    const dataAdded = {
+      key: uuidv4(),
+      title: values.title,
+      description: values.description,
+      date: currentdate.toLocaleString(),
+      image: values.image,
+      expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
+    };
+    setData([...data, dataAdded]);
+    setRowData(dataAdded);
   };
 
-  // save data to database
   // useEffect(() => {
-  //   const saveData = async () => {
-  //     const res = await fetch("/api/news", {
+  //   const rowDataHandler = async () => {
+  //     const res = await fetch("/api/dashboard/news", {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
   //       },
-  //       body: JSON.stringify(data),
+  //       body: JSON.stringify("text-test"),
   //     });
-  //     const json = await res.json();
-  //     if (!res.ok) throw Error(json.message);
+  //     const data = await res.json();
+  //     if (data.message === "News added successfully") {
+  //       message.success(data.message, 2);
+  //     } else {
+  //       message.error(data.message, 2);
+  //     }
   //   };
-  //   saveData();
-  // }, [data]);
+  //   if (rowData.key) {
+  //     rowDataHandler();
+  //   }
+  // }, [rowData]);
 
-  // // fetch data from database
-
-  // const { data: newsData, error } = useSWR("/api/news", async (url) => {
-  //   const res = await fetch(url);
-  //   const json = await res.json();
-  //   if (!res.ok) throw Error(json.message);
-  //   return json;
-  // });
+  // const { data: sheetData, error } = useSWR(
+  //   "/api/dashboard/news",
+  //   async (url) => {
+  //     const res = await fetch(url);
+  //     return res.json();
+  //   },
+  //   {
+  //     refreshInterval: 100000,
+  //   }
+  // );
 
   // useEffect(() => {
-  //   if (newsData) {
-  //     setData(newsData);
+  //   if (sheetData) {
+  //     setData(sheetData);
   //   }
-  // }, [newsData]);
-
-  // if (error) return <div>failed to load</div>;
+  // }, [sheetData]);
 
   return (
     <Space>
