@@ -6,7 +6,6 @@ import { useWindowSize } from "../utils/windowSize";
 const { Footer } = Layout;
 
 export default function FooterComponent(props) {
-  const { collapsed, isBreakPoint } = props;
   const [year, setYear] = useState(new Date().getFullYear());
   const { width } = useWindowSize();
 

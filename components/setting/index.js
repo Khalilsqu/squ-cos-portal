@@ -21,26 +21,6 @@ const SettingGear = (props) => {
         />
       ),
     },
-    // {
-    //   key: "1",
-    //   icon: (
-    //     <CustomTooltip
-    //       title={
-    //         menuMode === "inline"
-    //           ? "Change sidebar menu mode to vertical"
-    //           : "Change sidebar menu mode to inline"
-    //       }
-    //       placement="right"
-    //     >
-    //       <Switch
-    //         checkedChildren="inline"
-    //         unCheckedChildren="vertical"
-    //         defaultChecked
-    //         onChange={setMenuModeChange}
-    //       />
-    //     </CustomTooltip>
-    //   ),
-    // },
   ];
 
   return (

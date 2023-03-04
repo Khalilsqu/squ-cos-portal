@@ -34,12 +34,6 @@ export default function HeaderComponent(props) {
 
   const router = useRouter();
 
-  // const [spaceGap, setSpaceGap] = useState(10);
-
-  // useEffect(() => {
-  //   setSpaceGap(20);
-  // }, [isBreakPoint, collapsed]);
-
   return (
     <Header
       style={
@@ -85,16 +79,6 @@ export default function HeaderComponent(props) {
               />
             </CustomTooltip>
           )}
-          {/* <Link href="/">
-            <CustomTooltip title="Go to Home" placement="right">
-              <HomeOutlined
-                style={{
-                  fontSize: "28px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
-            </CustomTooltip>
-          </Link> */}
         </Space>
         <Space
           style={{

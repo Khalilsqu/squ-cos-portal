@@ -1,22 +1,16 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Card, Button, message, Space } from "antd";
-import { useState, useEffect } from "react";
+import { Form, Table, Button, message, Space } from "antd";
+import { useState } from "react";
 import moment from "moment/moment";
+import { v4 as uuidv4 } from "uuid";
+
+import { AiOutlineInsertRowBelow } from "react-icons/ai";
 
 import ModalData from "../../../components/admin-dashboard/news/addModalNews";
 import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
 
 import { useWindowSize } from "@/components/utils/windowSize";
-
-const getBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
 
 export default function News(props) {
   const [formAdd] = Form.useForm();
@@ -24,7 +18,6 @@ export default function News(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState([]);
   const [editingRowKey, setEditingRowKey] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null);
 
   const { width } = useWindowSize();
 
@@ -58,14 +51,13 @@ export default function News(props) {
     setEditingRowKey,
     formEdit,
     handleEditFormFinish,
-    uploadedFile,
   });
 
   const handleAddFormFinish = (values) => {
     setData([
       ...data,
       {
-        key: data.length + 1,
+        key: uuidv4(),
         title: values.title,
         description: values.description,
         date: currentdate.toLocaleString(),
@@ -75,64 +67,40 @@ export default function News(props) {
     ]);
   };
 
-  useEffect(() => {
-    setData([
-      {
-        key: 1,
-        title: "SQU Students Win 1rd ",
-        description:
-          "SQU students won the 3rd place in the 2021 SQU\
-           students won the 3rd place in the 2021 SQU\
-            students won the 3rd place in the 2021 SQU students\
-             won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "Wed, Mar 22nd 2023",
-      },
-      {
-        key: 2,
-        title: "SQU Students Win 2rd ",
-        description: "SQU students won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "Wed, Mar 22nd 2023",
-      },
-      {
-        key: 3,
-        title: "SQU Students Win 3rd ",
-        description: "SQU students won the 3rd place in the 2021",
-        date: currentdate.toLocaleString(),
-        image: "https:/",
-        expiryDate: "Wed, Mar 22nd 2023",
-      },
-    ]);
-  }, []);
-
   return (
     <Space>
-      {/* <Button type="primary" onClick={() => setIsModalVisible(true)}>
-        Add News
-      </Button> */}
       <ModalData
         formAdd={formAdd}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         handleAddFormFinish={handleAddFormFinish}
-        uploadedFile={uploadedFile}
-        setUploadedFile={setUploadedFile}
       />
       <Table
         columns={columns}
         dataSource={data}
-        pagination={false}
+        footer={() => {
+          return (
+            <Button
+              type="primary"
+              onClick={() => setIsModalVisible(true)}
+              className="w-full flex justify-center items-center gap-4"
+              icon={<AiOutlineInsertRowBelow />}
+            >
+              Add News
+            </Button>
+          );
+        }}
         size="small"
         scroll={{ x: true }}
         tableLayout="auto"
         bordered
-        style={{
-          maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
-        }}
-        className="py-2 px-4 items-center justify-center "
+        // style={{
+        //   maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
+        // }}
+        className={
+          "py-2 px-4 items-center justify-center " +
+          (width > 768 ? "max-w-full" : width > 500 ? "max-w-md" : "max-w-xs")
+        }
       />
     </Space>
   );

@@ -1,15 +1,17 @@
-import { Modal, Form, Input, Upload, Button, DatePicker, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Upload,
+  Button,
+  DatePicker,
+  Typography,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
 const ModalData = (props) => {
-  const {
-    formAdd,
-    isModalVisible,
-    setIsModalVisible,
-    handleAddFormFinish,
-    uploadedFile,
-    setUploadedFile,
-  } = props;
+  const { formAdd, isModalVisible, setIsModalVisible, handleAddFormFinish } =
+    props;
 
   const handleOk = () => {
     // check if form is valid before submitting it and closing the modal
@@ -23,10 +25,6 @@ const ModalData = (props) => {
   const handleCancel = () => {
     setIsModalVisible(false);
     formAdd.resetFields();
-  };
-
-  const handleChange = ({ fileList: newFileList }) => {
-    setUploadedFile(newFileList);
   };
 
   return (
@@ -62,23 +60,29 @@ const ModalData = (props) => {
           name="image"
           rules={[{ required: true, message: "Please input image!" }]}
         >
-          <Upload
+          {/* <CustomTooltip title="Upload an image of the news. Accepts only png, jpg or jpeg formats"> */}
+          <Upload.Dragger
             listType="picture"
             accept=".png,.jpg,.jpeg"
             multiple={false}
             maxCount={1}
-            fileList={uploadedFile}
-            onChange={handleChange}
           >
-            <Button block icon={<UploadOutlined />}>
-              Upload
-            </Button>
-          </Upload>
+            <Button
+              block
+              icon={<UploadOutlined />}
+              className="w-full flex justify-center items-center gap-x-3 bg-transparent border-0 shadow-none"
+            ></Button>
+            <Typography.Text type="secondary">
+              Click or drag file to this area to upload
+            </Typography.Text>
+          </Upload.Dragger>
+          {/* </CustomTooltip> */}
         </Form.Item>
         <Form.Item
           label="Expiry Date"
           name="expiryDate"
           rules={[{ required: true, message: "Please input expiry date!" }]}
+          className="flex justify-left items-center"
         >
           <DatePicker />
         </Form.Item>

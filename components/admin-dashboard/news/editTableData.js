@@ -1,4 +1,10 @@
-import { EditOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { v4 as uuidv4 } from "uuid";
 import {
   Form,
   Input,
@@ -8,9 +14,16 @@ import {
   Image,
   Space,
   Typography,
+  Upload,
 } from "antd";
 import dayjs from "dayjs";
 import moment from "moment/moment";
+
+const getBase64 = (img, callback) => {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => callback(reader.result));
+  reader.readAsDataURL(img);
+};
 
 export function columnsData({
   handleDelete,
@@ -18,15 +31,12 @@ export function columnsData({
   setEditingRowKey,
   formEdit,
   handleEditFormFinish,
-  uploadedFile,
 }) {
   return [
     {
-      key: "id",
+      key: uuidv4(),
       title: "Title",
       dataIndex: "title",
-      key: "1",
-      width: "20%",
       render: (text, record) => {
         if (record.key === editingRowKey) {
           return (
@@ -54,8 +64,7 @@ export function columnsData({
     {
       title: "Description",
       dataIndex: "description",
-      key: "2",
-      width: "30%",
+      key: uuidv4(),
       render: (text, record) => {
         if (record.key === editingRowKey) {
           return (
@@ -83,55 +92,67 @@ export function columnsData({
     {
       title: "Date Posted",
       dataIndex: "date",
-      key: "3",
-      width: "15%",
+      key: uuidv4(),
     },
     {
       title: "Image",
-      // dataIndex: "image",
-
-      key: "4",
-      width: "15%",
+      key: uuidv4(),
       render: (text, record) => {
-        return (
-          <div className="flex flex-col justify-center items-center">
-            {record.key === editingRowKey && (
-              <Form form={formEdit} onFinish={handleEditFormFinish}>
-                <Form.Item
-                  name="image"
-                  initialValue={
-                    uploadedFile !== null
-                      ? uploadedFile[0].thumbUrl
-                      : record.image
+        if (record.key === editingRowKey) {
+          return (
+            <Form form={formEdit} onFinish={handleEditFormFinish}>
+              <Form.Item
+                name="image"
+                valuePropName="fileList"
+                getValueFromEvent={(e) => {
+                  if (Array.isArray(e)) {
+                    return e;
                   }
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input image!",
-                    },
-                  ]}
+                  return e && e.fileList;
+                }}
+                initialValue={record.image.fileList}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please upload an image!",
+                  },
+                ]}
+              >
+                <Upload
+                  listType="picture"
+                  maxCount={1}
+                  accept="
+                  image/png,
+                  image/jpeg,
+                  image/jpg,
+                "
                 >
-                  <Image
-                    width={100}
-                    src={
-                      uploadedFile !== null
-                        ? uploadedFile[0].thumbUrl
-                        : record.image
-                    }
-                    alt="Uploaded Image"
-                  />
-                </Form.Item>
-              </Form>
-            )}
-          </div>
-        );
+                  <Button icon={<UploadOutlined />}>Upload</Button>
+                </Upload>
+              </Form.Item>
+            </Form>
+          );
+        } else {
+          return record.image.fileList ? (
+            <Image
+              width={70}
+              src={record.image.fileList[0].thumbUrl}
+              alt={record.image.fileList[0].name}
+            />
+          ) : (
+            <Image
+              width={70}
+              src={text.image[0].thumbUrl}
+              alt={text.image[0].thumbUrl.name}
+            />
+          );
+        }
       },
     },
     {
       title: "Expiry Date",
       dataIndex: "expiryDate",
-      key: "5",
-      width: "15%",
+      key: uuidv4(),
       render: (text, record) => {
         const date = moment(record.expiryDate, "ddd, MMM Do YYYY");
         if (record.key === editingRowKey) {
@@ -210,9 +231,8 @@ export function columnsData({
           </Popconfirm>
         </Space>
       ),
-      key: "6",
+      key: uuidv4(),
       fixed: "right",
-      width: "5%",
     },
   ];
 }
