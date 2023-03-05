@@ -68,43 +68,20 @@ export default function News(props) {
     setRowData(dataAdded);
   };
 
-  // useEffect(() => {
-  //   const rowDataHandler = async () => {
-  //     const res = await fetch("/api/dashboard/news", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify("text-test"),
-  //     });
-  //     const data = await res.json();
-  //     if (data.message === "News added successfully") {
-  //       message.success(data.message, 2);
-  //     } else {
-  //       message.error(data.message, 2);
-  //     }
-  //   };
-  //   if (rowData.key) {
-  //     rowDataHandler();
-  //   }
-  // }, [rowData]);
+  useEffect(() => {
+    const rowDataHandler = async () => {
+      const res = await fetch("/api/dashboard/news", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rowData),
+      });
+      console.log(res);
+    };
 
-  // const { data: sheetData, error } = useSWR(
-  //   "/api/dashboard/news",
-  //   async (url) => {
-  //     const res = await fetch(url);
-  //     return res.json();
-  //   },
-  //   {
-  //     refreshInterval: 100000,
-  //   }
-  // );
-
-  // useEffect(() => {
-  //   if (sheetData) {
-  //     setData(sheetData);
-  //   }
-  // }, [sheetData]);
+    rowDataHandler();
+  }, [rowData]);
 
   return (
     <Space>

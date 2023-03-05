@@ -1,37 +1,69 @@
 // save news data to a google sheet
-
-// Path: pages\api\dashboard\news\index.js
-// Compare this snippet from components\admin-dashboard\news\addModalNews.js:
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { getServerSession } from "next-auth";
 import { GoogleSpreadsheet } from "google-spreadsheet";
+import { google } from "googleapis";
+
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
 export default async function handler(req, res) {
-  res.status(200).json({ message: "News added successfully" });
-  //   const session = await getServerSession(req, res, authOptions);
-  //   const comment = req.body.comment;
+  if (req.method == "POST") {
+    const values = req.body;
 
-  //   console.log(values);
-  //   if (session) {
-  //     if (req.method == "POST") {
-  //       const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-  //       await doc.useServiceAccountAuth({
-  //         client_email: process.env.GOOGLE_SERVICE_ACOUNT_EMAIL,
-  //         private_key: process.env.GOOGLE_SERVICE_PRIVATE_KEY.replace(
-  //           /\\n/gm,
-  //           "\n"
-  //         ),
-  //       });
-  //       await doc.loadInfo();
-  //       const sheet = doc.sheetsByIndex[0];
-  //       await sheet.addRow({
-  //         key: comment,
-  //       });
-  //       res.status(200).json({ message: "News added successfully" });
-  //     } else {
-  //       res.status(400).json({ message: "Bad request" });
-  //     }
-  //   } else {
-  //     res.status(401).json({ message: "Unauthorized" });
-  //   }
+    console.log(values === undefined);
+    if (values !== undefined) {
+      const auth = new google.auth.GoogleAuth({
+        credentials: {
+          client_email: process.env.GOOGLE_SERVICE_ACOUNT_EMAIL,
+          client_id: process.env.GOOGLE_SERVICE_CLIENT_ID,
+          private_key: process.env.GOOGLE_SERVICE_PRIVATE_KEY,
+        },
+        scopes: [
+          "https://www.googleapis.com/auth/spreadsheets",
+          "https://www.googleapis.com/auth/drive",
+        ],
+      });
+
+      const sheet = google.sheets({ version: "v4", auth });
+
+      const response = await sheet.spreadsheets.values.append({
+        spreadsheetId: process.env.GOOGLE_SHEET_ID,
+        range: "Sheet1!A:E",
+        valueInputOption: "USER_ENTERED",
+        requestBody: {
+          values: [
+            [
+              values.key,
+              values.title,
+              values.description,
+              values.date,
+              values.expiryDate,
+            ],
+          ],
+        },
+      });
+
+      const drive = google.drive({ version: "v3", auth });
+
+      async function uploadImage() {
+        const response = await drive.files.create({
+          requestBody: {
+            name: values.key,
+            mimeType: "image/jpeg,image/png,image/jpg",
+          },
+          media: {
+            mimeType: "image/jpeg,image/png,image/jpg",
+            body: await getBase64(values.image),
+          },
+        });
+
+        return response.data.id;
+      }
+
+      const imageId = await uploadImage();
+    } else {
+      res.status(400).json({ message: "No data" });
+    }
+  }
 }
