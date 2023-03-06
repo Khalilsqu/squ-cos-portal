@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (req.method == "POST") {
     const { dataAdded, uploadedUserImage } = req.body;
 
-    if (dataAdded !== undefined) {
+    if (dataAdded !== undefined && uploadedUserImage !== undefined) {
       try {
         const auth = new google.auth.GoogleAuth({
           credentials: {
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
           parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
         };
         const media = {
-          mimeType: dataAdded.image.fileList[0].type,
+          mimeType: dataAdded.image.type,
           body: convertImageStream(
             Buffer.from(uploadedUserImage.split(",")[1], "base64")
           ),
@@ -68,7 +68,15 @@ export default async function handler(req, res) {
         res.end();
       }
     } else {
-      res.status(400).json({ message: "No data" });
+      res.status(400).json({ message: "No data recieved" });
     }
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "20mb",
+    },
+  },
+};

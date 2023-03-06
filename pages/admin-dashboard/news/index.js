@@ -183,7 +183,6 @@ const rowDataHandler = async (data) => {
       uploadedUserImage,
     }),
   });
-
   return res.json();
 };
 

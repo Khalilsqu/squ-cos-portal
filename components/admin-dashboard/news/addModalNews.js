@@ -6,6 +6,7 @@ import {
   Button,
   DatePicker,
   Typography,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Readable } from "stream";
@@ -64,21 +65,58 @@ const ModalData = (props) => {
         <Form.Item
           label="Image"
           name="image"
-          rules={[{ required: true, message: "Please input image!" }]}
+          valuePropName="fileList"
+          getValueFromEvent={(e) => {
+            if (Array.isArray(e)) {
+              return e;
+            }
+            return e && e.fileList;
+          }}
+          rules={[
+            { required: true, message: "Please input image!" },
+            {
+              validator: (rule, fileList) => {
+                const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
+                return new Promise((resolve, reject) => {
+                  if (fileList[0]?.size > 1024 * 1024 * 10) {
+                    reject("File size is greater than 10MB!");
+                  } else if (
+                    fileTypeArray.includes(fileList[0]?.type) === false
+                  ) {
+                    reject(
+                      "File type is not supported!. Supported types: png, jpg, jpeg"
+                    );
+                  } else {
+                    resolve(fileList[0]);
+                  }
+                });
+              },
+            },
+          ]}
         >
-          {/* <CustomTooltip title="Upload an image of the news. Accepts only png, jpg or jpeg formats"> */}
           <Upload.Dragger
             listType="picture"
-            accept=".png,.jpg,.jpeg"
+            accept="image/png,image/jpg,image/jpeg"
             multiple={false}
             maxCount={1}
             beforeUpload={(file) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onload = () => {
-                setUploadedUserImage(reader.result);
-              };
-              return false;
+              const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
+              return new Promise((resolve, reject) => {
+                if (file.size > 1024 * 1024 * 10) {
+                  reject("File size is greater than 10MB!");
+                } else if (fileTypeArray.includes(file.type) === false) {
+                  reject(
+                    "File type is not supported!. Supported types: png, jpg, jpeg"
+                  );
+                } else {
+                  const reader = new FileReader();
+                  reader.readAsDataURL(file);
+                  reader.onload = () => {
+                    setUploadedUserImage(reader.result);
+                  };
+                  resolve(file);
+                }
+              });
             }}
           >
             <Button
