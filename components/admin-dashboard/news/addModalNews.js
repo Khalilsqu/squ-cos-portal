@@ -8,10 +8,16 @@ import {
   Typography,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { Readable } from "stream";
 
 const ModalData = (props) => {
-  const { formAdd, isModalVisible, setIsModalVisible, handleAddFormFinish } =
-    props;
+  const {
+    formAdd,
+    isModalVisible,
+    setIsModalVisible,
+    handleAddFormFinish,
+    setUploadedUserImage,
+  } = props;
 
   const handleOk = () => {
     // check if form is valid before submitting it and closing the modal
@@ -66,6 +72,14 @@ const ModalData = (props) => {
             accept=".png,.jpg,.jpeg"
             multiple={false}
             maxCount={1}
+            beforeUpload={(file) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => {
+                setUploadedUserImage(reader.result);
+              };
+              return false;
+            }}
           >
             <Button
               block
@@ -76,7 +90,6 @@ const ModalData = (props) => {
               Click or drag file to this area to upload
             </Typography.Text>
           </Upload.Dragger>
-          {/* </CustomTooltip> */}
         </Form.Item>
         <Form.Item
           label="Expiry Date"

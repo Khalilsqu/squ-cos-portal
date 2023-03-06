@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Button, message, Space } from "antd";
-import { useEffect, useState } from "react";
+import { Form, Table, Button, message, Space, notification, Spin } from "antd";
+import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
-import useSWR from "swr";
 
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import ModalData from "../../../components/admin-dashboard/news/addModalNews";
 import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
@@ -19,7 +19,13 @@ export default function News(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState([]);
   const [editingRowKey, setEditingRowKey] = useState(null);
-  const [rowData, setRowData] = useState([]);
+
+  const [uploadedUserImage, setUploadedUserImage] = useState(null);
+
+  const [tablePage, setTablePage] = useState(1);
+  const [tableSize, setTableSize] = useState(5);
+
+  const [dataUploadedToDB, setDataUploadedToDB] = useState(false);
 
   const { width } = useWindowSize();
 
@@ -44,6 +50,7 @@ export default function News(props) {
     });
     setData(newData);
     setEditingRowKey(null);
+
     message.success("News edited succesfully", 2);
   };
 
@@ -56,6 +63,7 @@ export default function News(props) {
   });
 
   const handleAddFormFinish = (values) => {
+    setDataUploadedToDB(true);
     const dataAdded = {
       key: uuidv4(),
       title: values.title,
@@ -65,23 +73,24 @@ export default function News(props) {
       expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
     };
     setData([...data, dataAdded]);
-    setRowData(dataAdded);
+
+    rowDataHandler({ dataAdded, uploadedUserImage }).then((res) => {
+      if (res.message === "Success") {
+        notification.success({
+          message: "News added successfully to the database",
+          placement: "topRight",
+          duration: 4,
+        });
+        setDataUploadedToDB(false);
+      } else {
+        notification.error({
+          message: "Error adding news to the database - please try again",
+          placement: "topRight",
+          duration: 4,
+        });
+      }
+    });
   };
-
-  useEffect(() => {
-    const rowDataHandler = async () => {
-      const res = await fetch("/api/dashboard/news", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rowData),
-      });
-      console.log(res);
-    };
-
-    rowDataHandler();
-  }, [rowData]);
 
   return (
     <Space>
@@ -90,10 +99,53 @@ export default function News(props) {
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         handleAddFormFinish={handleAddFormFinish}
+        setUploadedUserImage={setUploadedUserImage}
       />
       <Table
         columns={columns}
+        loading={dataUploadedToDB}
         dataSource={data}
+        pagination={{
+          current: tablePage,
+          pageSize: tableSize,
+          onChange: (page, pageSize) => {
+            setTablePage(page);
+            setTableSize(pageSize);
+          },
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "15", "20"],
+          onShowSizeChange: (current, size) => {
+            setTablePage(current);
+            setTableSize(size);
+          },
+          total: data.length,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`,
+          showQuickJumper: true,
+          showLessItems: true,
+          responsive: true,
+          position: ["bottomCenter"],
+          size: "small",
+          itemRender: (current, type, originalElement) => {
+            if (type === "prev") {
+              return (
+                <a>
+                  <LeftOutlined />
+                </a>
+              );
+            }
+            if (type === "next") {
+              return (
+                <a>
+                  <RightOutlined />
+                </a>
+              );
+            }
+            return originalElement;
+          },
+          showTitle: true,
+          hideOnSinglePage: false,
+        }}
         footer={() => {
           return (
             <Button
@@ -110,17 +162,30 @@ export default function News(props) {
         scroll={{ x: true }}
         tableLayout="auto"
         bordered
-        // style={{
-        //   maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
-        // }}
-        className={
-          "py-2 px-4 items-center justify-center " +
-          (width > 768 ? "max-w-full" : width > 500 ? "max-w-md" : "max-w-xs")
-        }
+        style={{
+          maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
+        }}
+        className="py-2 px-4 items-center justify-center"
       />
     </Space>
   );
 }
+
+const rowDataHandler = async (data) => {
+  const { dataAdded, uploadedUserImage } = data;
+  const res = await fetch("/api/dashboard/news", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      dataAdded,
+      uploadedUserImage,
+    }),
+  });
+
+  return res.json();
+};
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
