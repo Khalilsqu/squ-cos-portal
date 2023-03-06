@@ -6,10 +6,8 @@ import {
   Button,
   DatePicker,
   Typography,
-  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { Readable } from "stream";
 
 const ModalData = (props) => {
   const {
@@ -81,6 +79,7 @@ const ModalData = (props) => {
                   if (fileList[0]?.size > 1024 * 1024 * 10) {
                     reject("File size is greater than 10MB!");
                   } else if (
+                    fileList[0] &&
                     fileTypeArray.includes(fileList[0]?.type) === false
                   ) {
                     reject(
