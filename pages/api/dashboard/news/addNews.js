@@ -10,7 +10,7 @@ const convertImageStream = (image) => {
   return readableImageStream;
 };
 
-export default async function handler(req, res) {
+export default async function addHandler(req, res) {
   if (req.method == "POST") {
     const { dataAdded, uploadedUserImage } = req.body;
 

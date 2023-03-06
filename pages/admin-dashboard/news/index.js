@@ -32,10 +32,26 @@ export default function News(props) {
   const currentdate = new Date();
 
   const handleDelete = (key) => {
+    setDataUploadedToDB(true);
     const dataSource = [...data];
     setData(dataSource.filter((item) => item.key !== key));
 
-    message.success("News deleted successfully", 2);
+    rowDeleteHandler({ key }).then((res) => {
+      if (res.message === "Success") {
+        notification.success({
+          message: "News deleted successfully from the database",
+          placement: "topRight",
+          duration: 4,
+        });
+        setDataUploadedToDB(false);
+      } else {
+        notification.error({
+          message: "Error deleting news from the database - please try again",
+          placement: "topRight",
+          duration: 4,
+        });
+      }
+    });
   };
 
   const handleEditFormFinish = (values) => {
@@ -173,7 +189,7 @@ export default function News(props) {
 
 const rowDataHandler = async (data) => {
   const { dataAdded, uploadedUserImage } = data;
-  const res = await fetch("/api/dashboard/news", {
+  const res = await fetch("/api/dashboard/news/addNews", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -181,6 +197,20 @@ const rowDataHandler = async (data) => {
     body: JSON.stringify({
       dataAdded,
       uploadedUserImage,
+    }),
+  });
+  return res.json();
+};
+
+const rowDeleteHandler = async (data) => {
+  const { key } = data;
+  const res = await fetch("/api/dashboard/news/deleteNews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      key,
     }),
   });
   return res.json();
