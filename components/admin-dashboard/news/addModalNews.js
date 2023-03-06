@@ -76,8 +76,8 @@ const ModalData = (props) => {
               validator: (rule, fileList) => {
                 const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
                 return new Promise((resolve, reject) => {
-                  if (fileList[0]?.size > 1024 * 1024 * 10) {
-                    reject("File size is greater than 10MB!");
+                  if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                    reject("File size is greater than 4.5MB!");
                   } else if (
                     fileList[0] &&
                     fileTypeArray.includes(fileList[0]?.type) === false
@@ -101,8 +101,8 @@ const ModalData = (props) => {
             beforeUpload={(file) => {
               const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
               return new Promise((resolve, reject) => {
-                if (file.size > 1024 * 1024 * 10) {
-                  reject("File size is greater than 10MB!");
+                if (file.size > 1024 * 1024 * 4.5) {
+                  reject("File size is greater than 4.5MB!");
                 } else if (fileTypeArray.includes(file.type) === false) {
                   reject(
                     "File type is not supported!. Supported types: png, jpg, jpeg"

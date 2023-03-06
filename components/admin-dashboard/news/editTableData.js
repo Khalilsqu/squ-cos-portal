@@ -25,6 +25,7 @@ export function columnsData({
   setEditingRowKey,
   formEdit,
   handleEditFormFinish,
+  setUploadedUserImage,
 }) {
   const currentTime = dayjs().format("YYYY-MMM-DD h:mm:ss A");
   return [
@@ -107,11 +108,34 @@ export function columnsData({
                   }
                   return e && e.fileList;
                 }}
-                initialValue={record.image.fileList}
+                initialValue={record.image}
                 rules={[
                   {
                     required: true,
                     message: "Please upload an image!",
+                  },
+                  {
+                    validator: (rule, fileList) => {
+                      const fileTypeArray = [
+                        "image/png",
+                        "image/jpg",
+                        "image/jpeg",
+                      ];
+                      return new Promise((resolve, reject) => {
+                        if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                          reject("File size is greater than 4.5MB!");
+                        } else if (
+                          fileList[0] &&
+                          fileTypeArray.includes(fileList[0]?.type) === false
+                        ) {
+                          reject(
+                            "File type is not supported!. Supported types: png, jpg, jpeg"
+                          );
+                        } else {
+                          resolve("Success!");
+                        }
+                      });
+                    },
                   },
                 ]}
               >
@@ -123,6 +147,30 @@ export function columnsData({
                   image/jpeg,
                   image/jpg,
                 "
+                  beforeUpload={(file) => {
+                    const fileTypeArray = [
+                      "image/png",
+                      "image/jpg",
+                      "image/jpeg",
+                    ];
+                    return new Promise((resolve, reject) => {
+                      if (file.size > 1024 * 1024 * 4.5) {
+                        reject("File size is greater than 4.5MB!");
+                      } else if (fileTypeArray.includes(file.type) === false) {
+                        reject(
+                          "File type is not supported!. Supported types: png, jpg, jpeg"
+                        );
+                      } else {
+                        resolve(file);
+                      }
+                    });
+                  }}
+
+                  onChange={(info) => {
+                    if (info.file.status === "done") {
+                      setUploadedUserImage(info.file.originFileObj);
+                    }
+                  }}
                 >
                   <Button icon={<UploadOutlined />}>Upload</Button>
                 </Upload>
@@ -130,13 +178,7 @@ export function columnsData({
             </Form>
           );
         } else {
-          return record.image.fileList ? (
-            <Image
-              width={70}
-              src={record.image.fileList[0].thumbUrl}
-              alt={record.image.fileList[0].name}
-            />
-          ) : (
+          return (
             <Image
               width={70}
               src={text.image[0].thumbUrl}

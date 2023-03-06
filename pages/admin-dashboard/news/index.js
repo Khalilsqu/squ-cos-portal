@@ -76,6 +76,7 @@ export default function News(props) {
     setEditingRowKey,
     formEdit,
     handleEditFormFinish,
+    setUploadedUserImage,
   });
 
   const handleAddFormFinish = (values) => {
@@ -106,6 +107,8 @@ export default function News(props) {
         });
       }
     });
+
+    setUploadedUserImage(null);
   };
 
   return (
