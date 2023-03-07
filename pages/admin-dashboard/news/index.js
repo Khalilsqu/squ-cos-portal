@@ -67,26 +67,28 @@ export default function News(props) {
       ...values,
     });
     setData(newData);
+
+    rowEditHandler({
+      dataEditted: newData[index],
+      image: uploadedUserImage,
+    }).then((res) => {
+      if (res.message === "Success") {
+        notification.success({
+          message: "News edited successfully in the database",
+          placement: "topRight",
+          duration: 4,
+        });
+        setDataUploadedToDB(false);
+      } else {
+        notification.error({
+          message: "Error editing news in the database - please try again",
+          placement: "topRight",
+          duration: 4,
+        });
+      }
+    });
     setEditingRowKey(null);
-
     // setUploadedUserImage(null);
-
-    // rowEditHandler({ editingRowKey, values, uploadedUserImage }).then((res) => {
-    //   if (res.message === "Success") {
-    //     notification.success({
-    //       message: "News edited successfully in the database",
-    //       placement: "topRight",
-    //       duration: 4,
-    //     });
-    //     setDataUploadedToDB(false);
-    //   } else {
-    //     notification.error({
-    //       message: "Error editing news in the database - please try again",
-    //       placement: "topRight",
-    //       duration: 4,
-    //     });
-    //   }
-    // });
   };
 
   const columns = columnsData({
@@ -238,21 +240,20 @@ const rowDeleteHandler = async (data) => {
   return res.json();
 };
 
-// const rowEditHandler = async (data) => {
-//   const { editingRowKey, values, uploadedUserImage } = data;
-//   const res = await fetch("/api/dashboard/news/editNews", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       editingRowKey,
-//       values,
-//       uploadedUserImage,
-//     }),
-//   });
-//   return res.json();
-// };
+const rowEditHandler = async (data) => {
+  const { dataEditted, image } = data;
+  const res = await fetch("/api/dashboard/news/updateNews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      image,
+      dataEditted,
+    }),
+  });
+  return res.json();
+};
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);

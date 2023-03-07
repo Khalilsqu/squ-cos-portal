@@ -122,7 +122,7 @@ export function columnsData({
                       ];
                       return new Promise((resolve, reject) => {
                         if (fileList[0]?.size > 1024 * 1024 * 4.5) {
-                          reject("File size is greater than 4.5MB!");
+                          reject("Maximum file size allowed is 4.5MB!");
                         } else if (
                           fileList[0] &&
                           fileTypeArray.includes(fileList[0]?.type) === false
@@ -160,13 +160,25 @@ export function columnsData({
                           "File type is not supported!. Supported types: png, jpg, jpeg"
                         );
                       } else {
-                        resolve(file);
+                        resolve("Success!");
+
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = (e) => {
+                          setUploadedUserImage(e.target.result);
+                        };
+
+                        return file;
                       }
                     });
                   }}
                   onChange={(info) => {
                     if (info.file.status === "done") {
-                      setUploadedUserImage(info.file.originFileObj);
+                      const reader = new FileReader();
+                      reader.readAsDataURL(info.file.originFileObj);
+                      reader.onload = (e) => {
+                        setUploadedUserImage(e.target.result);
+                      };
                     }
                   }}
                 >
@@ -233,7 +245,6 @@ export function columnsData({
               className="flex cursor-pointer"
               onClick={() => {
                 setEditingRowKey(record.key);
-                console.log(record.expiryDate);
                 formEdit.setFieldsValue({
                   title: record.title,
                   description: record.description,

@@ -38,7 +38,7 @@ export default async function addHandler(req, res) {
                 dataAdded.key,
                 dataAdded.title,
                 dataAdded.description,
-                dataAdded.date,
+                dataAdded.datePosted,
                 dataAdded.expiryDate,
               ],
             ],

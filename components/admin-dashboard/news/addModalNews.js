@@ -86,7 +86,7 @@ const ModalData = (props) => {
                       "File type is not supported!. Supported types: png, jpg, jpeg"
                     );
                   } else {
-                    resolve(fileList[0]);
+                    resolve("Success!");
                   }
                 });
               },
@@ -102,7 +102,7 @@ const ModalData = (props) => {
               const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
               return new Promise((resolve, reject) => {
                 if (file.size > 1024 * 1024 * 4.5) {
-                  reject("File size is greater than 4.5MB!");
+                  reject("Maximum file size allowed is 4.5MB!");
                 } else if (fileTypeArray.includes(file.type) === false) {
                   reject(
                     "File type is not supported!. Supported types: png, jpg, jpeg"
