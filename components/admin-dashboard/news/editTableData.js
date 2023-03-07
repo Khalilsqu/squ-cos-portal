@@ -88,13 +88,12 @@ export function columnsData({
     {
       title: "Date Posted",
       key: uuidv4(),
-      render: (text, record) => {
-        return <p>{currentTime}</p>;
-      },
+      dataIndex: "datePosted",
     },
     {
       title: "Image",
       key: uuidv4(),
+      dataIndex: "image",
       render: (text, record) => {
         if (record.key === editingRowKey) {
           return (
@@ -165,7 +164,6 @@ export function columnsData({
                       }
                     });
                   }}
-
                   onChange={(info) => {
                     if (info.file.status === "done") {
                       setUploadedUserImage(info.file.originFileObj);
@@ -178,13 +176,7 @@ export function columnsData({
             </Form>
           );
         } else {
-          return (
-            <Image
-              width={70}
-              src={text.image[0].thumbUrl}
-              alt={text.image[0].thumbUrl.name}
-            />
-          );
+          return <Image width={70} src={text[0].thumbUrl} alt={text[0].name} />;
         }
       },
     },
@@ -241,6 +233,13 @@ export function columnsData({
               className="flex cursor-pointer"
               onClick={() => {
                 setEditingRowKey(record.key);
+                console.log(record.expiryDate);
+                formEdit.setFieldsValue({
+                  title: record.title,
+                  description: record.description,
+                  image: record.image,
+                  expiryDate: moment(record.expiryDate, "ddd, MMM Do YYYY"),
+                });
               }}
             />
 

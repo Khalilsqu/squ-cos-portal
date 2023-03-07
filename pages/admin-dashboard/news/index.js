@@ -55,6 +55,8 @@ export default function News(props) {
   };
 
   const handleEditFormFinish = (values) => {
+    // setDataUploadedToDB(true);
+
     values.expiryDate = moment(values.expiryDate).format("ddd, MMM Do YYYY");
 
     const newData = [...data];
@@ -67,7 +69,24 @@ export default function News(props) {
     setData(newData);
     setEditingRowKey(null);
 
-    message.success("News edited succesfully", 2);
+    // setUploadedUserImage(null);
+
+    // rowEditHandler({ editingRowKey, values, uploadedUserImage }).then((res) => {
+    //   if (res.message === "Success") {
+    //     notification.success({
+    //       message: "News edited successfully in the database",
+    //       placement: "topRight",
+    //       duration: 4,
+    //     });
+    //     setDataUploadedToDB(false);
+    //   } else {
+    //     notification.error({
+    //       message: "Error editing news in the database - please try again",
+    //       placement: "topRight",
+    //       duration: 4,
+    //     });
+    //   }
+    // });
   };
 
   const columns = columnsData({
@@ -85,7 +104,7 @@ export default function News(props) {
       key: uuidv4(),
       title: values.title,
       description: values.description,
-      date: currentdate.toLocaleString(),
+      datePosted: currentdate.toLocaleString(),
       image: values.image,
       expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
     };
@@ -218,6 +237,22 @@ const rowDeleteHandler = async (data) => {
   });
   return res.json();
 };
+
+// const rowEditHandler = async (data) => {
+//   const { editingRowKey, values, uploadedUserImage } = data;
+//   const res = await fetch("/api/dashboard/news/editNews", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       editingRowKey,
+//       values,
+//       uploadedUserImage,
+//     }),
+//   });
+//   return res.json();
+// };
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
