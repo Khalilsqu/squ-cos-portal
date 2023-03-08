@@ -55,7 +55,7 @@ export default function News(props) {
   };
 
   const handleEditFormFinish = (values) => {
-    // setDataUploadedToDB(true);
+    setDataUploadedToDB(true);
 
     values.expiryDate = moment(values.expiryDate).format("ddd, MMM Do YYYY");
 
@@ -85,10 +85,13 @@ export default function News(props) {
           placement: "topRight",
           duration: 4,
         });
+        setTimeout(() => {
+          setDataUploadedToDB(false);
+        }, 45000);
       }
     });
     setEditingRowKey(null);
-    // setUploadedUserImage(null);
+    setUploadedUserImage(null);
   };
 
   const columns = columnsData({
@@ -126,6 +129,9 @@ export default function News(props) {
           placement: "topRight",
           duration: 4,
         });
+        setTimeout(() => {
+          setDataUploadedToDB(false);
+        }, 4500);
       }
     });
 

@@ -154,28 +154,20 @@ export function columnsData({
                     ];
                     return new Promise((resolve, reject) => {
                       if (file.size > 1024 * 1024 * 4.5) {
-                        reject("File size is greater than 4.5MB!");
+                        reject("Maximum file size allowed is 4.5MB!");
                       } else if (fileTypeArray.includes(file.type) === false) {
                         reject(
                           "File type is not supported!. Supported types: png, jpg, jpeg"
                         );
                       } else {
-                        resolve("Success!");
-
-                        const reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = (e) => {
-                          setUploadedUserImage(e.target.result);
-                        };
-
-                        return file;
+                        resolve(file);
                       }
                     });
                   }}
                   onChange={(info) => {
                     if (info.file.status === "done") {
                       const reader = new FileReader();
-                      reader.readAsDataURL(info.file.originFileObj);
+                      reader.readAsDataURL(info.fileList[0].originFileObj);
                       reader.onload = (e) => {
                         setUploadedUserImage(e.target.result);
                       };
