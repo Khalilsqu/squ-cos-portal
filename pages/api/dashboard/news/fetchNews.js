@@ -1,5 +1,7 @@
+import { google } from "googleapis";
+import axios from "axios";
 export default async function fetchNews(req, res) {
-  if (req.method == "GET") {
+  try {
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_SERVICE_ACOUNT_EMAIL,
@@ -20,47 +22,70 @@ export default async function fetchNews(req, res) {
 
     const rows = response.data.values;
 
-    const data = rows.map((row) => {
-      return {
-        key: row[0],
-        title: row[1],
-        description: row[2],
-        datePosted: row[3],
-        expiryDate: row[4],
-      };
-    });
+    if (rows) {
+      const data = rows.map((row) => {
+        return {
+          key: row[0],
+          title: row[1],
+          description: row[2],
+          datePosted: row[3],
+          expiryDate: row[4],
+        };
+      });
 
-    // fetch images from google drive using the key as the file from folder id stored in .env file
+      // fetch images from google drive using the key as the file from folder id stored in .env file
 
-    const drive = google.drive({ version: "v3", auth });
-    const driveResponse = await drive.files.list({
-      q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
-      fields: "files(id, name, mimeType, webViewLink, webContentLink)",
-    });
+      const drive = google.drive({ version: "v3", auth });
+      const driveResponse = await drive.files.list({
+        q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
+        fields: "files(id, name, mimeType, webContentLink)",
+      });
 
-    const driveRows = driveResponse.data.files;
+      const driveRows = driveResponse.data.files;
 
-    const driveData = driveRows.map((row) => {
-      return {
-        key: row.name,
-        mimeType: row.mimeType,
-        webViewLink: row.webViewLink,
-        webContentLink: row.webContentLink,
-      };
-    });
+      const driveData = driveRows.map((row) => {
+        return {
+          key: row.name,
+          image: {
+            type: row.mimeType,
+            url: row.webContentLink,
+            src: "",
+          },
+        };
+      });
 
-    // merge the data from google sheets and google drive
+      driveData.forEach((item) => {
+        const downloadImage = async () => {
+          const response = await axios.get(item.image.url, {
+            responseType: "arraybuffer",
+          });
+          const buffer = Buffer.from(response.data, "utf-8");
 
-    const mergedData = data.map((item) => {
-      const driveItem = driveData.find(
-        (driveItem) => driveItem.key === item.key
-      );
-      return {
-        ...item,
-        ...driveItem,
-      };
-    });
+          const base64Image = buffer.toString("base64");
 
-    res.status(200).json(mergedData);
+          item.image.src = `data:${item.image.type};base64,${base64Image}`;
+        };
+        downloadImage();
+      });
+
+      const mergedData = data.map((item) => {
+        const driveItem = driveData.find(
+          (driveItem) => driveItem.key === item.key
+        );
+        return {
+          ...item,
+          ...driveItem,
+        };
+      });
+
+      res.status(200).json(mergedData);
+    } else {
+      res.status(200).json([]);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  } finally {
+    res.end();
   }
 }

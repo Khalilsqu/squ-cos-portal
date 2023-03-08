@@ -1,9 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Form, Table, Button, message, Space, notification, Spin } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
+import useSWR from "swr";
 
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -12,6 +13,8 @@ import ModalData from "../../../components/admin-dashboard/news/addModalNews";
 import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
 
 import { useWindowSize } from "@/components/utils/windowSize";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function News(props) {
   const [formAdd] = Form.useForm();
@@ -137,6 +140,23 @@ export default function News(props) {
 
     setUploadedUserImage(null);
   };
+
+  const { data: newsData, error } = useSWR(
+    "/api/dashboard/news/fetchNews",
+    fetcher
+  );
+
+  useEffect(() => {
+    if (newsData) {
+      setData(newsData);
+    }
+
+    if (error) {
+      message.error("Error fetching news data from the database");
+    }
+
+    // console.log("newsData", newsData[0].image.url);
+  }, [newsData]);
 
   return (
     <Space>
