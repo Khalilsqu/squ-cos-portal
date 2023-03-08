@@ -180,7 +180,7 @@ export function columnsData({
             </Form>
           );
         } else {
-          return <Image width={70} src={text?.base64} alt={text?.name} />;
+          return <Image width={70} src={text.url} alt="Image News" />;
         }
       },
     },

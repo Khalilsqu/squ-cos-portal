@@ -36,8 +36,8 @@ export default function News(props) {
 
   const handleDelete = (key) => {
     setDataUploadedToDB(true);
-    const dataSource = [...data];
-    setData(dataSource.filter((item) => item.key !== key));
+    // const dataSource = [...data];
+    // setData(dataSource.filter((item) => item.key !== key));
 
     rowDeleteHandler({ key }).then((res) => {
       if (res.message === "Success") {
@@ -69,7 +69,7 @@ export default function News(props) {
       ...item,
       ...values,
     });
-    setData(newData);
+    // setData(newData);
 
     rowEditHandler({
       dataEditted: newData[index],
@@ -116,7 +116,7 @@ export default function News(props) {
       image: values.image,
       expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
     };
-    setData([...data, dataAdded]);
+    // setData([...data, dataAdded]);
 
     rowDataHandler({ dataAdded, uploadedUserImage }).then((res) => {
       if (res.message === "Success") {
@@ -143,7 +143,10 @@ export default function News(props) {
 
   const { data: newsData, error } = useSWR(
     "/api/dashboard/news/fetchNews",
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
   );
 
   useEffect(() => {

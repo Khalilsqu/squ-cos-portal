@@ -1,5 +1,4 @@
 import { google } from "googleapis";
-import axios from "axios";
 export default async function fetchNews(req, res) {
   try {
     const auth = new google.auth.GoogleAuth({
@@ -39,6 +38,11 @@ export default async function fetchNews(req, res) {
       const driveResponse = await drive.files.list({
         q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
         fields: "files(id, name, mimeType, webContentLink)",
+        headers: {
+          Authorization: `Bearer ${
+            accessToken ? accessToken.accessToken : token.accessToken
+          }`,
+        },
       });
 
       const driveRows = driveResponse.data.files;
@@ -47,26 +51,24 @@ export default async function fetchNews(req, res) {
         return {
           key: row.name,
           image: {
-            type: row.mimeType,
             url: row.webContentLink,
-            src: "",
           },
         };
       });
 
-      driveData.forEach((item) => {
-        const downloadImage = async () => {
-          const response = await axios.get(item.image.url, {
-            responseType: "arraybuffer",
-          });
-          const buffer = Buffer.from(response.data, "utf-8");
+      //   driveData.forEach((item) => {
+      //     const downloadImage = async () => {
+      //       const response = await axios.get(item.image.url, {
+      //         responseType: "arraybuffer",
+      //       });
+      //       const buffer = Buffer.from(response.data, "utf-8");
 
-          const base64Image = buffer.toString("base64");
+      //       const base64Image = buffer.toString("base64");
 
-          item.image.src = `data:${item.image.type};base64,${base64Image}`;
-        };
-        downloadImage();
-      });
+      //       item.image.src = `data:${item.image.type};base64,${base64Image}`;
+      //     };
+      //     downloadImage();
+      //   });
 
       const mergedData = data.map((item) => {
         const driveItem = driveData.find(
