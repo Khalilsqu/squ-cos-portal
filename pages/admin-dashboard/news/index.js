@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Form, Table, Button, message, Space, notification, Spin } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
 
-import { AiOutlineInsertRowBelow } from "react-icons/ai";
+import { AiOutlineInsertRowBelow, AiOutlineDelete } from "react-icons/ai";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import ModalData from "../../../components/admin-dashboard/news/addModalNews";
@@ -20,7 +20,13 @@ export default function News(props) {
   const [formAdd] = Form.useForm();
   const [formEdit] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [data, setData] = useState([]);
+
+  const { data, mutate } = useSWR("/api/dashboard/news/fetchNews", fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnMount: true,
+    refreshInterval: 0,
+  });
   const [editingRowKey, setEditingRowKey] = useState(null);
 
   const [uploadedUserImage, setUploadedUserImage] = useState(null);
@@ -36,8 +42,6 @@ export default function News(props) {
 
   const handleDelete = (key) => {
     setDataUploadedToDB(true);
-    // const dataSource = [...data];
-    // setData(dataSource.filter((item) => item.key !== key));
 
     rowDeleteHandler({ key }).then((res) => {
       if (res.message === "Success") {
@@ -55,6 +59,12 @@ export default function News(props) {
         });
       }
     });
+    setUploadedUserImage(null);
+
+    mutate(
+      data.filter((item) => item.key !== key),
+      false
+    );
   };
 
   const handleEditFormFinish = (values) => {
@@ -69,7 +79,6 @@ export default function News(props) {
       ...item,
       ...values,
     });
-    // setData(newData);
 
     rowEditHandler({
       dataEditted: newData[index],
@@ -95,6 +104,8 @@ export default function News(props) {
     });
     setEditingRowKey(null);
     setUploadedUserImage(null);
+
+    mutate(newData, false);
   };
 
   const columns = columnsData({
@@ -106,7 +117,7 @@ export default function News(props) {
     setUploadedUserImage,
   });
 
-  const handleAddFormFinish = (values) => {
+  const handleAddFormFinish = async (values) => {
     setDataUploadedToDB(true);
     const dataAdded = {
       key: uuidv4(),
@@ -116,7 +127,6 @@ export default function News(props) {
       image: values.image,
       expiryDate: values.expiryDate.format("ddd, MMM Do YYYY"),
     };
-    // setData([...data, dataAdded]);
 
     rowDataHandler({ dataAdded, uploadedUserImage }).then((res) => {
       if (res.message === "Success") {
@@ -139,27 +149,10 @@ export default function News(props) {
     });
 
     setUploadedUserImage(null);
+
+    /// mutate the date to update the table
+    mutate([...data, dataAdded], false);
   };
-
-  const { data: newsData, error } = useSWR(
-    "/api/dashboard/news/fetchNews",
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
-  );
-
-  useEffect(() => {
-    if (newsData) {
-      setData(newsData);
-    }
-
-    if (error) {
-      message.error("Error fetching news data from the database");
-    }
-
-    // console.log("newsData", newsData[0].image.url);
-  }, [newsData]);
 
   return (
     <Space>
@@ -187,7 +180,7 @@ export default function News(props) {
             setTablePage(current);
             setTableSize(size);
           },
-          total: data.length,
+          total: data?.length,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} of ${total} items`,
           showQuickJumper: true,

@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+
 export default async function fetchNews(req, res) {
   try {
     const auth = new google.auth.GoogleAuth({
@@ -37,12 +38,7 @@ export default async function fetchNews(req, res) {
       const drive = google.drive({ version: "v3", auth });
       const driveResponse = await drive.files.list({
         q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
-        fields: "files(id, name, mimeType, webContentLink)",
-        headers: {
-          Authorization: `Bearer ${
-            accessToken ? accessToken.accessToken : token.accessToken
-          }`,
-        },
+        fields: "files(id, name, mimeType, webContentLink, webViewLink, size)",
       });
 
       const driveRows = driveResponse.data.files;
@@ -52,23 +48,18 @@ export default async function fetchNews(req, res) {
           key: row.name,
           image: {
             url: row.webContentLink,
+            type: row.mimeType,
+            linkView: row.webViewLink,
+            size: row.size,
+          },
+          Headers: {
+            "Content-Type": row.mimeType,
+            // "Access-Control-Allow-Origin": "*",
+            // "Access-Control-Allow-Methods": "GET",
+            // "Access-Control-Allow-Headers": "Content-Type",
           },
         };
       });
-
-      //   driveData.forEach((item) => {
-      //     const downloadImage = async () => {
-      //       const response = await axios.get(item.image.url, {
-      //         responseType: "arraybuffer",
-      //       });
-      //       const buffer = Buffer.from(response.data, "utf-8");
-
-      //       const base64Image = buffer.toString("base64");
-
-      //       item.image.src = `data:${item.image.type};base64,${base64Image}`;
-      //     };
-      //     downloadImage();
-      //   });
 
       const mergedData = data.map((item) => {
         const driveItem = driveData.find(

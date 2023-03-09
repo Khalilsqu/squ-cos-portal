@@ -27,7 +27,7 @@ export function columnsData({
   handleEditFormFinish,
   setUploadedUserImage,
 }) {
-  const currentTime = dayjs().format("YYYY-MMM-DD h:mm:ss A");
+  // const currentTime = dayjs().format("YYYY-MMM-DD h:mm:ss A");
   return [
     {
       key: uuidv4(),
@@ -96,42 +96,45 @@ export function columnsData({
       dataIndex: "image",
       render: (text, record) => {
         if (record.key === editingRowKey) {
+          // fetch the image from the url and store it in a file variable to be used in the upload component below
+
+          const file = new File([record.image.url], "image.png", {
+            type: "image/png",
+          });
+
           return (
             <Form form={formEdit} onFinish={handleEditFormFinish}>
               <Form.Item
                 name="image"
-                valuePropName="fileList"
+                valuePropName="file"
                 getValueFromEvent={(e) => {
-                  if (Array.isArray(e)) {
-                    return e;
-                  }
-                  return e && e.fileList;
+                  return e.file;
                 }}
-                initialValue={record.image}
+                initialValue={file}
                 rules={[
                   {
                     required: true,
                     message: "Please upload an image!",
                   },
                   {
-                    validator: (rule, fileList) => {
+                    validator: (rule, file) => {
                       const fileTypeArray = [
                         "image/png",
                         "image/jpg",
                         "image/jpeg",
                       ];
                       return new Promise((resolve, reject) => {
-                        if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                        if (file?.size > 1024 * 1024 * 4.5) {
                           reject("Maximum file size allowed is 4.5MB!");
                         } else if (
-                          fileList[0] &&
-                          fileTypeArray.includes(fileList[0]?.type) === false
+                          image &&
+                          fileTypeArray.includes(file?.type) === false
                         ) {
                           reject(
                             "File type is not supported!. Supported types: png, jpg, jpeg"
                           );
                         } else {
-                          resolve("Success!");
+                          resolve();
                         }
                       });
                     },
