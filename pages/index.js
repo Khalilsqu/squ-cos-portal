@@ -1,5 +1,6 @@
 import { Space, Typography, Carousel, Image } from "antd";
 import { google } from "googleapis";
+import moment from "moment/moment";
 
 const contentStyle = {
   margin: 0,
@@ -13,28 +14,44 @@ const contentStyle = {
 export default function IndexPage(props) {
   const { data } = props;
 
+  console.log(
+    moment(data[0].expiryDate, "ddd, MMM Do YYYY").diff(new moment(), "days") +
+      1 >
+      0
+  );
+
+  const carsouel = data.map((item) => {
+    if (
+      moment(item.expiryDate, "ddd, MMM Do YYYY").diff(new moment(), "days") +
+        1 >
+      0
+    ) {
+      return (
+        <div key={item.key}>
+          <h1
+            style={{
+              color: "white",
+              textShadow: "2px 2px 4px #000000",
+              backgroundImage: `url(${item.image.url})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "200px",
+              textAlign: "center",
+              backgroundRepeat: "no-repeat",
+              borderRadius: "12px",
+              fontSize: "2rem",
+            }}
+          >
+            {item.title}
+          </h1>
+        </div>
+      );
+    }
+  });
+
   return (
-    <div className="block w-full">
-      <Carousel autoplay>
-        {data.map((item) => (
-          <div key={item.key}>
-            <h1
-              style={{
-                color: "white",
-                textShadow: "2px 2px 4px #000000",
-                backgroundImage: `url(${item.image.url})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                height: "200px",
-                textAlign: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-            >
-              {item.title}
-            </h1>
-          </div>
-        ))}
-      </Carousel>
+    <div className="block w-full pt-2 rounded-xl">
+      <Carousel autoplay>{carsouel}</Carousel>
     </div>
   );
 }
@@ -103,6 +120,7 @@ export async function getServerSideProps(context) {
         title: row[1],
         description: row[2],
         image: image.image,
+        expiryDate: row[4],
       };
     });
 
