@@ -197,10 +197,22 @@ export function columnsData({
           );
         } else {
           if (text.url !== undefined) {
-            return <Image width={70} src={text.url} alt="Image News" />;
+            return (
+              <Image
+                width={70}
+                src={text.url}
+                alt="Image News"
+                preview={false}
+              />
+            );
           } else {
             return (
-              <Image width={70} src={text[0].thumbUrl} alt={text[0].name} />
+              <Image
+                width={70}
+                src={text[0].thumbUrl}
+                alt={text[0].name}
+                preview={false}
+              />
             );
           }
         }
