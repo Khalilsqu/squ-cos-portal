@@ -21,12 +21,17 @@ export default function News(props) {
   const [formEdit] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { data, mutate } = useSWR("/api/dashboard/news/fetchNews", fetcher, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
-    revalidateOnMount: true,
-    refreshInterval: 0,
-  });
+  const { data, mutate, error, isLoading } = useSWR(
+    "/api/dashboard/news/fetchNews",
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnMount: true,
+      refreshInterval: 0,
+    }
+  );
+
   const [editingRowKey, setEditingRowKey] = useState(null);
 
   const [uploadedUserImage, setUploadedUserImage] = useState(null);
@@ -154,6 +159,14 @@ export default function News(props) {
     mutate([...data, dataAdded], false);
   };
 
+  if (error)
+    return (
+      <div>
+        <h1>Something went wrong {error.message}</h1>
+        <p>Try refreshing the page</p>
+      </div>
+    );
+
   return (
     <Space>
       <ModalData
@@ -165,7 +178,7 @@ export default function News(props) {
       />
       <Table
         columns={columns}
-        loading={dataUploadedToDB}
+        loading={isLoading || dataUploadedToDB}
         dataSource={data}
         pagination={{
           current: tablePage,

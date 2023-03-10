@@ -3,6 +3,7 @@ import {
   DeleteOutlined,
   SaveOutlined,
   UploadOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -236,18 +237,29 @@ export function columnsData({
             direction="horizontal"
             className="flex flex-row gap-x-2 justify-between items-center align-middle"
           >
-            <EditOutlined
-              className="flex cursor-pointer"
-              onClick={() => {
-                setEditingRowKey(record.key);
-                formEdit.setFieldsValue({
-                  title: record.title,
-                  description: record.description,
-                  image: record.image,
-                  expiryDate: moment(record.expiryDate, "ddd, MMM Do YYYY"),
-                });
-              }}
-            />
+            {editingRowKey === null ? (
+              <EditOutlined
+                className="flex cursor-pointer"
+                onClick={() => {
+                  setEditingRowKey(record.key);
+                  formEdit.setFieldsValue({
+                    title: record.title,
+                    description: record.description,
+                    image: record.image,
+                    expiryDate: moment(record.expiryDate, "ddd, MMM Do YYYY"),
+                  });
+                }}
+                title="Edit"
+              />
+            ) : (
+              <CloseCircleOutlined
+                className="flex cursor-pointer"
+                onClick={() => {
+                  setEditingRowKey(null);
+                }}
+                title="Cancel Edit"
+              />
+            )}
 
             {record.key === editingRowKey && (
               <Popconfirm
@@ -257,7 +269,7 @@ export function columnsData({
                 onConfirm={() => formEdit.submit()}
               >
                 <Button
-                  icon={<SaveOutlined />}
+                  icon={<SaveOutlined title="Save Edits" />}
                   htmlType="submit"
                   className="flex border-hidden bg-transparent justify-center items-center"
                 />
@@ -271,7 +283,10 @@ export function columnsData({
             cancelText="No"
             onConfirm={() => handleDelete(record.key)}
           >
-            <DeleteOutlined className="flex text-red-700 cursor-pointer mt-4" />
+            <DeleteOutlined
+              className="flex text-red-700 cursor-pointer mt-4"
+              title="Delete Row"
+            />
           </Popconfirm>
         </Space>
       ),

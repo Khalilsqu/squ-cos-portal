@@ -76,7 +76,6 @@ export default async function fetchNews(req, res) {
       res.status(200).json([]);
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Something went wrong" });
   } finally {
     res.end();
