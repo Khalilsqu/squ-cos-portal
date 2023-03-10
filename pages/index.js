@@ -14,11 +14,6 @@ const contentStyle = {
 export default function IndexPage(props) {
   const { data } = props;
 
-  console.log(
-    moment(data[0].expiryDate, "ddd, MMM Do YYYY").diff(new moment(), "days") +
-      1 >
-      0
-  );
 
   const carsouel = data.map((item) => {
     if (

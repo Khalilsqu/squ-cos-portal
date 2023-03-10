@@ -97,45 +97,57 @@ export function columnsData({
       dataIndex: "image",
       render: (text, record) => {
         if (record.key === editingRowKey) {
-          // fetch the image from the url and store it in a file variable to be used in the upload component below
-
-          const file = new File([record.image.url], "image.png", {
-            type: "image/png",
-          });
-
+          if (record.image.url !== undefined) {
+            const fileList = [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                url: record.image.url,
+                thumbUrl: record.image.url,
+                type: "image/png",
+              },
+            ];
+            formEdit.setFieldsValue({
+              image: fileList,
+            });
+          }
           return (
             <Form form={formEdit} onFinish={handleEditFormFinish}>
               <Form.Item
                 name="image"
-                valuePropName="file"
+                valuePropName="fileList"
                 getValueFromEvent={(e) => {
-                  return e.file;
+                  if (Array.isArray(e)) {
+                    return e;
+                  }
+                  return e && e.fileList;
                 }}
-                initialValue={file}
+                initialValue={record.image}
                 rules={[
                   {
                     required: true,
                     message: "Please upload an image!",
                   },
                   {
-                    validator: (rule, file) => {
+                    validator: (rule, fileList) => {
                       const fileTypeArray = [
                         "image/png",
                         "image/jpg",
                         "image/jpeg",
                       ];
                       return new Promise((resolve, reject) => {
-                        if (file?.size > 1024 * 1024 * 4.5) {
-                          reject("Maximum file size allowed is 4.5MB!");
+                        if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                          reject("File size is greater than 4.5MB!");
                         } else if (
-                          image &&
-                          fileTypeArray.includes(file?.type) === false
+                          fileList[0] &&
+                          fileTypeArray.includes(fileList[0]?.type) === false
                         ) {
                           reject(
                             "File type is not supported!. Supported types: png, jpg, jpeg"
                           );
                         } else {
-                          resolve();
+                          resolve("Success!");
                         }
                       });
                     },
@@ -184,7 +196,13 @@ export function columnsData({
             </Form>
           );
         } else {
-          return <Image width={70} src={text.url} alt="Image News" />;
+          if (text.url !== undefined) {
+            return <Image width={70} src={text.url} alt="Image News" />;
+          } else {
+            return (
+              <Image width={70} src={text[0].thumbUrl} alt={text[0].name} />
+            );
+          }
         }
       },
     },
@@ -252,13 +270,15 @@ export function columnsData({
                 title="Edit"
               />
             ) : (
-              <CloseCircleOutlined
-                className="flex cursor-pointer"
-                onClick={() => {
-                  setEditingRowKey(null);
-                }}
-                title="Cancel Edit"
-              />
+              record.key === editingRowKey && (
+                <CloseCircleOutlined
+                  className="flex cursor-pointer"
+                  onClick={() => {
+                    setEditingRowKey(null);
+                  }}
+                  title="Cancel Edit"
+                />
+              )
             )}
 
             {record.key === editingRowKey && (
