@@ -20,11 +20,16 @@ const ModalData = (props) => {
 
   const handleOk = () => {
     // check if form is valid before submitting it and closing the modal
-    formAdd.validateFields().then((values) => {
-      formAdd.resetFields();
-      setIsModalVisible(false);
-      handleAddFormFinish(values);
-    });
+    formAdd
+      .validateFields()
+      .then((values) => {
+        formAdd.resetFields();
+        setIsModalVisible(false);
+        handleAddFormFinish(values);
+      })
+      .catch((info) => {
+        return; // validation failed
+      });
   };
 
   const handleCancel = () => {
@@ -91,12 +96,14 @@ const ModalData = (props) => {
             return e && e.fileList;
           }}
           rules={[
-            { required: true, message: "Please input image!" },
+            // { required: true, message: "Please input image!" },
             {
               validator: (rule, fileList) => {
                 const fileTypeArray = ["image/png", "image/jpg", "image/jpeg"];
                 return new Promise((resolve, reject) => {
-                  if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                  if (fileList === undefined) {
+                    reject("Please upload an image!");
+                  } else if (fileList[0]?.size > 1024 * 1024 * 4.5) {
                     reject("File size is greater than 4.5MB!");
                   } else if (
                     fileList[0] &&
@@ -106,7 +113,20 @@ const ModalData = (props) => {
                       "File type is not supported!. Supported types: png, jpg, jpeg"
                     );
                   } else {
-                    resolve("Success!");
+                    const img = new Image();
+                    img.src = URL.createObjectURL(fileList[0]?.originFileObj);
+                    img.onload = () => {
+                      const width = img.naturalWidth;
+                      const height = img.naturalHeight;
+                      URL.revokeObjectURL(img.src);
+                      if (width / height < 2) {
+                        reject(
+                          "Image width must be greater than 2 times the height"
+                        );
+                      } else {
+                        resolve("Success!");
+                      }
+                    };
                   }
                 });
               },
@@ -124,16 +144,32 @@ const ModalData = (props) => {
                 if (file.size > 1024 * 1024 * 4.5) {
                   reject("Maximum file size allowed is 4.5MB!");
                 } else if (fileTypeArray.includes(file.type) === false) {
+                  // find dimensions of image
+
                   reject(
                     "File type is not supported!. Supported types: png, jpg, jpeg"
                   );
                 } else {
-                  const reader = new FileReader();
-                  reader.readAsDataURL(file);
-                  reader.onload = () => {
-                    setUploadedUserImage(reader.result);
+                  const img = new Image();
+                  img.src = URL.createObjectURL(file);
+                  img.onload = () => {
+                    const width = img.naturalWidth;
+                    const height = img.naturalHeight;
+                    URL.revokeObjectURL(img.src);
+                    console.log(width, height);
+                    if (width / height < 2) {
+                      reject(
+                        "Image width must be greater than 2 times the height"
+                      );
+                    } else {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(file);
+                      reader.onload = () => {
+                        setUploadedUserImage(reader.result);
+                      };
+                      resolve("Success!");
+                    }
                   };
-                  resolve(file);
                 }
               });
             }}
