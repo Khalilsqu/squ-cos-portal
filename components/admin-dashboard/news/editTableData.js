@@ -315,10 +315,12 @@ export function columnsData({
             cancelText="No"
             onConfirm={() => handleDelete(record.key)}
           >
-            <DeleteOutlined
-              className="flex text-red-700 cursor-pointer mt-4"
-              title="Delete Row"
-            />
+            {!editingRowKey && (
+              <DeleteOutlined
+                className="flex text-red-700 cursor-pointer mt-4"
+                title="Delete Row"
+              />
+            )}
           </Popconfirm>
         </Space>
       ),
