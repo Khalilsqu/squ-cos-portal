@@ -9,15 +9,9 @@ export function AdminMenu() {
   const router = useRouter();
 
   const items = [
-    getItem(
-      "Dashboard",
-      "admin-dashboard",
-      <CiViewList />,
-      null,
-      "Admin Dashboard"
-    ),
-    getItem("Admin Users", "admins", <RiAdminLine />, null, "Admin Users"),
-    getItem("News", "news", <BsNewspaper />, null, "News"),
+    getItem("Dashboard", "admin-dashboard", <CiViewList />, null),
+    getItem("Admin Users", "admins", <RiAdminLine />, null),
+    getItem("News", "news", <BsNewspaper />, null),
   ];
 
   const handleClick = (e) => {
