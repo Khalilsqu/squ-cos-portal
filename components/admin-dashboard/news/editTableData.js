@@ -44,12 +44,13 @@ export function columnsData({
                 rules={[
                   {
                     required: true,
-                    message: "Please input title of minimum 5 characters!",
-                    min: 1,
+                    message: "Please input title of minimum 3 characters!",
+                    min: 3,
+                    max: 25,
                   },
                 ]}
               >
-                <Input maxLength={25} />
+                <Input maxLength={25} minLength={3} showCount />
               </Form.Item>
             </Form>
           );
@@ -72,12 +73,14 @@ export function columnsData({
                 rules={[
                   {
                     required: true,
-                    message: "Please input description!",
-                    min: 1,
+                    message:
+                      "Please input description of minimum 5 characters!",
+                    min: 5,
+                    max: 200,
                   },
                 ]}
               >
-                <Input.TextArea showCount maxLength={120} />
+                <Input.TextArea showCount maxLength={200} />
               </Form.Item>
             </Form>
           );

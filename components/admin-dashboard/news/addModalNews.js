@@ -45,19 +45,39 @@ const ModalData = (props) => {
         <Form.Item
           label="Title"
           name="title"
-          rules={[{ required: true, message: "Please input title!" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input title!",
+              minLength: 3,
+              maxLength: 25,
+            },
+          ]}
         >
-          <Input maxLength={25} placeholder="Write A Title" showCount />
+          <Input
+            maxLength={25}
+            placeholder="Write A Title"
+            showCount
+            minLength={3}
+          />
         </Form.Item>
         <Form.Item
           label="Description"
           name="description"
-          rules={[{ required: true, message: "Please input description!" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input description!",
+              minLength: 5,
+              maxLength: 200,
+            },
+          ]}
         >
           <Input.TextArea
             placeholder="Write a description of the news"
             showCount
-            maxLength={120}
+            maxLength={200}
+            minLength={5}
           />
         </Form.Item>
         <Form.Item
