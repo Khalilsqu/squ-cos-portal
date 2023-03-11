@@ -12,7 +12,7 @@ import {
   Popconfirm,
   Button,
   DatePicker,
-  Image,
+  Image as AntImage,
   Space,
   Typography,
   Upload,
@@ -109,6 +109,8 @@ export function columnsData({
                 url: record.image.url,
                 thumbUrl: record.image.url,
                 type: "image/png",
+                width: record.image.width,
+                height: record.image.height,
               },
             ];
             formEdit.setFieldsValue({
@@ -128,6 +130,7 @@ export function columnsData({
                 }}
                 initialValue={record.image}
                 rules={[
+                  { required: true, message: "Please upload an image" },
                   {
                     validator: (rule, fileList) => {
                       const fileTypeArray = [
@@ -135,41 +138,49 @@ export function columnsData({
                         "image/jpg",
                         "image/jpeg",
                       ];
+
+                      if (!fileList) {
+                        return Promise.reject();
+                      } else if (fileList.length < 1) {
+                        return Promise.reject();
+                      }
+
                       return new Promise((resolve, reject) => {
-                        if (fileList !== undefined) {
-                          if (fileList.lenght > 0) {
-                            if (fileList[0]?.size > 1024 * 1024 * 4.5) {
-                              reject("File size is greater than 4.5MB!");
-                            } else if (
-                              fileTypeArray.includes(fileList[0]?.type) ===
-                              false
-                            ) {
+                        if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                          reject("File size is greater than 4.5MB!");
+                        } else if (
+                          fileTypeArray.includes(fileList[0]?.type) === false
+                        ) {
+                          reject(
+                            "File type is not supported!. Supported types: png, jpg, jpeg"
+                          );
+                        } else {
+                          if (fileList[0]?.originFileObj) {
+                            const img = new Image();
+                            img.src = URL.createObjectURL(
+                              fileList[0]?.originFileObj
+                            );
+                            img.onload = () => {
+                              const width = img.naturalWidth;
+                              const height = img.naturalHeight;
+                              URL.revokeObjectURL(img.src);
+                              if (width / height < 2) {
+                                reject(
+                                  "Image width must be greater than 2 times the height"
+                                );
+                              } else {
+                                resolve("Success!");
+                              }
+                            };
+                          } else {
+                            if (fileList[0]?.width / fileList[0]?.height < 2) {
                               reject(
-                                "File type is not supported!. Supported types: png, jpg, jpeg"
+                                "Image width must be greater than 2 times the height"
                               );
                             } else {
-                              const img = new Image();
-                              img.src = URL.createObjectURL(
-                                fileList[0]?.originFileObj
-                              );
-                              img.onload = () => {
-                                const width = img.naturalWidth;
-                                const height = img.naturalHeight;
-                                URL.revokeObjectURL(img.src);
-                                if (width / height < 2) {
-                                  reject(
-                                    "Image width must be greater than 2 times the height"
-                                  );
-                                } else {
-                                  resolve("Success!");
-                                }
-                              };
+                              resolve("Success!");
                             }
-                          } else if (fileList.length === 0) {
-                            reject("Please upload an image");
                           }
-                        } else {
-                          reject("Please upload an image");
                         }
                       });
                     },
@@ -241,7 +252,7 @@ export function columnsData({
         } else {
           if (text.url !== undefined) {
             return (
-              <Image
+              <AntImage
                 width={70}
                 src={text.url}
                 alt="Image News"
@@ -250,7 +261,7 @@ export function columnsData({
             );
           } else {
             return (
-              <Image
+              <AntImage
                 width={70}
                 src={text[0].thumbUrl}
                 alt={text[0].name}

@@ -38,7 +38,8 @@ export default async function fetchNews(req, res) {
       const drive = google.drive({ version: "v3", auth });
       const driveResponse = await drive.files.list({
         q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
-        fields: "files(id, name, mimeType, webContentLink, webViewLink, size)",
+        fields:
+          "files(id, name, mimeType, webContentLink, webViewLink, size, imageMediaMetadata)",
       });
 
       const driveRows = driveResponse.data.files;
@@ -51,6 +52,8 @@ export default async function fetchNews(req, res) {
             type: row.mimeType,
             linkView: row.webViewLink,
             size: row.size,
+            width: row.imageMediaMetadata.width,
+            height: row.imageMediaMetadata.height,
           },
           Headers: {
             "Content-Type": row.mimeType,
