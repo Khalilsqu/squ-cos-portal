@@ -179,7 +179,6 @@ const ModalData = (props) => {
                 }
               });
             }}
-            // reset the image preview after removing the image
           >
             <Button
               block

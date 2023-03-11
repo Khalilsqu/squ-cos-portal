@@ -80,7 +80,7 @@ export function columnsData({
                   },
                 ]}
               >
-                <Input.TextArea showCount maxLength={200} />
+                <Input.TextArea showCount maxLength={200} minLength={5} />
               </Form.Item>
             </Form>
           );
@@ -129,10 +129,6 @@ export function columnsData({
                 initialValue={record.image}
                 rules={[
                   {
-                    required: true,
-                    message: "Please upload an image!",
-                  },
-                  {
                     validator: (rule, fileList) => {
                       const fileTypeArray = [
                         "image/png",
@@ -140,17 +136,40 @@ export function columnsData({
                         "image/jpeg",
                       ];
                       return new Promise((resolve, reject) => {
-                        if (fileList[0]?.size > 1024 * 1024 * 4.5) {
-                          reject("File size is greater than 4.5MB!");
-                        } else if (
-                          fileList[0] &&
-                          fileTypeArray.includes(fileList[0]?.type) === false
-                        ) {
-                          reject(
-                            "File type is not supported!. Supported types: png, jpg, jpeg"
-                          );
+                        if (fileList !== undefined) {
+                          if (fileList.lenght > 0) {
+                            if (fileList[0]?.size > 1024 * 1024 * 4.5) {
+                              reject("File size is greater than 4.5MB!");
+                            } else if (
+                              fileTypeArray.includes(fileList[0]?.type) ===
+                              false
+                            ) {
+                              reject(
+                                "File type is not supported!. Supported types: png, jpg, jpeg"
+                              );
+                            } else {
+                              const img = new Image();
+                              img.src = URL.createObjectURL(
+                                fileList[0]?.originFileObj
+                              );
+                              img.onload = () => {
+                                const width = img.naturalWidth;
+                                const height = img.naturalHeight;
+                                URL.revokeObjectURL(img.src);
+                                if (width / height < 2) {
+                                  reject(
+                                    "Image width must be greater than 2 times the height"
+                                  );
+                                } else {
+                                  resolve("Success!");
+                                }
+                              };
+                            }
+                          } else if (fileList.length === 0) {
+                            reject("Please upload an image");
+                          }
                         } else {
-                          resolve("Success!");
+                          reject("Please upload an image");
                         }
                       });
                     },
@@ -175,11 +194,32 @@ export function columnsData({
                       if (file.size > 1024 * 1024 * 4.5) {
                         reject("Maximum file size allowed is 4.5MB!");
                       } else if (fileTypeArray.includes(file.type) === false) {
+                        // find dimensions of image
+
                         reject(
                           "File type is not supported!. Supported types: png, jpg, jpeg"
                         );
                       } else {
-                        resolve(file);
+                        const img = new Image();
+                        img.src = URL.createObjectURL(file);
+                        img.onload = () => {
+                          const width = img.naturalWidth;
+                          const height = img.naturalHeight;
+                          URL.revokeObjectURL(img.src);
+                          console.log(width, height);
+                          if (width / height < 2) {
+                            reject(
+                              "Image width must be greater than 2 times the height"
+                            );
+                          } else {
+                            const reader = new FileReader();
+                            reader.readAsDataURL(file);
+                            reader.onload = () => {
+                              setUploadedUserImage(reader.result);
+                            };
+                            resolve("Success!");
+                          }
+                        };
                       }
                     });
                   }}
