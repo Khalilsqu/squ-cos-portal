@@ -168,7 +168,7 @@ export default function News(props) {
     );
 
   return (
-    <Space>
+    <Space className="w-full h-full justify-center items-center">
       <ModalData
         formAdd={formAdd}
         isModalVisible={isModalVisible}
@@ -240,7 +240,7 @@ export default function News(props) {
         style={{
           maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
         }}
-        className="py-2 px-4 items-center justify-center"
+        className="py-2 px-4"
       />
     </Space>
   );

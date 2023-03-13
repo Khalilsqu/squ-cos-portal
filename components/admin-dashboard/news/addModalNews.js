@@ -74,14 +74,14 @@ const ModalData = (props) => {
               required: true,
               message: "Please input description!",
               min: 5,
-              max: 200,
+              max: 500,
             },
           ]}
         >
           <Input.TextArea
             placeholder="Write a description of the news"
             showCount
-            maxLength={200}
+            maxLength={500}
             minLength={5}
           />
         </Form.Item>

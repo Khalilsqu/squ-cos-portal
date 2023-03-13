@@ -1,6 +1,7 @@
-import { Space, Typography, Carousel, Image } from "antd";
+import { Carousel } from "antd";
 import { google } from "googleapis";
 import moment from "moment/moment";
+import Link from "next/link";
 
 const contentStyle = {
   margin: 0,
@@ -14,6 +15,9 @@ const contentStyle = {
 export default function IndexPage(props) {
   const { data } = props;
 
+  if (!data) {
+    return;
+  }
 
   const carsouel = data.map((item) => {
     if (
@@ -30,14 +34,16 @@ export default function IndexPage(props) {
               backgroundImage: `url(${item.image.url})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              height: "200px",
+              height: "300px",
               textAlign: "center",
               backgroundRepeat: "no-repeat",
               borderRadius: "12px",
               fontSize: "2rem",
             }}
           >
-            {item.title}
+            <Link href="/newsKey" as={`/${item.key}`}>
+              {item.title}
+            </Link>
           </h1>
         </div>
       );
@@ -99,9 +105,6 @@ export async function getServerSideProps(context) {
 
         Headers: {
           "Content-Type": row.mimeType,
-          // "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Methods": "GET",
-          // "Access-Control-Allow-Headers": "Content-Type",
         },
       };
     });

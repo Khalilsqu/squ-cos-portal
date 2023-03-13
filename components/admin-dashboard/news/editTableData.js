@@ -76,11 +76,11 @@ export function columnsData({
                     message:
                       "Please input description of minimum 5 characters!",
                     min: 5,
-                    max: 200,
+                    max: 500,
                   },
                 ]}
               >
-                <Input.TextArea showCount maxLength={200} minLength={5} />
+                <Input.TextArea showCount maxLength={500} minLength={5} />
               </Form.Item>
             </Form>
           );

@@ -133,7 +133,7 @@ export default function PageLayout({ children }) {
                 (isBreakPoint ? "ml-0" : collapsed ? "ml-20" : "ml-50")
               }
             >
-              <Content className="flex justify-center">
+              <Content className="flex">
                 {children}
                 <FloatButton.BackTop
                   style={{
