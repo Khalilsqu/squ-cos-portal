@@ -164,18 +164,18 @@ export function columnsData({
                               const width = img.naturalWidth;
                               const height = img.naturalHeight;
                               URL.revokeObjectURL(img.src);
-                              if (width / height < 3) {
+                              if (width / height < 2.5) {
                                 reject(
-                                  "Image width must be greater than 3 times the height"
+                                  "Image width must be greater than 2.5 times the height"
                                 );
                               } else {
                                 resolve("Success!");
                               }
                             };
                           } else {
-                            if (fileList[0]?.width / fileList[0]?.height < 2) {
+                            if (fileList[0]?.width / fileList[0]?.height < 2.5) {
                               reject(
-                                "Image width must be greater than 2 times the height"
+                                "Image width must be greater than 2.5 times the height"
                               );
                             } else {
                               resolve("Success!");
@@ -218,9 +218,9 @@ export function columnsData({
                           const height = img.naturalHeight;
                           URL.revokeObjectURL(img.src);
                           console.log(width, height);
-                          if (width / height < 3) {
+                          if (width / height < 2.5) {
                             reject(
-                              "Image width must be greater than 3 times the height"
+                              "Image width must be greater than 2.5 times the height"
                             );
                           } else {
                             const reader = new FileReader();
