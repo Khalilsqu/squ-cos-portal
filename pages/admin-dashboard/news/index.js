@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Button, message, Space, notification, Spin } from "antd";
+import { Form, Table, Button, Space, notification } from "antd";
 import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
 
-import { AiOutlineInsertRowBelow, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineInsertRowBelow } from "react-icons/ai";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import ModalData from "../../../components/admin-dashboard/news/addModalNews";

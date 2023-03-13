@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { Typography } from "antd";
+import { Typography, Spin } from "antd";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -20,8 +20,25 @@ export default function NewsDetails() {
     }
   );
 
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (error)
+    return (
+      <div>
+        <Typography.Title level={1} className="text-6xl font-bold">
+          Error loading news from the database. Please try to re-visit the page
+          again.
+        </Typography.Title>
+      </div>
+    );
+  if (isLoading)
+    return (
+      <div
+        className="
+        flex flex-col. w-full justify-center items-center
+      "
+      >
+        <Spin size="large" tip="Loading" />
+      </div>
+    );
 
   if (data) {
     const newsData = data.find((item) => item.key === newsKey);
@@ -34,7 +51,6 @@ export default function NewsDetails() {
         </Head>
 
         <main>
-          {/* remove previous styles*/}
           <div className="flex flex-col justify-start">
             <Typography.Title level={1} className="text-6xl font-bold">
               {newsData.title}
