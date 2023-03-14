@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   Table,
@@ -26,6 +26,8 @@ import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory"
 import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory";
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
+import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/transferPositions";
+import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 const columnWidth = "200px";
@@ -134,7 +136,7 @@ export default function StaffDirectory() {
   const isBreakPoint = isBreakPointState().isBreakPoint;
   const collapsed = collapsedState().collapsed;
   const colorTheme = colorThemeState().colorTheme;
-  const [targetKeys, setTargetKeys] = useState(positionList);
+  const [targetKeys, setTargetKeys] = useState([]);
 
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
@@ -169,69 +171,39 @@ export default function StaffDirectory() {
           </Tag>
         ))}
         <Divider type="vertical" className="h-8 shadow-2xl border-2" />
-        <Button
-          type="primary"
-          className="border-red-600"
-          onClick={() => {
-            setDepartmentAddModalOpen(true);
-          }}
-          icon={<PlusOutlined />}
-        >
-          Add a new Department
-        </Button>
-        <Button
-          type="danger"
-          className="border-red-600"
-          onClick={() => {
-            setDepartmentDeleteModalOpen(true);
-          }}
-          icon={<DeleteOutlined />}
-        >
-          Delete a Department
-        </Button>
+        <CustomTooltip title="Add Department">
+          <Button
+            className="border-0 bg-transparent"
+            icon={
+              <PlusOutlined
+                onClick={() => {
+                  setDepartmentAddModalOpen(true);
+                }}
+              />
+            }
+          />
+        </CustomTooltip>
+        <CustomTooltip title="Delete Department">
+          <Button
+            type="danger"
+            className="border-0 bg-transparent"
+            icon={
+              <DeleteOutlined
+                onClick={() => {
+                  setDepartmentDeleteModalOpen(true);
+                }}
+              />
+            }
+          />
+        </CustomTooltip>
       </Space>
       <Divider orientation="left">Positions</Divider>
-      <Transfer
-        dataSource={positionList.map((position) => ({
-          key: position,
-          title: position,
-        }))}
-        showSearch
-        filterOption={(inputValue, item) =>
-          // match search case insensitive
-          item.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-        }
-        listStyle={{
-          width: 300,
-          height: 300,
-        }}
-        operations={["Add", "Remove"]}
-        titles={["Available", "Selected"]}
-        direction="right"
+      <TransferPosition
+        positionList={positionList}
+        setPositionList={setPositionList}
         targetKeys={targetKeys}
-        render={(item) => item.title}
-        onChange={(nextTargetKeys, direction, moveKeys) => {
-          setTargetKeys(nextTargetKeys);
-        }}
-        footer={(props) => {
-          if (props.direction === "left") {
-            return (
-              <CustomTooltip title="Add a new Position">
-                <Button
-                  className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
-                  icon={
-                    <PlusOutlined
-                      onClick={() => {
-                        setPositionAddModalOpen(true);
-                      }}
-                    />
-                  }
-                />
-              </CustomTooltip>
-            );
-          }
-        }}
-        className="mb-10 overflow-x-auto"
+        setTargetKeys={setTargetKeys}
+        setPositionAddModalOpen={setPositionAddModalOpen}
       />
       <Divider orientation="left">Staff Table</Divider>
       <AddStaffDrawer
@@ -241,6 +213,7 @@ export default function StaffDirectory() {
         handleAddFormFinish={handleAddFormFinish}
         setFormErrorMessages={setFormErrorMessages}
         departmentList={departmentList}
+        targetKeys={targetKeys}
       />
       <AddColumnModal
         columns={columns}
@@ -268,7 +241,7 @@ export default function StaffDirectory() {
         setPositionAddModalOpen={setPositionAddModalOpen}
         formAddPosition={formAddPosition}
         positionList={positionList}
-        setTargetKeys={setTargetKeys}
+        setPositionList={setPositionList}
       />
       <Table
         columns={columns}
@@ -299,48 +272,6 @@ export default function StaffDirectory() {
     </div>
   );
 }
-
-const AddNewPositionModal = ({
-  positionAddModalOpen,
-  setPositionAddModalOpen,
-  formAddPosition,
-}) => {
-  return (
-    <Modal
-      title="Add a new Position"
-      visible={positionAddModalOpen}
-      onCancel={() => {
-        setPositionAddModalOpen(false);
-      }}
-      footer={null}
-    >
-      <Form
-        form={formAddPosition}
-        onFinish={(values) => {
-          console.log(values);
-        }}
-      >
-        <Form.Item
-          name="position"
-          label="Position"
-          rules={[
-            {
-              required: true,
-              message: "Please enter a position",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Add
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-};
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);

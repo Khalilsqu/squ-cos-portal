@@ -264,6 +264,7 @@ export const AddStaffDrawer = ({
   handleAddFormFinish,
   setFormErrorMessages,
   departmentList,
+  targetKeys,
 }) => {
   const { width } = useWindowSize();
   return (

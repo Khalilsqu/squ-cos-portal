@@ -79,14 +79,6 @@ export default function PageLayout({ children }) {
   };
 
   const handleShowAdminPanel = (value) => {
-    if (value) {
-      if (status === "authenticated") {
-        setShowAdminPanel(value);
-        setCookie("showAdminPanel", value ? "true" : "false", {
-          maxAge: 60 * 60 * 24,
-        }); // 1 day
-      }
-    }
     setShowAdminPanel(value);
     setCookie("showAdminPanel", value ? "true" : "false", {
       maxAge: 60 * 60 * 24 * 1,
@@ -97,7 +89,7 @@ export default function PageLayout({ children }) {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
     setBreakPoint(getCookie("isBreakPoint"));
-    if (getCookie("showAdminPanel") === "true" && status !== "authenticated") {
+    if (status !== "authenticated") {
       setCookie("showAdminPanel", "false", {
         maxAge: 60 * 60 * 24,
       }); // 1 day
