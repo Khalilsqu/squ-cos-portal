@@ -12,6 +12,7 @@ import {
   Col,
   Row,
   Select,
+  Modal,
 } from "antd";
 
 import { MailOutlined } from "@ant-design/icons";
@@ -90,6 +91,8 @@ export default function StaffDirectory() {
   ]);
 
   const [formAdd] = Form.useForm();
+  const [formAddColumns] = Form.useForm();
+  const [columnAddModalOpen, setColumnAddModalOpen] = useState(false);
   const { width } = useWindowSize();
 
   const isBreakPoint = isBreakPointState().isBreakPoint;
@@ -112,7 +115,7 @@ export default function StaffDirectory() {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <h1>Staff Directory</h1>
       <AddStaffDrawer
         drawerOpen={drawerOpen}
@@ -121,6 +124,13 @@ export default function StaffDirectory() {
         handleAddFormFinish={handleAddFormFinish}
         setFormErrorMessages={setFormErrorMessages}
         departmentList={departmentList}
+      />
+      <AddColumnModal
+        columns={columns}
+        setColumns={setColumns}
+        columnAddModalOpen={columnAddModalOpen}
+        setColumnAddModalOpen={setColumnAddModalOpen}
+        formAddColumns={formAddColumns}
       />
       <Table
         columns={columns}
@@ -133,17 +143,7 @@ export default function StaffDirectory() {
               </Button>
               <Button
                 type="primary"
-                onClick={() => {
-                  const newColumns = [...columns];
-                  newColumns.splice(newColumns.length - 1, 0, {
-                    title: "New Column",
-                    dataIndex: "newColumn",
-                    key: "newColumn",
-                    editable: true,
-                    width: columnWidth,
-                  });
-                  setColumns(newColumns);
-                }}
+                onClick={() => setColumnAddModalOpen(true)}
               >
                 Add a new column
               </Button>
@@ -161,6 +161,93 @@ export default function StaffDirectory() {
     </div>
   );
 }
+
+const AddColumnModal = ({
+  columns,
+  setColumns,
+  columnAddModalOpen,
+  setColumnAddModalOpen,
+  formAddColumns,
+}) => {
+  return (
+    <Modal
+      title="Add a new column"
+      open={columnAddModalOpen}
+      onCancel={() => setColumnAddModalOpen(false)}
+      footer={[
+        <Button
+          key="back"
+          onClick={() => {
+            formAddColumns.resetFields();
+            setColumnAddModalOpen(false);
+          }}
+        >
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            formAddColumns
+              .validateFields()
+              .then((values) => {
+                const newColumns = [...columns];
+                newColumns.splice(newColumns.length - 1, 0, {
+                  title: values.title,
+                  dataIndex: values.dataIndex,
+                  key: values.dataIndex,
+                  editable: true,
+                  width: columnWidth,
+                });
+                setColumns(newColumns);
+                setColumnAddModalOpen(false);
+                formAddColumns.resetFields();
+              })
+              .catch((info) => {
+                console.log("Validate Failed:", info);
+              });
+          }}
+        >
+          Submit
+        </Button>,
+      ]}
+    >
+      <Form
+        form={formAddColumns}
+        layout="vertical"
+        name="form_in_modal"
+        initialValues={{
+          modifier: "public",
+        }}
+      >
+        <Form.Item
+          name="title"
+          label="Title"
+          rules={[
+            {
+              required: true,
+              message: "Please input the title of the column!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="dataIndex"
+          label="Data Index"
+          rules={[
+            {
+              required: true,
+              message: "Please input the data index of the column!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
 
 const AddStaffDrawer = ({
   drawerOpen,

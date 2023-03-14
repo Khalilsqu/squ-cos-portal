@@ -9,6 +9,8 @@ import SiderComponent from "./siderbar";
 const { Content } = Layout;
 export const LayoutContext = createContext();
 
+import { useSession } from "next-auth/react";
+
 export const colorThemeState = create((set) => ({
   themeColor: "light",
   setThemeColorChange: (themeColor) =>
@@ -34,6 +36,7 @@ export const isBreakPointState = create((set) => ({
 }));
 
 export default function PageLayout({ children }) {
+  const { data: session, status } = useSession();
   let showAdminPanelValue = false;
 
   const [showAdminPanel, setShowAdminPanel] = useState(showAdminPanelValue);
@@ -73,6 +76,14 @@ export default function PageLayout({ children }) {
   };
 
   const handleShowAdminPanel = (value) => {
+    if (value) {
+      if (status === "authenticated") {
+        setShowAdminPanel(value);
+        setCookie("showAdminPanel", value ? "true" : "false", {
+          maxAge: 60 * 60 * 1,
+        }); // 1 hour
+      }
+    }
     setShowAdminPanel(value);
     setCookie("showAdminPanel", value ? "true" : "false", {
       maxAge: 60 * 60 * 24 * 1,
@@ -83,8 +94,13 @@ export default function PageLayout({ children }) {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
     setBreakPoint(getCookie("isBreakPoint"));
+    if (getCookie("showAdminPanel") === "true" && status !== "authenticated") {
+      setCookie("showAdminPanel", "false", {
+        maxAge: 60 * 60 * 1,
+      }); // 1 hour
+    }
     setShowAdminPanel(getCookie("showAdminPanel"));
-  }, [themeColor, collapsed, isBreakPoint]);
+  }, [themeColor, collapsed, isBreakPoint, showAdminPanel, status]);
 
   return (
     <LayoutContext.Provider
