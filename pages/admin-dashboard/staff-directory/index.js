@@ -7,19 +7,26 @@ import {
   Button,
   Space,
   notification,
-  Drawer,
-  Input,
-  Col,
-  Row,
-  Select,
+  Typography,
+  Divider,
+  Tag,
+  Transfer,
   Modal,
+  Input,
 } from "antd";
 
-import { MailOutlined } from "@ant-design/icons";
+import { MailOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
+import { colorThemeState } from "@/components/layout/pageLayout";
+
+import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
+import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory";
+import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
+import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 
 const columnWidth = "200px";
 
@@ -90,13 +97,45 @@ export default function StaffDirectory() {
     "Statistics",
   ]);
 
+  const [positionList, setPositionList] = useState([
+    "Professor",
+    "Associate Professor",
+    "Assistant Professor",
+    "Lecturer",
+    "Demonstrator",
+    "Researcher",
+    "Research Assistant",
+    "Dean",
+    "Assistant Dean for Undergraduate Studies",
+    "Assistant Dean for PostGraduate Studies",
+    "Assistant Dean for Community Service",
+    "Clerk",
+    "Secretary",
+    "Department Head",
+    "Depatment SuperAttendant",
+    "Technician",
+    "Consultant",
+  ]);
+
   const [formAdd] = Form.useForm();
   const [formAddColumns] = Form.useForm();
   const [columnAddModalOpen, setColumnAddModalOpen] = useState(false);
+  const [formAddDepartment] = Form.useForm();
+  const [departmentAddModalOpen, setDepartmentAddModalOpen] = useState(false);
+  const [formDeleteDepartment] = Form.useForm();
+  const [departmentDeleteModalOpen, setDepartmentDeleteModalOpen] =
+    useState(false);
+
+  const [formAddPosition] = Form.useForm();
+  const [positionAddModalOpen, setPositionAddModalOpen] = useState(false);
+
   const { width } = useWindowSize();
 
   const isBreakPoint = isBreakPointState().isBreakPoint;
   const collapsed = collapsedState().collapsed;
+  const colorTheme = colorThemeState().colorTheme;
+  const [targetKeys, setTargetKeys] = useState(positionList);
+
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
   const handleAddFormFinish = (values) => {
@@ -116,7 +155,85 @@ export default function StaffDirectory() {
 
   return (
     <div className="w-full">
-      <h1>Staff Directory</h1>
+      <Typography.Title level={1} className="w-full text-center">
+        Staff Directory
+      </Typography.Title>
+      <Divider orientation="left">Departments</Divider>
+      <Space wrap className="mb-4">
+        {departmentList.map((department) => (
+          <Tag
+            color={colorTheme === "dark" ? "geekblue" : "blue"}
+            key={department}
+          >
+            {department}
+          </Tag>
+        ))}
+        <Divider type="vertical" className="h-8 shadow-2xl border-2" />
+        <Button
+          type="primary"
+          className="border-red-600"
+          onClick={() => {
+            setDepartmentAddModalOpen(true);
+          }}
+          icon={<PlusOutlined />}
+        >
+          Add a new Department
+        </Button>
+        <Button
+          type="danger"
+          className="border-red-600"
+          onClick={() => {
+            setDepartmentDeleteModalOpen(true);
+          }}
+          icon={<DeleteOutlined />}
+        >
+          Delete a Department
+        </Button>
+      </Space>
+      <Divider orientation="left">Positions</Divider>
+      <Transfer
+        dataSource={positionList.map((position) => ({
+          key: position,
+          title: position,
+        }))}
+        showSearch
+        filterOption={(inputValue, item) =>
+          // match search case insensitive
+          item.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+        }
+        listStyle={{
+          width: 300,
+          height: 300,
+        }}
+        operations={["Add", "Remove"]}
+        titles={["Available", "Selected"]}
+        direction="right"
+        targetKeys={targetKeys}
+        render={(item) => item.title}
+        onChange={(nextTargetKeys, direction, moveKeys) => {
+          setTargetKeys(nextTargetKeys);
+        }}
+        footer={(props) => {
+          if (props.direction === "left") {
+            return (
+              <CustomTooltip title="Add a new Position">
+                <Button
+                  className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
+                  icon={
+                    <PlusOutlined
+                      onClick={() => {
+                        setPositionAddModalOpen(true);
+                      }}
+                    />
+                  }
+                />
+              </CustomTooltip>
+            );
+          }
+        }}
+        className="mb-10 overflow-x-auto"
+      />
+      <Divider orientation="left">Staff Table</Divider>
       <AddStaffDrawer
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
@@ -131,6 +248,27 @@ export default function StaffDirectory() {
         columnAddModalOpen={columnAddModalOpen}
         setColumnAddModalOpen={setColumnAddModalOpen}
         formAddColumns={formAddColumns}
+      />
+      <AddDepartmentModal
+        departmentAddModalOpen={departmentAddModalOpen}
+        setDepartmentAddModalOpen={setDepartmentAddModalOpen}
+        formAddDepartment={formAddDepartment}
+        departmentList={departmentList}
+        setDepartmentList={setDepartmentList}
+      />
+      <DeleteDepartmentModal
+        departmentDeleteModalOpen={departmentDeleteModalOpen}
+        setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
+        formDeleteDepartment={formDeleteDepartment}
+        departmentList={departmentList}
+        setDepartmentList={setDepartmentList}
+      />
+      <AddNewPositionModal
+        positionAddModalOpen={positionAddModalOpen}
+        setPositionAddModalOpen={setPositionAddModalOpen}
+        formAddPosition={formAddPosition}
+        positionList={positionList}
+        setTargetKeys={setTargetKeys}
       />
       <Table
         columns={columns}
@@ -162,207 +300,45 @@ export default function StaffDirectory() {
   );
 }
 
-const AddColumnModal = ({
-  columns,
-  setColumns,
-  columnAddModalOpen,
-  setColumnAddModalOpen,
-  formAddColumns,
+const AddNewPositionModal = ({
+  positionAddModalOpen,
+  setPositionAddModalOpen,
+  formAddPosition,
 }) => {
   return (
     <Modal
-      title="Add a new column"
-      open={columnAddModalOpen}
-      onCancel={() => setColumnAddModalOpen(false)}
-      footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            formAddColumns.resetFields();
-            setColumnAddModalOpen(false);
-          }}
-        >
-          Cancel
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          onClick={() => {
-            formAddColumns
-              .validateFields()
-              .then((values) => {
-                const newColumns = [...columns];
-                newColumns.splice(newColumns.length - 1, 0, {
-                  title: values.title,
-                  dataIndex: values.dataIndex,
-                  key: values.dataIndex,
-                  editable: true,
-                  width: columnWidth,
-                });
-                setColumns(newColumns);
-                setColumnAddModalOpen(false);
-                formAddColumns.resetFields();
-              })
-              .catch((info) => {
-                console.log("Validate Failed:", info);
-              });
-          }}
-        >
-          Submit
-        </Button>,
-      ]}
+      title="Add a new Position"
+      visible={positionAddModalOpen}
+      onCancel={() => {
+        setPositionAddModalOpen(false);
+      }}
+      footer={null}
     >
       <Form
-        form={formAddColumns}
-        layout="vertical"
-        name="form_in_modal"
-        initialValues={{
-          modifier: "public",
+        form={formAddPosition}
+        onFinish={(values) => {
+          console.log(values);
         }}
       >
         <Form.Item
-          name="title"
-          label="Title"
+          name="position"
+          label="Position"
           rules={[
             {
               required: true,
-              message: "Please input the title of the column!",
+              message: "Please enter a position",
             },
           ]}
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="dataIndex"
-          label="Data Index"
-          rules={[
-            {
-              required: true,
-              message: "Please input the data index of the column!",
-            },
-          ]}
-        >
-          <Input />
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Add
+          </Button>
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
-
-const AddStaffDrawer = ({
-  drawerOpen,
-  setDrawerOpen,
-  formAdd,
-  handleAddFormFinish,
-  setFormErrorMessages,
-  departmentList,
-}) => {
-  const { width } = useWindowSize();
-  return (
-    <Drawer
-      title="Add Staff"
-      placement="right"
-      closable={false}
-      onClose={() => setDrawerOpen(false)}
-      open={drawerOpen}
-      maskClosable={false}
-      mask={true}
-      maskStyle={{
-        backgroundColor: "rgba(0, 0, 0, 0.6)",
-      }}
-      width={
-        width > 768 ? "50%" : width > 576 ? "70%" : width > 320 ? "90%" : "100%"
-      }
-      footer={
-        <div
-          style={{
-            textAlign: "right",
-          }}
-        >
-          <Button
-            onClick={() => {
-              formAdd.resetFields();
-              setDrawerOpen(false);
-            }}
-            style={{ marginRight: 8 }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              formAdd
-                .validateFields()
-                .then((values) => {
-                  handleAddFormFinish(values);
-                  formAdd.resetFields();
-                  setDrawerOpen(false);
-                })
-                .catch((info) => {
-                  setFormErrorMessages(info.errorFields);
-                });
-            }}
-            type="primary"
-          >
-            Submit
-          </Button>
-        </div>
-      }
-    >
-      <Form form={formAdd} layout="vertical">
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: "Please enter name" }]}
-            >
-              <Input placeholder="Please enter name" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter email",
-                },
-                {
-                  type: "email",
-                  message: "Please enter a valid email",
-                },
-              ]}
-            >
-              <Input
-                placeholder="Please enter email"
-                prefix={<MailOutlined />}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="department"
-              label="Department"
-              hasFeedback
-              rules={[{ required: true, message: "Please enter department" }]}
-            >
-              <Select placeholder="Please select department" allowClear>
-                {departmentList.sort().map((department) => {
-                  return (
-                    <Select.Option key={department} value={department}>
-                      {department}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </Drawer>
   );
 };
 

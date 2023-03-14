@@ -1,5 +1,6 @@
 import { Layout, theme, ConfigProvider, FloatButton } from "antd";
 import { useState, createContext, useEffect } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { setCookie, getCookie } from "cookies-next";
 import { create } from "zustand";
@@ -36,6 +37,8 @@ export const isBreakPointState = create((set) => ({
 }));
 
 export default function PageLayout({ children }) {
+  const router = useRouter();
+
   const { data: session, status } = useSession();
   let showAdminPanelValue = false;
 
@@ -80,8 +83,8 @@ export default function PageLayout({ children }) {
       if (status === "authenticated") {
         setShowAdminPanel(value);
         setCookie("showAdminPanel", value ? "true" : "false", {
-          maxAge: 60 * 60 * 1,
-        }); // 1 hour
+          maxAge: 60 * 60 * 24,
+        }); // 1 day
       }
     }
     setShowAdminPanel(value);
@@ -96,8 +99,9 @@ export default function PageLayout({ children }) {
     setBreakPoint(getCookie("isBreakPoint"));
     if (getCookie("showAdminPanel") === "true" && status !== "authenticated") {
       setCookie("showAdminPanel", "false", {
-        maxAge: 60 * 60 * 1,
-      }); // 1 hour
+        maxAge: 60 * 60 * 24,
+      }); // 1 day
+      router.push("/");
     }
     setShowAdminPanel(getCookie("showAdminPanel"));
   }, [themeColor, collapsed, isBreakPoint, showAdminPanel, status]);
