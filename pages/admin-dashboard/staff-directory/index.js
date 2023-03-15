@@ -10,9 +10,6 @@ import {
   Typography,
   Divider,
   Tag,
-  Transfer,
-  Modal,
-  Input,
 } from "antd";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
@@ -25,7 +22,7 @@ import { isBreakPointState } from "@/components/layout/pageLayout";
 import { colorThemeState } from "@/components/layout/pageLayout";
 
 import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
-import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory";
+import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory/addSatffToTable";
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
 import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/transferPositions";
@@ -37,13 +34,13 @@ export const columnWidth = "200px";
 const columnsList = [
   {
     title: "Name",
-    dataIndex: "name",
+    dataIndex: "Name",
     editable: true,
     width: columnWidth,
   },
   {
     title: "Email",
-    dataIndex: "email",
+    dataIndex: "Email",
     editable: true,
     width: columnWidth,
   },
@@ -140,12 +137,24 @@ export default function StaffDirectory() {
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
   const handleAddFormFinish = (values) => {
-    const newData = {
-      key: data.length + 1,
-      name: values.name,
-      email: values.email,
-      department: values.department,
-    };
+    const mappedData = columns.map((column) => {
+      if (column.dataIndex !== "Action") {
+        return {
+          key: data.length + 1,
+          [column.dataIndex]: values[column.dataIndex],
+        };
+      }
+    });
+    const newData = Object.assign({}, ...mappedData);
+
+    // const newData = columns.map((column) => {
+    //   if (column.dataIndex !== "Action") {
+    //     return {
+    //       key: data.length + 1,
+    //       [column.dataIndex]: values[column.dataIndex],
+    //     };
+    //   }
+    // });
 
     setData([...data, newData]);
     notification.success({
@@ -215,6 +224,7 @@ export default function StaffDirectory() {
         targetKeys={targetKeys}
         positionList={positionList}
         columns={columns}
+        data={data}
       />
       <AddColumnModal
         columns={columns}

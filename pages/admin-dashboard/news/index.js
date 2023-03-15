@@ -167,83 +167,85 @@ export default function News(props) {
       </div>
     );
 
-  return (
-    <Space className="w-full h-full justify-center items-center">
-      <ModalData
-        formAdd={formAdd}
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        handleAddFormFinish={handleAddFormFinish}
-        setUploadedUserImage={setUploadedUserImage}
-      />
-      <Table
-        columns={columns}
-        loading={isLoading || dataUploadedToDB}
-        dataSource={data}
-        pagination={{
-          current: tablePage,
-          pageSize: tableSize,
-          onChange: (page, pageSize) => {
-            setTablePage(page);
-            setTableSize(pageSize);
-          },
-          showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "15", "20"],
-          onShowSizeChange: (current, size) => {
-            setTablePage(current);
-            setTableSize(size);
-          },
-          total: data?.length,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
-          showQuickJumper: true,
-          showLessItems: true,
-          responsive: true,
-          position: ["bottomCenter"],
-          size: "small",
-          itemRender: (current, type, originalElement) => {
-            if (type === "prev") {
-              return (
-                <a>
-                  <LeftOutlined />
-                </a>
-              );
-            }
-            if (type === "next") {
-              return (
-                <a>
-                  <RightOutlined />
-                </a>
-              );
-            }
-            return originalElement;
-          },
-          showTitle: true,
-          hideOnSinglePage: false,
-        }}
-        footer={() => {
-          return (
-            <Button
-              type="primary"
-              onClick={() => setIsModalVisible(true)}
-              className="w-full flex justify-center items-center gap-4"
-              icon={<AiOutlineInsertRowBelow />}
-            >
-              Add News
-            </Button>
-          );
-        }}
-        size="small"
-        scroll={{ x: true }}
-        tableLayout="auto"
-        bordered
-        style={{
-          maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
-        }}
-        className="py-2 px-4"
-      />
-    </Space>
-  );
+  if (data !== undefined && data?.length > 0) {
+    return (
+      <Space className="w-full h-full justify-center items-center">
+        <ModalData
+          formAdd={formAdd}
+          isModalVisible={isModalVisible}
+          setIsModalVisible={setIsModalVisible}
+          handleAddFormFinish={handleAddFormFinish}
+          setUploadedUserImage={setUploadedUserImage}
+        />
+        <Table
+          columns={columns}
+          loading={isLoading || dataUploadedToDB}
+          dataSource={data}
+          pagination={{
+            current: tablePage,
+            pageSize: tableSize,
+            onChange: (page, pageSize) => {
+              setTablePage(page);
+              setTableSize(pageSize);
+            },
+            showSizeChanger: true,
+            pageSizeOptions: ["5", "10", "15", "20"],
+            onShowSizeChange: (current, size) => {
+              setTablePage(current);
+              setTableSize(size);
+            },
+            total: data?.length,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+            showQuickJumper: true,
+            showLessItems: true,
+            responsive: true,
+            position: ["bottomCenter"],
+            size: "small",
+            itemRender: (current, type, originalElement) => {
+              if (type === "prev") {
+                return (
+                  <a>
+                    <LeftOutlined />
+                  </a>
+                );
+              }
+              if (type === "next") {
+                return (
+                  <a>
+                    <RightOutlined />
+                  </a>
+                );
+              }
+              return originalElement;
+            },
+            showTitle: true,
+            hideOnSinglePage: false,
+          }}
+          footer={() => {
+            return (
+              <Button
+                type="primary"
+                onClick={() => setIsModalVisible(true)}
+                className="w-full flex justify-center items-center gap-4"
+                icon={<AiOutlineInsertRowBelow />}
+              >
+                Add News
+              </Button>
+            );
+          }}
+          size="small"
+          scroll={{ x: true }}
+          tableLayout="auto"
+          bordered
+          style={{
+            maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
+          }}
+          className="py-2 px-4"
+        />
+      </Space>
+    );
+  }
 }
 
 const rowDataHandler = async (data) => {
