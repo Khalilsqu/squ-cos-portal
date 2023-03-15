@@ -5,10 +5,8 @@ import {
   Form,
   Input,
   Select,
-  Drawer,
   message,
 } from "antd";
-
 
 import { columnWidth } from "@/pages/admin-dashboard/staff-directory";
 
@@ -40,16 +38,27 @@ export const AddDepartmentModal = ({
           onClick={() => {
             formAddDepartment
               .validateFields()
-              .then((values) => {
+              .then(async (values) => {
                 const newDepartmentList = [...departmentList];
                 newDepartmentList.push(values.department);
-                setDepartmentList(newDepartmentList);
-                notification.success({
-                  message: "Department Added",
-                  description: "Department has been added successfully",
-                });
-                setDepartmentAddModalOpen(false);
-                formAddDepartment.resetFields();
+                const response = await fetch(
+                  "/api/dashboard/staffDirectory/departments",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ department: values.department }),
+                  }
+                );
+                console.log(response, response.ok);
+                if (response.ok) {
+                  notification.success({
+                    message: "Department Added",
+                    description: "Department has been added successfully",
+                  });
+                  setDepartmentAddModalOpen(false);
+                  formAddDepartment.resetFields();
+                  setDepartmentList(newDepartmentList, false);
+                }
               })
               .catch((info) => {
                 console.log("Validate Failed:", info);
@@ -119,13 +128,24 @@ export const DeleteDepartmentModal = ({
                 if (index > -1) {
                   newDepartmentList.splice(index, 1);
                 }
-                setDepartmentList(newDepartmentList);
-                notification.success({
-                  message: "Department Deleted",
-                  description: "Department has been deleted successfully",
-                });
-                setDepartmentDeleteModalOpen(false);
-                formDeleteDepartment.resetFields();
+                const response = fetch(
+                  "/api/dashboard/staffDirectory/departments",
+                  {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ department: values.department }),
+                  }
+                );
+
+                if (response.ok) {
+                  notification.success({
+                    message: "Department Deleted",
+                    description: "Department has been deleted successfully",
+                  });
+                  setDepartmentDeleteModalOpen(false);
+                  formDeleteDepartment.resetFields();
+                  setDepartmentList(newDepartmentList, false);
+                }
               })
               .catch((info) => {
                 console.log("Validate Failed:", info);
@@ -255,4 +275,3 @@ export const AddColumnModal = ({
     </Modal>
   );
 };
-

@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 import {
   Form,
   Table,
@@ -85,15 +86,32 @@ export default function StaffDirectory() {
   const [data, setData] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formErrorMessages, setFormErrorMessages] = useState([]);
-  const [departmentList, setDepartmentList] = useState([
-    "Earth Sciences",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Computer Science",
-    "Statistics",
-  ]);
+  // const [departmentList, setDepartmentList] = useState([
+  //   "Earth Sciences",
+  //   "Mathematics",
+  //   "Physics",
+  //   "Chemistry",
+  //   "Biology",
+  //   "Computer Science",
+  //   "Statistics",
+  // ]);
+
+  const {
+    data: departmentList,
+    error: departmentListError,
+    mutate: setDepartmentList,
+    isLoading: departmentListLoading,
+  } = useSWR(
+    "/api/dashboard/staffDirectory/departments",
+    (url) => fetch(url).then((res) => res.json()),
+    {
+      refreshInterval: 0,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: true,
+    }
+  );
 
   const [positionList, setPositionList] = useState([
     "Professor",
@@ -147,21 +165,14 @@ export default function StaffDirectory() {
     });
     const newData = Object.assign({}, ...mappedData);
 
-    // const newData = columns.map((column) => {
-    //   if (column.dataIndex !== "Action") {
-    //     return {
-    //       key: data.length + 1,
-    //       [column.dataIndex]: values[column.dataIndex],
-    //     };
-    //   }
-    // });
-
     setData([...data, newData]);
     notification.success({
       message: "Staff Added",
       description: "Staff has been added successfully",
     });
   };
+  if (departmentListError) return <div>failed to load</div>;
+  if (!departmentList) return <div>loading...</div>;
 
   return (
     <div className="w-full">
