@@ -8,10 +8,13 @@ import {
   Drawer,
   Row,
   Col,
+  message,
 } from "antd";
 import { useWindowSize } from "@/components/utils/windowSize";
 
 import { MailOutlined } from "@ant-design/icons";
+
+import { columnWidth } from "@/pages/admin-dashboard/staff-directory";
 
 export const AddDepartmentModal = ({
   departmentAddModalOpen,
@@ -200,10 +203,22 @@ export const AddColumnModal = ({
               .validateFields()
               .then((values) => {
                 const newColumns = [...columns];
+                console.log(newColumns);
+                // check if the column already exists
+                const columnExists = newColumns.find(
+                  (column) =>
+                    column.title.toLowerCase() === values.title.toLowerCase()
+                );
+                if (columnExists) {
+                  message.error(
+                    "Column already exists. Please use a different name"
+                  );
+                  return;
+                }
+
                 newColumns.splice(newColumns.length - 1, 0, {
                   title: values.title,
-                  dataIndex: values.dataIndex,
-                  key: values.dataIndex,
+                  dataIndex: values.title,
                   editable: true,
                   width: columnWidth,
                 });
@@ -240,18 +255,6 @@ export const AddColumnModal = ({
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="dataIndex"
-          label="Data Index"
-          rules={[
-            {
-              required: true,
-              message: "Please input the data index of the column!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
       </Form>
     </Modal>
   );
@@ -265,6 +268,7 @@ export const AddStaffDrawer = ({
   setFormErrorMessages,
   departmentList,
   targetKeys,
+  columns,
 }) => {
   const { width } = useWindowSize();
   return (
@@ -318,58 +322,99 @@ export const AddStaffDrawer = ({
       }
     >
       <Form form={formAdd} layout="vertical">
-        <Row gutter={16}>
-          <Col span={12}>
+        {columns.map((column) => {
+          if (column.dataIndex === "Department") {
+            return (
+              <Form.Item
+                key={column.dataIndex}
+                name={column.dataIndex}
+                label={column.title}
+                rules={[
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                ]}
+              >
+                <Select>
+                  {departmentList.map((department) => {
+                    return (
+                      <Select.Option key={department} value={department}>
+                        {department}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            );
+          }
+          if (column.dataIndex === "Email") {
+            return (
+              <Form.Item
+                key={column.dataIndex}
+                name={column.dataIndex}
+                label={column.title}
+                rules={[
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                  {
+                    type: "email",
+                    message: "Please input a valid email address",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            );
+          }
+          if (column.dataIndex === "Action") {
+            return null;
+          }
+
+          if (column.dataIndex === "Position") {
+            return (
+              <Form.Item
+                key={column.dataIndex}
+                name={column.dataIndex}
+                label={column.title}
+                rules={[
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                ]}
+              >
+                <Select showSearch>
+                  {targetKeys.map((targetKey) => {
+                    return (
+                      <Select.Option key={targetKey} value={targetKey}>
+                        {targetKey}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            );
+          }
+
+          return (
             <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: "Please enter name" }]}
-            >
-              <Input placeholder="Please enter name" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="email"
-              label="Email"
+              key={column.dataIndex}
+              name={column.dataIndex}
+              label={column.title}
               rules={[
                 {
                   required: true,
-                  message: "Please enter email",
-                },
-                {
-                  type: "email",
-                  message: "Please enter a valid email",
+                  message: `Please input the ${column.title.toLowerCase()}!`,
                 },
               ]}
             >
-              <Input
-                placeholder="Please enter email"
-                prefix={<MailOutlined />}
-              />
+              <Input />
             </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="department"
-              label="Department"
-              hasFeedback
-              rules={[{ required: true, message: "Please enter department" }]}
-            >
-              <Select placeholder="Please select department" allowClear>
-                {departmentList.sort().map((department) => {
-                  return (
-                    <Select.Option key={department} value={department}>
-                      {department}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
+          );
+        })}
       </Form>
     </Drawer>
   );

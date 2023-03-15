@@ -15,7 +15,9 @@ import {
   Input,
 } from "antd";
 
-import { MailOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { IoPersonAdd } from "react-icons/io5";
+import { RiInsertColumnRight } from "react-icons/ri";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -30,47 +32,44 @@ import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/tr
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
-const columnWidth = "200px";
+export const columnWidth = "200px";
 
 const columnsList = [
   {
     title: "Name",
     dataIndex: "name",
-    key: "name",
     editable: true,
     width: columnWidth,
   },
   {
     title: "Email",
     dataIndex: "email",
-    key: "email",
     editable: true,
     width: columnWidth,
   },
   {
     title: "Department",
-    dataIndex: "department",
-    key: "department",
+    dataIndex: "Department",
     editable: true,
     width: columnWidth,
   },
   {
     title: "Position",
-    dataIndex: "position",
-    key: "position",
+    dataIndex: "Position",
+
     width: columnWidth,
   },
   {
     title: "Reports To",
-    dataIndex: "reportsTo",
-    key: "reportsTo",
+    dataIndex: "Reports To",
+
     width: columnWidth,
   },
 
   {
     title: "Action",
-    dataIndex: "action",
-    key: "action",
+    dataIndex: "Action",
+
     width: "20px",
     render: (text, record) => (
       <Space size="middle">
@@ -214,6 +213,8 @@ export default function StaffDirectory() {
         setFormErrorMessages={setFormErrorMessages}
         departmentList={departmentList}
         targetKeys={targetKeys}
+        positionList={positionList}
+        columns={columns}
       />
       <AddColumnModal
         columns={columns}
@@ -248,17 +249,30 @@ export default function StaffDirectory() {
         dataSource={data}
         footer={() => {
           return (
-            <div>
-              <Button type="primary" onClick={() => setDrawerOpen(true)}>
-                Add Staff
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => setColumnAddModalOpen(true)}
-              >
-                Add a new column
-              </Button>
-            </div>
+            <Space>
+              <CustomTooltip title="Add Staff">
+                <Button
+                  icon={
+                    <IoPersonAdd
+                      onClick={() => setDrawerOpen(true)}
+                      className="text-xl"
+                    />
+                  }
+                  className="border-0 bg-transparent"
+                />
+              </CustomTooltip>
+              <CustomTooltip title="Add Column">
+                <Button
+                  icon={
+                    <RiInsertColumnRight
+                      onClick={() => setColumnAddModalOpen(true)}
+                      className="text-xl"
+                    />
+                  }
+                  className="border-0 bg-transparent"
+                />
+              </CustomTooltip>
+            </Space>
           );
         }}
         size="small"
