@@ -1,16 +1,8 @@
-import { Carousel } from "antd";
+import { Carousel, Progress, Space, Typography } from "antd";
 import { google } from "googleapis";
 import moment from "moment/moment";
 import Link from "next/link";
-
-const contentStyle = {
-  margin: 0,
-  height: "160px",
-  color: "#fff",
-  lineHeight: "160px",
-  textAlign: "center",
-  background: "#364d79",
-};
+import { useState } from "react";
 
 export default function IndexPage(props) {
   const { data } = props;
@@ -27,7 +19,7 @@ export default function IndexPage(props) {
     ) {
       return (
         <div key={item.key}>
-          <h1
+          <section
             style={{
               color: "white",
               textShadow: "2px 2px 4px #000000",
@@ -41,10 +33,14 @@ export default function IndexPage(props) {
               fontSize: "2rem",
             }}
           >
-            <Link href="/newsKey" as={`/${item.key}`}>
-              {item.title}
-            </Link>
-          </h1>
+            <Space direction="vertical" className="justify-between">
+              <Typography.Title level={2}>
+                <Link href="/newsKey" as={`/${item.key}`}>
+                  {item.title}
+                </Link>
+              </Typography.Title>
+            </Space>
+          </section>
         </div>
       );
     }
@@ -52,7 +48,12 @@ export default function IndexPage(props) {
 
   return (
     <div className="block w-full pt-2 rounded-xl">
-      <Carousel autoplay>{carsouel}</Carousel>
+      <Carousel
+        autoplay
+        autoplaySpeed={5000}
+      >
+        {carsouel}
+      </Carousel>
     </div>
   );
 }

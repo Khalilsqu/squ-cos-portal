@@ -1,4 +1,4 @@
-import { Modal, Form, Button, Input } from "antd";
+import { Modal, Form, Button, Input, notification } from "antd";
 
 export const AddNewPositionModal = ({
   positionAddModalOpen,
@@ -29,10 +29,35 @@ export const AddNewPositionModal = ({
           key="submit"
           type="primary"
           onClick={() => {
-            formAddPosition.validateFields().then((values) => {
-              setPositionList([...positionList, values.position]);
-              formAddPosition.resetFields();
-              setPositionAddModalOpen(false);
+            formAddPosition.validateFields().then(async (values) => {
+              const response = await fetch(
+                "/api/dashboard/staffDirectory/positionsAvailable",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    position: values.position,
+                  }),
+                }
+              );
+
+              if (response.ok) {
+                setPositionAddModalOpen(false);
+
+                setPositionList([...positionList, values.position]);
+                notification.success({
+                  message: "Position Added",
+                  description: "Position has been added successfully",
+                });
+                formAddPosition.resetFields();
+              } else {
+                notification.error({
+                  message: "Position Not Added",
+                  description: "Position has not been added",
+                });
+              }
             });
           }}
         >
@@ -63,3 +88,94 @@ export const AddNewPositionModal = ({
     </Modal>
   );
 };
+
+export const DeletePositionModal = ({
+  positionDeleteModalOpen,
+  setPositionDeleteModalOpen,
+  positionList,
+  setPositionList,
+  formDeletePosition,
+}) => {
+  return (
+    <Modal
+      title="Delete a Position"
+      open={positionDeleteModalOpen}
+      onCancel={() => {
+        setPositionDeleteModalOpen(false);
+        formDeletePosition.resetFields();
+      }}
+      footer={[
+        <Button
+          key="back"
+          onClick={() => {
+            setPositionDeleteModalOpen(false);
+            formDeletePosition.resetFields();
+          }}
+        >
+          Return
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            formDeletePosition.validateFields().then(async (values) => {
+              const response = await fetch(
+                "/api/dashboard/staffDirectory/positionsAvailable",
+                {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    position: values.position,
+                  }),
+                }
+              );
+
+              if (response.ok) {
+                setPositionDeleteModalOpen(false);
+
+                setPositionList(
+                  positionList.filter((position) => position !== values.position)
+                );
+                notification.success({
+                  message: "Position Deleted",
+                  description: "Position has been deleted successfully",
+                });
+                formDeletePosition.resetFields();
+              } else {
+                notification.error({
+                  message: "Position Not Deleted",
+                  description: "Position has not been deleted",
+                });
+              }
+            });
+          }}
+        >
+          Submit
+        </Button>,
+      ]}
+    >
+      <Form
+        form={formDeletePosition}
+        onFinish={(values) => {
+          positionList.push(values.position);
+          setPositionDeleteModalOpen(false);
+        }}
+      >
+        <Form.Item
+          name="position"
+          label="Position"
+          rules={[
+            {
+              required: true,
+              message: "Please enter a position",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}

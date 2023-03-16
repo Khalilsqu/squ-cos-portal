@@ -1,17 +1,17 @@
-import { Transfer, Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Transfer, Button, Space } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export function TransferPosition({
   positionList,
-  setPositionList,
   targetKeys,
   setTargetKeys,
   setPositionAddModalOpen,
+  setPositionDeleteModalOpen,
 }) {
   return (
     <Transfer
-      dataSource={positionList.map((position) => ({
+      dataSource={positionList?.map((position) => ({
         key: position,
         title: position,
       }))}
@@ -35,15 +35,26 @@ export function TransferPosition({
       footer={(props) => {
         if (props.direction === "left") {
           return (
-            <CustomTooltip title="Add a new Position">
-              <Button
-                className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
-                onClick={() => {
-                  setPositionAddModalOpen(true);
-                }}
-                icon={<PlusOutlined />}
-              />
-            </CustomTooltip>
+            <Space direction="horizontal">
+              <CustomTooltip title="Add a new Position">
+                <Button
+                  className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
+                  onClick={() => {
+                    setPositionAddModalOpen(true);
+                  }}
+                  icon={<PlusOutlined />}
+                />
+              </CustomTooltip>
+              <CustomTooltip title="Delete a Position">
+                <Button
+                  className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
+                  onClick={() => {
+                    setPositionDeleteModalOpen(true);
+                  }}
+                  icon={<DeleteOutlined />}
+                />
+              </CustomTooltip>
+            </Space>
           );
         }
       }}

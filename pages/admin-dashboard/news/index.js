@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Button, Space, notification } from "antd";
+import { Form, Table, Button, Space, notification, Spin } from "antd";
 import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
@@ -166,6 +166,15 @@ export default function News(props) {
         <p>Try refreshing the page</p>
       </div>
     );
+
+  if (isLoading) {
+    return (
+      <Spin
+        className="w-full h-full flex justify-center items-center"
+        size="large"
+      />
+    );
+  }
 
   if (data !== undefined && data?.length > 0) {
     return (

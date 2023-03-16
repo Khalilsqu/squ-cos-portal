@@ -19,13 +19,12 @@ const authentication = () => {
 };
 
 export default async function handler(req, res) {
-  // fetch departments from google sheet
-
   if (req.method === "GET") {
     try {
       const sheet = authentication();
+
       const response = await sheet.spreadsheets.values.get({
-        spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
+        spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
         range: "Sheet1!A:A",
       });
       const rows = response.data.values;
@@ -42,38 +41,36 @@ export default async function handler(req, res) {
       res.status(500).json({ error: error.message });
     }
   } else if (req.method === "POST") {
-    // add new department to google sheet
+    // add new position to google sheet
     try {
       const sheet = authentication();
       const response = await sheet.spreadsheets.values.append({
-        spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
+        spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
         range: "Sheet1!A:A",
         valueInputOption: "USER_ENTERED",
         resource: {
-          values: [[req.body.department]],
+          values: [[req.body.position]],
         },
       });
-      res.status(200).json({ message: "Department added successfully" });
+      res.status(200).json({ message: "Position added successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   } else if (req.method === "DELETE") {
-    // delete department from google sheet
+    // delete position from google sheet
     try {
       const sheet = authentication();
       const response = await sheet.spreadsheets.values.get({
-        spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
+        spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
         range: "Sheet1!A:A",
       });
       const rows = response.data.values;
 
       if (rows) {
-        const keyIndex = rows.findIndex(
-          (row) => row[0] === req.body.department
-        );
+        const keyIndex = rows.findIndex((row) => row[0] === req.body.position);
 
         const request = {
-          spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
+          spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
           resource: {
             requests: [
               {
@@ -92,9 +89,9 @@ export default async function handler(req, res) {
 
         const sheetResponse = await sheet.spreadsheets.batchUpdate(request);
 
-        res.status(200).json({ message: "Department deleted successfully" });
+        res.status(200).json({ message: "Position deleted successfully" });
       } else {
-        res.status(500).json({ error: "Department not found" });
+        res.status(500).json({ error: "Position not found" });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -29,6 +29,7 @@ import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
 import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/transferPositions";
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
+import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export const columnWidth = "200px";
@@ -114,31 +115,31 @@ export default function StaffDirectory() {
     }
   );
 
+  const {
+    data: positionList,
+    error: positionListError,
+    mutate: setPositionList,
+    isLoading: positionListLoading,
+  } = useSWR(
+    "/api/dashboard/staffDirectory/positionsAvailable", // sort positions when fectching
+    fetcher,
+    {
+      refreshInterval: 0,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: true,
+    }
+  );
+
   useEffect(() => {
     if (departmentList) {
       setDepartmentList(departmentList.sort(), false);
     }
-  }, [departmentList]);
-
-  const [positionList, setPositionList] = useState([
-    "Professor",
-    "Associate Professor",
-    "Assistant Professor",
-    "Lecturer",
-    "Demonstrator",
-    "Researcher",
-    "Research Assistant",
-    "Dean",
-    "Assistant Dean for Undergraduate Studies",
-    "Assistant Dean for PostGraduate Studies",
-    "Assistant Dean for Community Service",
-    "Clerk",
-    "Secretary",
-    "Department Head",
-    "Depatment SuperAttendant",
-    "Technician",
-    "Consultant",
-  ]);
+    if (positionList) {
+      setPositionList(positionList.sort(), false);
+    }
+  }, [departmentList, positionList]);
 
   const [formAdd] = Form.useForm();
   const [formAddColumns] = Form.useForm();
@@ -151,6 +152,9 @@ export default function StaffDirectory() {
 
   const [formAddPosition] = Form.useForm();
   const [positionAddModalOpen, setPositionAddModalOpen] = useState(false);
+
+  const [formDeletePosition] = Form.useForm();
+  const [positionDeleteModalOpen, setPositionDeleteModalOpen] = useState(false);
 
   const { width } = useWindowSize();
 
@@ -179,7 +183,7 @@ export default function StaffDirectory() {
     });
   };
 
-  if (departmentListError)
+  if (departmentListError || positionListError)
     return (
       <div className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
@@ -187,7 +191,7 @@ export default function StaffDirectory() {
         </Typography.Title>
       </div>
     );
-  if (departmentListLoading)
+  if (departmentListLoading || positionListLoading)
     return (
       <div className="w-full justify-center items-center flex">
         <Spin size="large" />
@@ -243,6 +247,7 @@ export default function StaffDirectory() {
         targetKeys={targetKeys}
         setTargetKeys={setTargetKeys}
         setPositionAddModalOpen={setPositionAddModalOpen}
+        setPositionDeleteModalOpen={setPositionDeleteModalOpen}
       />
       <Divider orientation="left">Staff Table</Divider>
       <AddStaffDrawer
@@ -282,6 +287,13 @@ export default function StaffDirectory() {
         positionAddModalOpen={positionAddModalOpen}
         setPositionAddModalOpen={setPositionAddModalOpen}
         formAddPosition={formAddPosition}
+        positionList={positionList}
+        setPositionList={setPositionList}
+      />
+      <DeletePositionModal
+        positionDeleteModalOpen={positionDeleteModalOpen}
+        setPositionDeleteModalOpen={setPositionDeleteModalOpen}
+        formDeletePosition={formDeletePosition}
         positionList={positionList}
         setPositionList={setPositionList}
       />
