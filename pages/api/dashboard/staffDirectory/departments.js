@@ -90,9 +90,6 @@ export default async function handler(req, res) {
           (row) => row[0] === req.body.department
         );
 
-        console.log(keyIndex);
-        const keyRow = rows[keyIndex];
-
         const request = {
           spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
           resource: {

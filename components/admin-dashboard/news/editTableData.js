@@ -217,7 +217,6 @@ export function columnsData({
                           const width = img.naturalWidth;
                           const height = img.naturalHeight;
                           URL.revokeObjectURL(img.src);
-                          console.log(width, height);
                           if (width / height < 2.5) {
                             reject(
                               "Image width must be greater than 2.5 times the height"

@@ -38,13 +38,10 @@ export function TransferPosition({
             <CustomTooltip title="Add a new Position">
               <Button
                 className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
-                icon={
-                  <PlusOutlined
-                    onClick={() => {
-                      setPositionAddModalOpen(true);
-                    }}
-                  />
-                }
+                onClick={() => {
+                  setPositionAddModalOpen(true);
+                }}
+                icon={<PlusOutlined />}
               />
             </CustomTooltip>
           );

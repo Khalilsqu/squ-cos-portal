@@ -293,23 +293,15 @@ export default function StaffDirectory() {
             <Space>
               <CustomTooltip title="Add Staff">
                 <Button
-                  icon={
-                    <IoPersonAdd
-                      onClick={() => setDrawerOpen(true)}
-                      className="text-xl"
-                    />
-                  }
+                  onClick={() => setDrawerOpen(true)}
+                  icon={<IoPersonAdd className="text-xl" />}
                   className="border-0 bg-transparent"
                 />
               </CustomTooltip>
               <CustomTooltip title="Add Column">
                 <Button
-                  icon={
-                    <RiInsertColumnRight
-                      onClick={() => setColumnAddModalOpen(true)}
-                      className="text-xl"
-                    />
-                  }
+                  onClick={() => setColumnAddModalOpen(true)}
+                  icon={<RiInsertColumnRight className="text-xl" />}
                   className="border-0 bg-transparent"
                 />
               </CustomTooltip>
