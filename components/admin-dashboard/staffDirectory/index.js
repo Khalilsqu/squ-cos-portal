@@ -101,6 +101,15 @@ export const AddDepartmentModal = ({
                 }
               },
             },
+            {
+              validator: async (rule, value) => {
+                if (value.trim() !== value) {
+                  throw new Error(
+                    "Department cannot start or end with whitespace"
+                  );
+                }
+              },
+            },
           ]}
         >
           <Input />

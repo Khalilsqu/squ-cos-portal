@@ -72,7 +72,7 @@ export const AddNewPositionModal = ({
             {
               required: true,
               message: "Please enter a position",
-            }, //prevent duplicate departments from being added case insensitive and strip whitespace
+            },
             {
               validator: async (_, value) => {
                 if (
@@ -81,6 +81,17 @@ export const AddNewPositionModal = ({
                     .includes(value.toLowerCase().trim())
                 ) {
                   return Promise.reject(new Error("Position already exists"));
+                }
+              },
+            },
+            {
+              validator: async (_, value) => {
+                if (value.trim() !== value) {
+                  return Promise.reject(
+                    new Error(
+                      "Position cannot have leading or trailing whitespace"
+                    )
+                  );
                 }
               },
             },
