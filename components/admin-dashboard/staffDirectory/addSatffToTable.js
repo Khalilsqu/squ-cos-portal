@@ -80,7 +80,7 @@ export const AddStaffDrawer = ({
                 ]}
               >
                 <Select>
-                  {departmentList.map((department) => {
+                  {departmentList?.map((department) => {
                     return (
                       <Select.Option key={department} value={department}>
                         {department}
@@ -130,7 +130,7 @@ export const AddStaffDrawer = ({
                 ]}
               >
                 <Select showSearch>
-                  {targetKeys.map((targetKey) => {
+                  {targetKeys?.map((targetKey) => {
                     return (
                       <Select.Option key={targetKey} value={targetKey}>
                         {targetKey}
@@ -149,7 +149,7 @@ export const AddStaffDrawer = ({
                 label={column.title}
               >
                 <Select showSearch>
-                  {data.map((staff) => {
+                  {data?.map((staff) => {
                     return (
                       <Select.Option key={staff["Name"]} value={staff["Name"]}>
                         {staff["Name"]}

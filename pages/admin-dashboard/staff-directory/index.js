@@ -96,6 +96,7 @@ export default function StaffDirectory() {
   const [data, setData] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formErrorMessages, setFormErrorMessages] = useState([]);
+  // const [targetKeys, setTargetKeys] = useState([]);
 
   const {
     data: departmentList,
@@ -131,6 +132,19 @@ export default function StaffDirectory() {
     }
   );
 
+  const {
+    data: targetKeys,
+    error: targetKeysError,
+    mutate: setTargetKeys,
+    isLoading: targetKeysLoading,
+  } = useSWR("/api/dashboard/staffDirectory/positionsSelected", fetcher, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: true,
+  });
+
   useEffect(() => {
     if (departmentList) {
       setDepartmentList(departmentList.sort(), false);
@@ -160,7 +174,6 @@ export default function StaffDirectory() {
   const isBreakPoint = isBreakPointState().isBreakPoint;
   const collapsed = collapsedState().collapsed;
   const colorTheme = colorThemeState().colorTheme;
-  const [targetKeys, setTargetKeys] = useState([]);
 
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
@@ -182,7 +195,7 @@ export default function StaffDirectory() {
     });
   };
 
-  if (departmentListError || positionListError)
+  if (departmentListError || positionListError || targetKeysError)
     return (
       <div className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
@@ -190,7 +203,7 @@ export default function StaffDirectory() {
         </Typography.Title>
       </div>
     );
-  if (departmentListLoading || positionListLoading)
+  if (departmentListLoading || positionListLoading || targetKeysLoading)
     return (
       <div className="w-full justify-center items-center flex">
         <Spin size="large" />

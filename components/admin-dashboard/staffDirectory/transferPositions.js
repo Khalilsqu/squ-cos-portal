@@ -4,6 +4,7 @@ import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export function TransferPosition({
   positionList,
+  setPositionList,
   targetKeys,
   setTargetKeys,
   setPositionAddModalOpen,
@@ -17,7 +18,6 @@ export function TransferPosition({
       }))}
       showSearch
       filterOption={(inputValue, item) =>
-        
         item.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
       }
       listStyle={{
@@ -29,8 +29,62 @@ export function TransferPosition({
       direction="right"
       targetKeys={targetKeys}
       render={(item) => item.title}
-      onChange={(nextTargetKeys, direction, moveKeys) => {
-        setTargetKeys(nextTargetKeys);
+      onChange={async (nextTargetKeys, direction, moveKeys) => {
+        const ressponse = await fetch(
+          "/api/dashboard/staffDirectory/positionsSelected",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              movedKeys: moveKeys,
+              direction,
+            }),
+          }
+        );
+
+        if (direction === "right") {
+          const responseDeletePosition = await fetch(
+            "/api/dashboard/staffDirectory/positionsAvailable",
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                movedKeys: moveKeys,
+              }),
+            }
+          );
+          if (responseDeletePosition.ok) {
+            setPositionList(
+              positionList.filter((position) => !moveKeys.includes(position))
+            );
+            setTargetKeys(nextTargetKeys, false);
+          }
+        } else {
+          const responseAddPosition = await fetch(
+            "/api/dashboard/staffDirectory/positionsAvailable",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                movedKeys: moveKeys,
+              }),
+            }
+          );
+          if (responseAddPosition.ok) {
+            setPositionList([...positionList, ...moveKeys]);
+            setTargetKeys(nextTargetKeys, false);
+          }
+        }
+
+        if (ressponse.ok) {
+          setTargetKeys(nextTargetKeys, false);
+        }
       }}
       footer={(props) => {
         if (props.direction === "left") {
