@@ -17,7 +17,7 @@ export function TransferPosition({
       }))}
       showSearch
       filterOption={(inputValue, item) =>
-        // match search case insensitive
+        
         item.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
       }
       listStyle={{

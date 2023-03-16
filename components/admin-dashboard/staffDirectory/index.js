@@ -224,7 +224,7 @@ export const AddColumnModal = ({
               .validateFields()
               .then((values) => {
                 const newColumns = [...columns];
-                // check if the column already exists
+      
                 const columnExists = newColumns.find(
                   (column) =>
                     column.title.toLowerCase() === values.title.toLowerCase()

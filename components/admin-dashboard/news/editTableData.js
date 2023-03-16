@@ -28,7 +28,6 @@ export function columnsData({
   handleEditFormFinish,
   setUploadedUserImage,
 }) {
-  // const currentTime = dayjs().format("YYYY-MMM-DD h:mm:ss A");
   return [
     {
       key: uuidv4(),
@@ -205,7 +204,6 @@ export function columnsData({
                       if (file.size > 1024 * 1024 * 4.5) {
                         reject("Maximum file size allowed is 4.5MB!");
                       } else if (fileTypeArray.includes(file.type) === false) {
-                        // find dimensions of image
 
                         reject(
                           "File type is not supported!. Supported types: png, jpg, jpeg"
