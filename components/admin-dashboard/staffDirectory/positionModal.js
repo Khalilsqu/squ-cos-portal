@@ -1,4 +1,4 @@
-import { Modal, Form, Button, Input, notification } from "antd";
+import { Modal, Form, Button, Input, notification, Select } from "antd";
 
 export const AddNewPositionModal = ({
   positionAddModalOpen,
@@ -30,6 +30,7 @@ export const AddNewPositionModal = ({
           type="primary"
           onClick={() => {
             formAddPosition.validateFields().then(async (values) => {
+              setPositionAddModalOpen(false);
               const response = await fetch(
                 "/api/dashboard/staffDirectory/positionsAvailable",
                 {
@@ -44,8 +45,6 @@ export const AddNewPositionModal = ({
               );
 
               if (response.ok) {
-                setPositionAddModalOpen(false);
-
                 setPositionList([...positionList, values.position]);
                 notification.success({
                   message: "Position Added",
@@ -61,17 +60,11 @@ export const AddNewPositionModal = ({
             });
           }}
         >
-          Submit
+          Add
         </Button>,
       ]}
     >
-      <Form
-        form={formAddPosition}
-        onFinish={(values) => {
-          positionList.push(values.position);
-          setPositionAddModalOpen(false);
-        }}
-      >
+      <Form form={formAddPosition}>
         <Form.Item
           name="position"
           label="Position"
@@ -79,6 +72,17 @@ export const AddNewPositionModal = ({
             {
               required: true,
               message: "Please enter a position",
+            }, //prevent duplicate departments from being added case insensitive and strip whitespace
+            {
+              validator: async (_, value) => {
+                if (
+                  positionList
+                    .map((position) => position.toLowerCase().trim())
+                    .includes(value.toLowerCase().trim())
+                ) {
+                  return Promise.reject(new Error("Position already exists"));
+                }
+              },
             },
           ]}
         >
@@ -98,7 +102,7 @@ export const DeletePositionModal = ({
 }) => {
   return (
     <Modal
-      title="Delete a Position"
+      title="Delete a single or multipe positions"
       open={positionDeleteModalOpen}
       onCancel={() => {
         setPositionDeleteModalOpen(false);
@@ -117,8 +121,10 @@ export const DeletePositionModal = ({
         <Button
           key="submit"
           type="primary"
+          danger
           onClick={() => {
             formDeletePosition.validateFields().then(async (values) => {
+              setPositionDeleteModalOpen(false);
               const response = await fetch(
                 "/api/dashboard/staffDirectory/positionsAvailable",
                 {
@@ -127,45 +133,39 @@ export const DeletePositionModal = ({
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    position: values.position,
+                    positions: values.positions,
                   }),
                 }
               );
 
               if (response.ok) {
-                setPositionDeleteModalOpen(false);
-
                 setPositionList(
-                  positionList.filter((position) => position !== values.position)
+                  positionList.filter(
+                    (position) => !values.positions.includes(position)
+                  )
                 );
                 notification.success({
-                  message: "Position Deleted",
-                  description: "Position has been deleted successfully",
+                  message: "Position(s) Deleted",
+                  description: "Position(s) has/have been deleted successfully",
                 });
                 formDeletePosition.resetFields();
               } else {
                 notification.error({
-                  message: "Position Not Deleted",
-                  description: "Position has not been deleted",
+                  message: "Position(s) Not Deleted",
+                  description: "Position(s) has/have not been deleted",
                 });
               }
             });
           }}
         >
-          Submit
+          Delete
         </Button>,
       ]}
     >
-      <Form
-        form={formDeletePosition}
-        onFinish={(values) => {
-          positionList.push(values.position);
-          setPositionDeleteModalOpen(false);
-        }}
-      >
+      <Form form={formDeletePosition}>
         <Form.Item
-          name="position"
-          label="Position"
+          name="positions"
+          label="Positions"
           rules={[
             {
               required: true,
@@ -173,9 +173,20 @@ export const DeletePositionModal = ({
             },
           ]}
         >
-          <Input />
+          <Select
+            placeholder="Select positions to delete"
+            mode="multiple"
+            allowClear
+            showSearch
+          >
+            {positionList.map((position) => (
+              <Select.Option key={position} value={position}>
+                {position}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>
   );
-}
+};

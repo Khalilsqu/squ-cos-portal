@@ -67,27 +67,40 @@ export default async function handler(req, res) {
       const rows = response.data.values;
 
       if (rows) {
-        const keyIndex = rows.findIndex((row) => row[0] === req.body.position);
+        const keyIndex = rows
+          .map((row) => row[0])
+          .map((row, index) => {
+            if (req.body.positions.includes(row)) {
+              return index;
+            }
+          })
+          .filter((row) => row !== undefined);
 
-        const request = {
-          spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
-          resource: {
-            requests: [
-              {
-                deleteDimension: {
-                  range: {
-                    sheetId: 0,
-                    dimension: "ROWS",
-                    startIndex: keyIndex,
-                    endIndex: keyIndex + 1,
+        console.log(keyIndex);
+
+        // delete positions from google sheet using batch update using a loop
+
+        for (let i = 0; i < keyIndex.length; i++) {
+          const request = {
+            spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
+            resource: {
+              requests: [
+                {
+                  deleteDimension: {
+                    range: {
+                      sheetId: 0,
+                      dimension: "ROWS",
+                      startIndex: keyIndex[i],
+                      endIndex: keyIndex[i] + 1,
+                    },
                   },
                 },
-              },
-            ],
-          },
-        };
+              ],
+            },
+          };
 
-        const sheetResponse = await sheet.spreadsheets.batchUpdate(request);
+          const sheetResponse = await sheet.spreadsheets.batchUpdate(request);
+        }
 
         res.status(200).json({ message: "Position deleted successfully" });
       } else {

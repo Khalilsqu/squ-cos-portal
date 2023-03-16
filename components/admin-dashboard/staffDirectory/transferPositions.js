@@ -52,6 +52,7 @@ export function TransferPosition({
                     setPositionDeleteModalOpen(true);
                   }}
                   icon={<DeleteOutlined />}
+                  danger
                 />
               </CustomTooltip>
             </Space>

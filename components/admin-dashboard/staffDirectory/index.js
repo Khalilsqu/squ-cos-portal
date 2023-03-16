@@ -90,6 +90,17 @@ export const AddDepartmentModal = ({
               required: true,
               message: "Please input the department name!",
             },
+            {
+              validator: async (rule, value) => {
+                if (
+                  departmentList
+                    .map((department) => department.toLowerCase().trim())
+                    .includes(value.toLowerCase().trim())
+                ) {
+                  throw new Error("Department already exists");
+                }
+              },
+            },
           ]}
         >
           <Input />
@@ -124,7 +135,7 @@ export const DeleteDepartmentModal = ({
         <Button
           key="submit"
           type="primary"
-          className="border-orange-500 bordder-2"
+          danger
           onClick={() => {
             formDeleteDepartment
               .validateFields()
@@ -224,7 +235,7 @@ export const AddColumnModal = ({
               .validateFields()
               .then((values) => {
                 const newColumns = [...columns];
-      
+
                 const columnExists = newColumns.find(
                   (column) =>
                     column.title.toLowerCase() === values.title.toLowerCase()
