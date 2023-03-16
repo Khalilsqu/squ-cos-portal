@@ -58,7 +58,6 @@ export default async function handler(req, res) {
             values: req.body.movedKeys.map((key) => [key]),
           },
         });
-        console.log(response);
         res.status(200).json({ message: "Position added successfully" });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -79,8 +78,6 @@ export default async function handler(req, res) {
             .map((row) => row[0])
             .map((row) => req.body.movedKeys.indexOf(row))
             .filter((index) => index !== -1);
-
-          console.log(keyIndex);
         } else {
           res.status(500).json({ error: "Position not found" });
         }
