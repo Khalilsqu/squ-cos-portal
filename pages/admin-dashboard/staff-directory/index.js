@@ -11,6 +11,7 @@ import {
   Typography,
   Divider,
   Tag,
+  Spin,
 } from "antd";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
@@ -80,21 +81,21 @@ const columnsList = [
   },
 ];
 
+const fetcher = async (url) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  // sort data alphabetically
+  const sortedData = data.sort();
+
+  return sortedData;
+};
+
 export default function StaffDirectory() {
   const columnsHeader = columnsList;
   const [columns, setColumns] = useState(columnsHeader);
   const [data, setData] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formErrorMessages, setFormErrorMessages] = useState([]);
-  // const [departmentList, setDepartmentList] = useState([
-  //   "Earth Sciences",
-  //   "Mathematics",
-  //   "Physics",
-  //   "Chemistry",
-  //   "Biology",
-  //   "Computer Science",
-  //   "Statistics",
-  // ]);
 
   const {
     data: departmentList,
@@ -102,8 +103,8 @@ export default function StaffDirectory() {
     mutate: setDepartmentList,
     isLoading: departmentListLoading,
   } = useSWR(
-    "/api/dashboard/staffDirectory/departments",
-    (url) => fetch(url).then((res) => res.json()),
+    "/api/dashboard/staffDirectory/departments", // sort departments when fectching
+    fetcher,
     {
       refreshInterval: 0,
       revalidateIfStale: false,
@@ -112,6 +113,12 @@ export default function StaffDirectory() {
       revalidateOnMount: true,
     }
   );
+
+  useEffect(() => {
+    if (departmentList) {
+      setDepartmentList(departmentList.sort(), false);
+    }
+  }, [departmentList]);
 
   const [positionList, setPositionList] = useState([
     "Professor",
@@ -171,8 +178,21 @@ export default function StaffDirectory() {
       description: "Staff has been added successfully",
     });
   };
-  if (departmentListError) return <div>failed to load</div>;
-  if (!departmentList) return <div>loading...</div>;
+
+  if (departmentListError)
+    return (
+      <div className="w-full justify-center items-center flex">
+        <Typography.Title level={1} className="w-full text-center">
+          Failed to load data from server
+        </Typography.Title>
+      </div>
+    );
+  if (departmentListLoading)
+    return (
+      <div className="w-full justify-center items-center flex">
+        <Spin size="large" />
+      </div>
+    );
 
   return (
     <div className="w-full">
@@ -204,10 +224,10 @@ export default function StaffDirectory() {
         </CustomTooltip>
         <CustomTooltip title="Delete Department">
           <Button
-            type="danger"
             className="border-0 bg-transparent"
             icon={
               <DeleteOutlined
+                className="text-red-500"
                 onClick={() => {
                   setDepartmentDeleteModalOpen(true);
                 }}

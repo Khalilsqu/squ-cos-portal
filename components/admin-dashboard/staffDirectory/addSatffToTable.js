@@ -80,6 +80,7 @@ export const AddStaffDrawer = ({
                 ]}
               >
                 <Select>
+                  // sort the departmentList alphabetically
                   {departmentList.map((department) => {
                     return (
                       <Select.Option key={department} value={department}>

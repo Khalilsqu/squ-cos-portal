@@ -39,8 +39,7 @@ export const AddDepartmentModal = ({
             formAddDepartment
               .validateFields()
               .then(async (values) => {
-                const newDepartmentList = [...departmentList];
-                newDepartmentList.push(values.department);
+                setDepartmentAddModalOpen(false);
                 const response = await fetch(
                   "/api/dashboard/staffDirectory/departments",
                   {
@@ -49,15 +48,21 @@ export const AddDepartmentModal = ({
                     body: JSON.stringify({ department: values.department }),
                   }
                 );
-                console.log(response, response.ok);
                 if (response.ok) {
+                  setDepartmentList(
+                    [...departmentList, values.department],
+                    false
+                  );
+                  formAddDepartment.resetFields();
                   notification.success({
                     message: "Department Added",
                     description: "Department has been added successfully",
                   });
-                  setDepartmentAddModalOpen(false);
-                  formAddDepartment.resetFields();
-                  setDepartmentList(newDepartmentList, false);
+                } else {
+                  notification.error({
+                    message: "Department Not Added",
+                    description: "Department was not added",
+                  });
                 }
               })
               .catch((info) => {
@@ -119,16 +124,13 @@ export const DeleteDepartmentModal = ({
         <Button
           key="submit"
           type="primary"
+          className="border-orange-500 bordder-2"
           onClick={() => {
             formDeleteDepartment
               .validateFields()
-              .then((values) => {
-                const newDepartmentList = [...departmentList];
-                const index = newDepartmentList.indexOf(values.department);
-                if (index > -1) {
-                  newDepartmentList.splice(index, 1);
-                }
-                const response = fetch(
+              .then(async (values) => {
+                setDepartmentDeleteModalOpen(false);
+                const response = await fetch(
                   "/api/dashboard/staffDirectory/departments",
                   {
                     method: "DELETE",
@@ -136,15 +138,18 @@ export const DeleteDepartmentModal = ({
                     body: JSON.stringify({ department: values.department }),
                   }
                 );
-
                 if (response.ok) {
+                  setDepartmentList(
+                    departmentList.filter(
+                      (department) => department !== values.department
+                    ),
+                    false
+                  );
+                  formDeleteDepartment.resetFields();
                   notification.success({
                     message: "Department Deleted",
                     description: "Department has been deleted successfully",
                   });
-                  setDepartmentDeleteModalOpen(false);
-                  formDeleteDepartment.resetFields();
-                  setDepartmentList(newDepartmentList, false);
                 }
               })
               .catch((info) => {
@@ -219,7 +224,6 @@ export const AddColumnModal = ({
               .validateFields()
               .then((values) => {
                 const newColumns = [...columns];
-                console.log(newColumns);
                 // check if the column already exists
                 const columnExists = newColumns.find(
                   (column) =>
