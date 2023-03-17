@@ -113,6 +113,7 @@ export const DeletePositionModal = ({
   setPositionList,
   formDeletePosition,
   targetKeys,
+  setTargetKeys,
 }) => {
   return (
     <Modal
@@ -166,6 +167,15 @@ export const DeletePositionModal = ({
                   }),
                 }
               );
+
+              if (responseTragetKeys.ok) {
+                setTargetKeys(
+                  targetKeys.filter(
+                    (targetKey) => !values.positions.includes(targetKey)
+                  ),
+                  false
+                );
+              }
 
               if (response.ok) {
                 setPositionList(

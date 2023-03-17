@@ -129,7 +129,7 @@ export const AddStaffDrawer = ({
                   },
                 ]}
               >
-                <Select showSearch>
+                <Select showSearch mode="multiple">
                   {targetKeys?.map((targetKey) => {
                     return (
                       <Select.Option key={targetKey} value={targetKey}>

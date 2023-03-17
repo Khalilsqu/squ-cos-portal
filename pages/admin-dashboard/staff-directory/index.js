@@ -305,6 +305,7 @@ export default function StaffDirectory() {
           positionList={positionList}
           setPositionList={setPositionList}
           targetKeys={targetKeys}
+          setTargetKeys={setTargetKeys}
         />
         <Table
           columns={columns}
