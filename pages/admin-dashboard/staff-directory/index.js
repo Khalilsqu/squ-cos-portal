@@ -15,8 +15,8 @@ import {
 } from "antd";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { IoPersonAdd } from "react-icons/io5";
 import { RiInsertColumnRight } from "react-icons/ri";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -140,13 +140,13 @@ export default function StaffDirectory() {
 
   useEffect(() => {
     if (departmentList) {
-      setDepartmentList(departmentList.sort(), false);
+      setDepartmentList(departmentList?.sort(), false);
     }
     if (positionList) {
-      setPositionList(positionList.sort(), false);
+      setPositionList(positionList?.sort(), false);
     }
     if (targetKeys) {
-      setTargetKeys(targetKeys.sort(), false);
+      setTargetKeys(targetKeys?.sort(), false);
     }
   }, [departmentList, positionList, targetKeys]);
 
@@ -175,10 +175,15 @@ export default function StaffDirectory() {
 
   const handleAddFormFinish = (values) => {
     const mappedData = columns.map((column) => {
+      console.log(column.dataIndex);
       if (column.dataIndex !== "Action") {
         return {
-          key: data.length + 1,
-          [column.dataIndex]: values[column.dataIndex],
+          key: data.length + 1, // this is the key for the row
+          [column.dataIndex]:
+            values[column.dataIndex].length > 1
+              ? values[column.dataIndex].split(",")
+              : values[column.dataIndex],
+          // split you form selection has multiple values
         };
       }
     });
@@ -316,7 +321,7 @@ export default function StaffDirectory() {
                 <CustomTooltip title="Add Staff">
                   <Button
                     onClick={() => setDrawerOpen(true)}
-                    icon={<IoPersonAdd className="text-xl" />}
+                    icon={<AiOutlineUserAdd className="text-xl" />}
                     className="border-0 bg-transparent"
                   />
                 </CustomTooltip>

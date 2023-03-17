@@ -200,7 +200,7 @@ export const DeleteDepartmentModal = ({
           ]}
         >
           <Select>
-            {departmentList.map((department) => {
+            {departmentList?.map((department) => {
               return (
                 <Select.Option key={department} value={department}>
                   {department}

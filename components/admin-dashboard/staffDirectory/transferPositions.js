@@ -10,7 +10,6 @@ export function TransferPosition({
   setPositionAddModalOpen,
   setPositionDeleteModalOpen,
 }) {
-  console.log("targetKeys", targetKeys);
   return (
     <Transfer
       dataSource={positionList?.map((position) => ({

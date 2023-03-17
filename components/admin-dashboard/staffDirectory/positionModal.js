@@ -218,7 +218,7 @@ export const DeletePositionModal = ({
             allowClear
             showSearch
           >
-            {positionList.map((position) => (
+            {positionList?.map((position) => (
               <Select.Option key={position} value={position}>
                 {position}
               </Select.Option>
