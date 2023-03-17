@@ -175,15 +175,12 @@ export default function StaffDirectory() {
 
   const handleAddFormFinish = (values) => {
     const mappedData = columns.map((column) => {
-      console.log(column.dataIndex);
       if (column.dataIndex !== "Action") {
         return {
-          key: data.length + 1, // this is the key for the row
-          [column.dataIndex]:
-            values[column.dataIndex].length > 1
-              ? values[column.dataIndex].split(",")
-              : values[column.dataIndex],
-          // split you form selection has multiple values
+          key: data.length + 1,
+          [column.dataIndex]: Array.isArray(values[column.dataIndex])
+            ? values[column.dataIndex].join("; ")
+            : values[column.dataIndex],
         };
       }
     });

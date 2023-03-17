@@ -5,6 +5,7 @@ import { useState } from "react";
 import { MailOutlined } from "@ant-design/icons";
 import { RxInput } from "react-icons/rx";
 import { BsCardList } from "react-icons/bs";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export const AddStaffDrawer = ({
   drawerOpen,
@@ -89,7 +90,7 @@ export const AddStaffDrawer = ({
                   showSearch
                   mode="multiple"
                   showArrow
-                  placeholder="Select Department"
+                  placeholder="Select department(s)"
                 >
                   {departmentList?.map((department) => {
                     return (
@@ -140,7 +141,12 @@ export const AddStaffDrawer = ({
                   },
                 ]}
               >
-                <Select showSearch mode="multiple" showArrow>
+                <Select
+                  showSearch
+                  mode="multiple"
+                  showArrow
+                  placeholder="Select position(s)"
+                >
                   {targetKeys?.map((targetKey) => {
                     return (
                       <Select.Option key={targetKey} value={targetKey}>
@@ -153,21 +159,26 @@ export const AddStaffDrawer = ({
             );
           }
           if (column.dataIndex === "Reports To") {
-            if (reportsToMethod === "Select") {
-              return (
-                <Row key={column.dataIndex} className="w-full" align="middle">
-                  <Col flex={6}>
-                    <Form.Item
-                      key={column.dataIndex}
-                      name={column.dataIndex}
-                      label={column.title}
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: `Please input the ${column.title.toLowerCase()}!`,
-                      //   },
-                      // ]}
-                    >
+            return (
+              <Row key={column.dataIndex} className="w-full" align="middle">
+                <Col flex={6}>
+                  <Form.Item
+                    key={column.dataIndex}
+                    name={column.dataIndex}
+                    label={column.title}
+                    rules={[
+                      {
+                        required: true,
+                        message: `Please input the ${column.title.toLowerCase()}!`,
+                      },
+                    ]}
+                  >
+                    {reportsToMethod === "Input" ? (
+                      <Input
+                        suffix={<BsCardList />}
+                        placeholder="Enter a name"
+                      />
+                    ) : (
                       <Select
                         showSearch
                         placeholder="Select a name from the list"
@@ -183,55 +194,33 @@ export const AddStaffDrawer = ({
                           );
                         })}
                       </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col flex={1}>
-                    <Row justify="end">
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col flex={1}>
+                  <Row justify="end">
+                    <CustomTooltip title="Change input method" placement="left">
                       <Button
                         className="justify-end border-0 bg-transparent text-lg rounded-full"
                         onClick={() => {
-                          setReportsToMethod("Input");
+                          formAdd.resetFields(["Reports To"]);
+                          setReportsToMethod(
+                            reportsToMethod === "Input" ? "Select" : "Input"
+                          );
                         }}
-                        icon={<RxInput />}
-                        label="Set to input"
+                        icon={
+                          reportsToMethod === "Input" ? (
+                            <RxInput />
+                          ) : (
+                            <BsCardList />
+                          )
+                        }
                       />
-                    </Row>
-                  </Col>
-                </Row>
-              );
-            } else {
-              return (
-                <Row key={column.dataIndex} className="w-full" align="middle">
-                  <Col flex={6}>
-                    <Form.Item
-                      key={column.dataIndex}
-                      name={column.dataIndex}
-                      label={column.title}
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: `Please input the ${column.title.toLowerCase()}!`,
-                      //   },
-                      // ]}
-                    >
-                      <Input placeholder="Type a name" />
-                    </Form.Item>
-                  </Col>
-                  <Col flex={1}>
-                    <Row justify="end">
-                      <Button
-                        className="border-0 bg-transparent text-lg rounded-full"
-                        onClick={() => {
-                          setReportsToMethod("Select");
-                        }}
-                        icon={<BsCardList />}
-                        label="Set to select"
-                      />
-                    </Row>
-                  </Col>
-                </Row>
-              );
-            }
+                    </CustomTooltip>
+                  </Row>
+                </Col>
+              </Row>
+            );
           }
 
           return (
@@ -246,7 +235,7 @@ export const AddStaffDrawer = ({
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"Enter " + column.title} />
             </Form.Item>
           );
         })}

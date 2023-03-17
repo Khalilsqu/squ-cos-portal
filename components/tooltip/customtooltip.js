@@ -11,11 +11,14 @@ export default function CustomTooltip(props) {
 
   const handleVisibleChange = (visible) => {
     if (visible) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (switchRef.current !== null) {
           switchRef.current.close();
         }
       }, 2000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
   };
 
