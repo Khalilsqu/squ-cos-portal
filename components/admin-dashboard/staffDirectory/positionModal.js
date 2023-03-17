@@ -39,13 +39,15 @@ export const AddNewPositionModal = ({
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    position: values.position,
+                    positions: Array.isArray(values.positions)
+                      ? values.positions
+                      : [values.positions],
                   }),
                 }
               );
 
               if (response.ok) {
-                setPositionList([...positionList, values.position]);
+                setPositionList([...positionList, values.positions]);
                 notification.success({
                   message: "Position Added",
                   description: "Position has been added successfully",
@@ -66,7 +68,7 @@ export const AddNewPositionModal = ({
     >
       <Form form={formAddPosition}>
         <Form.Item
-          name="position"
+          name="positions"
           label="Position"
           rules={[
             {
@@ -110,6 +112,7 @@ export const DeletePositionModal = ({
   positionList,
   setPositionList,
   formDeletePosition,
+  targetKeys,
 }) => {
   return (
     <Modal
@@ -145,6 +148,21 @@ export const DeletePositionModal = ({
                   },
                   body: JSON.stringify({
                     positions: values.positions,
+                  }),
+                }
+              );
+
+              const responseTragetKeys = await fetch(
+                "/api/dashboard/staffDirectory/positionsSelected",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    positions: targetKeys.filter(
+                      (targetKey) => !values.positions.includes(targetKey)
+                    ),
                   }),
                 }
               );

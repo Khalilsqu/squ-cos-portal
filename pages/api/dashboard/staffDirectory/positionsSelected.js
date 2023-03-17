@@ -28,8 +28,9 @@ export default async function handler(req, res) {
         range: "Sheet1!A:A",
       });
       const rows = response.data.values;
-      const data = [];
+
       if (rows) {
+        const data = [];
         rows.map((row) => {
           data.push(row[0]);
         });
@@ -42,48 +43,34 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "POST") {
     // add new target positions to google sheet
+    try {
+      const sheet = authentication();
 
-    if (req.body.movedKeys.length === 0) {
-      res.status(200).json({ message: "No positions selected" });
-    }
+      // delete all rows in google sheet
 
-    if (req.body.direction === "right") {
-      try {
-        const sheet = authentication();
-        const response = await sheet.spreadsheets.values.append({
-          spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_SELECTED,
-          range: "Sheet1!A:A",
-          valueInputOption: "USER_ENTERED",
-          resource: {
-            values: req.body.movedKeys.map((key) => [key]),
-          },
-        });
-        res.status(200).json({ message: "Position added successfully" });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    }
+      const response = await sheet.spreadsheets.values.clear({
+        spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_SELECTED,
+        range: "Sheet1!A:A",
+      });
 
-    if (req.body.direction === "left") {
-      try {
-        const sheet = authentication();
-        const response = await sheet.spreadsheets.values.get({
-          spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_SELECTED,
-          range: "Sheet1!A:A",
-        });
-        const rows = response.data.values;
+      // add new rows to google sheet
+      const data = [];
+      req.body.positions.map((position) => {
+        data.push([position]);
+      });
 
-        if (rows) {
-          const keyIndex = rows
-            .map((row) => row[0])
-            .map((row) => req.body.movedKeys.indexOf(row))
-            .filter((index) => index !== -1);
-        } else {
-          res.status(500).json({ error: "Position not found" });
-        }
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      const response2 = await sheet.spreadsheets.values.append({
+        spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_SELECTED,
+        range: "Sheet1!A:A",
+        valueInputOption: "USER_ENTERED",
+        resource: {
+          values: data,
+        },
+      });
+
+      res.status(200).json({ message: "Position added successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 }

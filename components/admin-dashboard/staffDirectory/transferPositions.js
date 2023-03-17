@@ -1,15 +1,16 @@
 import { Transfer, Button, Space } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import CustomTooltip from "@/components/tooltip/customtooltip";
+import { useEffect } from "react";
 
 export function TransferPosition({
   positionList,
-  setPositionList,
   targetKeys,
   setTargetKeys,
   setPositionAddModalOpen,
   setPositionDeleteModalOpen,
 }) {
+  console.log("targetKeys", targetKeys);
   return (
     <Transfer
       dataSource={positionList?.map((position) => ({
@@ -30,7 +31,8 @@ export function TransferPosition({
       targetKeys={targetKeys}
       render={(item) => item.title}
       onChange={async (nextTargetKeys, direction, moveKeys) => {
-        const ressponse = await fetch(
+        setTargetKeys(nextTargetKeys, false);
+        const responseTargetKeys = await fetch(
           "/api/dashboard/staffDirectory/positionsSelected",
           {
             method: "POST",
@@ -38,52 +40,11 @@ export function TransferPosition({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              movedKeys: moveKeys,
-              direction,
+              positions: nextTargetKeys,
             }),
           }
         );
-
-        if (direction === "right") {
-          const responseDeletePosition = await fetch(
-            "/api/dashboard/staffDirectory/positionsAvailable",
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                movedKeys: moveKeys,
-              }),
-            }
-          );
-          if (responseDeletePosition.ok) {
-            setPositionList(
-              positionList.filter((position) => !moveKeys.includes(position))
-            );
-            setTargetKeys(nextTargetKeys, false);
-          }
-        } else {
-          const responseAddPosition = await fetch(
-            "/api/dashboard/staffDirectory/positionsAvailable",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                movedKeys: moveKeys,
-              }),
-            }
-          );
-          if (responseAddPosition.ok) {
-            setPositionList([...positionList, ...moveKeys]);
-            setTargetKeys(nextTargetKeys, false);
-          }
-        }
-
-        if (ressponse.ok) {
-          setTargetKeys(nextTargetKeys, false);
+        if (responseTargetKeys.ok) {
         }
       }}
       footer={(props) => {

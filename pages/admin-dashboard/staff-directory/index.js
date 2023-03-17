@@ -82,13 +82,7 @@ const columnsList = [
   },
 ];
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  const sortedData = data.sort();
-
-  return sortedData;
-};
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function StaffDirectory() {
   const columnsHeader = columnsList;
@@ -96,7 +90,6 @@ export default function StaffDirectory() {
   const [data, setData] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formErrorMessages, setFormErrorMessages] = useState([]);
-  // const [targetKeys, setTargetKeys] = useState([]);
 
   const {
     data: departmentList,
@@ -152,7 +145,10 @@ export default function StaffDirectory() {
     if (positionList) {
       setPositionList(positionList.sort(), false);
     }
-  }, [departmentList, positionList]);
+    if (targetKeys) {
+      setTargetKeys(targetKeys.sort(), false);
+    }
+  }, [departmentList, positionList, targetKeys]);
 
   const [formAdd] = Form.useForm();
   const [formAddColumns] = Form.useForm();
@@ -195,7 +191,7 @@ export default function StaffDirectory() {
     });
   };
 
-  if (departmentListError || positionListError || targetKeysError)
+  if (departmentListError && positionListError && targetKeysError) {
     return (
       <div className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
@@ -203,145 +199,147 @@ export default function StaffDirectory() {
         </Typography.Title>
       </div>
     );
-  if (departmentListLoading || positionListLoading || targetKeysLoading)
+  }
+  if (departmentListLoading && positionListLoading && targetKeysLoading) {
     return (
       <div className="w-full justify-center items-center flex">
         <Spin size="large" />
       </div>
     );
-
-  return (
-    <div className="w-full">
-      <Typography.Title level={1} className="w-full text-center">
-        Staff Directory
-      </Typography.Title>
-      <Divider orientation="left">Departments</Divider>
-      <Space wrap className="mb-4">
-        {departmentList.map((department) => (
-          <Tag
-            color={colorTheme === "dark" ? "geekblue" : "blue"}
-            key={department}
-          >
-            {department}
-          </Tag>
-        ))}
-        <Divider type="vertical" className="h-8 shadow-2xl border-2" />
-        <CustomTooltip title="Add Department">
-          <Button
-            className="border-0 bg-transparent"
-            icon={
-              <PlusOutlined
-                onClick={() => {
-                  setDepartmentAddModalOpen(true);
-                }}
-              />
-            }
-          />
-        </CustomTooltip>
-        <CustomTooltip title="Delete Department">
-          <Button
-            className="border-0 bg-transparent"
-            icon={
-              <DeleteOutlined
-                className="text-red-500"
-                onClick={() => {
-                  setDepartmentDeleteModalOpen(true);
-                }}
-              />
-            }
-          />
-        </CustomTooltip>
-      </Space>
-      <Divider orientation="left">Positions</Divider>
-      <TransferPosition
-        positionList={positionList}
-        setPositionList={setPositionList}
-        targetKeys={targetKeys}
-        setTargetKeys={setTargetKeys}
-        setPositionAddModalOpen={setPositionAddModalOpen}
-        setPositionDeleteModalOpen={setPositionDeleteModalOpen}
-      />
-      <Divider orientation="left">Staff Table</Divider>
-      <AddStaffDrawer
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
-        formAdd={formAdd}
-        handleAddFormFinish={handleAddFormFinish}
-        setFormErrorMessages={setFormErrorMessages}
-        departmentList={departmentList}
-        targetKeys={targetKeys}
-        positionList={positionList}
-        columns={columns}
-        data={data}
-      />
-      <AddColumnModal
-        columns={columns}
-        setColumns={setColumns}
-        columnAddModalOpen={columnAddModalOpen}
-        setColumnAddModalOpen={setColumnAddModalOpen}
-        formAddColumns={formAddColumns}
-      />
-      <AddDepartmentModal
-        departmentAddModalOpen={departmentAddModalOpen}
-        setDepartmentAddModalOpen={setDepartmentAddModalOpen}
-        formAddDepartment={formAddDepartment}
-        departmentList={departmentList}
-        setDepartmentList={setDepartmentList}
-      />
-      <DeleteDepartmentModal
-        departmentDeleteModalOpen={departmentDeleteModalOpen}
-        setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
-        formDeleteDepartment={formDeleteDepartment}
-        departmentList={departmentList}
-        setDepartmentList={setDepartmentList}
-      />
-      <AddNewPositionModal
-        positionAddModalOpen={positionAddModalOpen}
-        setPositionAddModalOpen={setPositionAddModalOpen}
-        formAddPosition={formAddPosition}
-        positionList={positionList}
-        setPositionList={setPositionList}
-      />
-      <DeletePositionModal
-        positionDeleteModalOpen={positionDeleteModalOpen}
-        setPositionDeleteModalOpen={setPositionDeleteModalOpen}
-        formDeletePosition={formDeletePosition}
-        positionList={positionList}
-        setPositionList={setPositionList}
-      />
-      <Table
-        columns={columns}
-        dataSource={data}
-        footer={() => {
-          return (
-            <Space>
-              <CustomTooltip title="Add Staff">
-                <Button
-                  onClick={() => setDrawerOpen(true)}
-                  icon={<IoPersonAdd className="text-xl" />}
-                  className="border-0 bg-transparent"
+  } else if (targetKeys && departmentList && positionList) {
+    return (
+      <div className="w-full">
+        <Typography.Title level={1} className="w-full text-center">
+          Staff Directory
+        </Typography.Title>
+        <Divider orientation="left">Departments</Divider>
+        <Space wrap className="mb-4">
+          {departmentList.map((department) => (
+            <Tag
+              color={colorTheme === "dark" ? "geekblue" : "blue"}
+              key={department}
+            >
+              {department}
+            </Tag>
+          ))}
+          <Divider type="vertical" className="h-8 shadow-2xl border-2" />
+          <CustomTooltip title="Add Department">
+            <Button
+              className="border-0 bg-transparent"
+              icon={
+                <PlusOutlined
+                  onClick={() => {
+                    setDepartmentAddModalOpen(true);
+                  }}
                 />
-              </CustomTooltip>
-              <CustomTooltip title="Add Column">
-                <Button
-                  onClick={() => setColumnAddModalOpen(true)}
-                  icon={<RiInsertColumnRight className="text-xl" />}
-                  className="border-0 bg-transparent"
+              }
+            />
+          </CustomTooltip>
+          <CustomTooltip title="Delete Department">
+            <Button
+              className="border-0 bg-transparent"
+              icon={
+                <DeleteOutlined
+                  className="text-red-500"
+                  onClick={() => {
+                    setDepartmentDeleteModalOpen(true);
+                  }}
                 />
-              </CustomTooltip>
-            </Space>
-          );
-        }}
-        size="small"
-        scroll={{ x: true }}
-        tableLayout="auto"
-        bordered
-        style={{
-          maxWidth: `calc(${width}px - ${widthCalc})`,
-        }}
-      />
-    </div>
-  );
+              }
+            />
+          </CustomTooltip>
+        </Space>
+        <Divider orientation="left">Positions</Divider>
+        <TransferPosition
+          positionList={positionList}
+          targetKeys={targetKeys}
+          setTargetKeys={setTargetKeys}
+          setPositionAddModalOpen={setPositionAddModalOpen}
+          setPositionDeleteModalOpen={setPositionDeleteModalOpen}
+        />
+        <Divider orientation="left">Staff Table</Divider>
+        <AddStaffDrawer
+          drawerOpen={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+          formAdd={formAdd}
+          handleAddFormFinish={handleAddFormFinish}
+          setFormErrorMessages={setFormErrorMessages}
+          departmentList={departmentList}
+          targetKeys={targetKeys}
+          positionList={positionList}
+          columns={columns}
+          data={data}
+        />
+        <AddColumnModal
+          columns={columns}
+          setColumns={setColumns}
+          columnAddModalOpen={columnAddModalOpen}
+          setColumnAddModalOpen={setColumnAddModalOpen}
+          formAddColumns={formAddColumns}
+        />
+        <AddDepartmentModal
+          departmentAddModalOpen={departmentAddModalOpen}
+          setDepartmentAddModalOpen={setDepartmentAddModalOpen}
+          formAddDepartment={formAddDepartment}
+          departmentList={departmentList}
+          setDepartmentList={setDepartmentList}
+        />
+        <DeleteDepartmentModal
+          departmentDeleteModalOpen={departmentDeleteModalOpen}
+          setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
+          formDeleteDepartment={formDeleteDepartment}
+          departmentList={departmentList}
+          setDepartmentList={setDepartmentList}
+        />
+        <AddNewPositionModal
+          positionAddModalOpen={positionAddModalOpen}
+          setPositionAddModalOpen={setPositionAddModalOpen}
+          formAddPosition={formAddPosition}
+          positionList={positionList}
+          setPositionList={setPositionList}
+        />
+        <DeletePositionModal
+          positionDeleteModalOpen={positionDeleteModalOpen}
+          setPositionDeleteModalOpen={setPositionDeleteModalOpen}
+          formDeletePosition={formDeletePosition}
+          positionList={positionList}
+          setPositionList={setPositionList}
+          targetKeys={targetKeys}
+        />
+        <Table
+          columns={columns}
+          dataSource={data}
+          footer={() => {
+            return (
+              <Space>
+                <CustomTooltip title="Add Staff">
+                  <Button
+                    onClick={() => setDrawerOpen(true)}
+                    icon={<IoPersonAdd className="text-xl" />}
+                    className="border-0 bg-transparent"
+                  />
+                </CustomTooltip>
+                <CustomTooltip title="Add Column">
+                  <Button
+                    onClick={() => setColumnAddModalOpen(true)}
+                    icon={<RiInsertColumnRight className="text-xl" />}
+                    className="border-0 bg-transparent"
+                  />
+                </CustomTooltip>
+              </Space>
+            );
+          }}
+          size="small"
+          scroll={{ x: true }}
+          tableLayout="auto"
+          bordered
+          style={{
+            maxWidth: `calc(${width}px - ${widthCalc})`,
+          }}
+        />
+      </div>
+    );
+  }
 }
 
 export async function getServerSideProps(context) {

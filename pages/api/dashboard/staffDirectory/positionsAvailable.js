@@ -41,15 +41,21 @@ export default async function handler(req, res) {
       res.status(500).json({ error: error.message });
     }
   } else if (req.method === "POST") {
-    // add new position to google sheet
+    // add new target positions to google sheet
+
     try {
       const sheet = authentication();
+
+      const positionsData = [];
+      req.body.positions.map((position) => {
+        positionsData.push([position]);
+      });
       const response = await sheet.spreadsheets.values.append({
         spreadsheetId: process.env.GOOGLE_SHEET_POSITIONS_AVAILABLE,
         range: "Sheet1!A:A",
         valueInputOption: "USER_ENTERED",
         resource: {
-          values: [[req.body.position]],
+          values: positionsData,
         },
       });
       res.status(200).json({ message: "Position added successfully" });
@@ -75,8 +81,6 @@ export default async function handler(req, res) {
             }
           })
           .filter((row) => row !== undefined);
-
-        console.log(keyIndex);
 
         // delete positions from google sheet using batch update using a loop
 
