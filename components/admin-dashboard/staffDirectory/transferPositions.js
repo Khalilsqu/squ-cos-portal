@@ -9,9 +9,12 @@ export function TransferPosition({
   setTargetKeys,
   setPositionAddModalOpen,
   setPositionDeleteModalOpen,
+  loadingPositions,
+  loadingTargetKeys,
 }) {
   return (
     <Transfer
+      loading={loadingPositions || loadingTargetKeys}
       dataSource={positionList?.map((position) => ({
         key: position,
         title: position,

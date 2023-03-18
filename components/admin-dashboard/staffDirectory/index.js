@@ -8,7 +8,7 @@ import {
   message,
 } from "antd";
 
-import { columnWidth } from "@/pages/admin-dashboard/staff-directory";
+import { columnWidth } from "./table";
 
 export const AddDepartmentModal = ({
   departmentAddModalOpen,
@@ -245,16 +245,16 @@ export const AddColumnModal = ({
               .then((values) => {
                 const newColumns = [...columns];
 
-                const columnExists = newColumns.find(
-                  (column) =>
-                    column.title.toLowerCase() === values.title.toLowerCase()
-                );
-                if (columnExists) {
-                  message.error(
-                    "Column already exists. Please use a different name"
-                  );
-                  return;
-                }
+                // const columnExists = newColumns.find(
+                //   (column) =>
+                //     column.title.toLowerCase() === values.title.toLowerCase()
+                // );
+                // if (columnExists) {
+                //   message.error(
+                //     "Column already exists. Please use a different name"
+                //   );
+                //   return;
+                // }
 
                 newColumns.splice(newColumns.length - 1, 0, {
                   title: values.title,
@@ -291,9 +291,53 @@ export const AddColumnModal = ({
               required: true,
               message: "Please input the title of the column!",
             },
+            {
+              validator: async (rule, value) => {
+                if (value.trim() !== value) {
+                  throw new Error("Column cannot start or end with whitespace");
+                }
+              },
+            },
+            {
+              validator: async (rule, value) => {
+                if (value.length > 20) {
+                  throw new Error(
+                    "Column title cannot be longer than 20 characters"
+                  );
+                }
+              },
+            },
+            {
+              validator: async (rule, value) => {
+                if (
+                  columns
+                    .map((column) => column.title.toLowerCase().trim())
+                    .includes(value.toLowerCase().trim())
+                ) {
+                  throw new Error("Column already exists");
+                }
+              },
+            },
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="columnType"
+          label="Column Type"
+          rules={[
+            {
+              required: true,
+              message: "Please select the column type!",
+            },
+          ]}
+        >
+          <Select>
+            <Select.Option value="text">Text</Select.Option>
+            <Select.Option value="number">Number</Select.Option>
+            <Select.Option value="date">Date</Select.Option>
+            <Select.Option value="boolean">Boolean</Select.Option>
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

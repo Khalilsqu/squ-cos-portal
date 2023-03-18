@@ -13,6 +13,7 @@ import {
   Tag,
   Spin,
 } from "antd";
+import { v4 as uuidv4 } from "uuid";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
@@ -31,64 +32,38 @@ import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/tr
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
+import { columnsList } from "@/components/admin-dashboard/staffDirectory/table";
 
-export const columnWidth = "200px";
-
-const columnsList = [
+const exampleData = [
   {
-    title: "Name",
-    dataIndex: "Name",
-    editable: true,
-    width: columnWidth,
+    key: 1,
+    Name: "John Brown 1",
+    Gender: "Male",
+    Department: ["Chemistry", "Physics"],
+    Position: "Assistant Professor",
+    Email: "aa@gmail.com",
+    "Reports To": "John Doe",
   },
   {
-    title: "Email",
-    dataIndex: "Email",
-    editable: true,
-    width: columnWidth,
-  },
-  {
-    title: "Department",
-    dataIndex: "Department",
-    editable: true,
-    width: columnWidth,
-  },
-  {
-    title: "Position",
-    dataIndex: "Position",
-
-    width: columnWidth,
-  },
-  {
-    title: "Reports To",
-    dataIndex: "Reports To",
-
-    width: columnWidth,
-  },
-
-  {
-    title: "Action",
-    dataIndex: "Action",
-
-    width: "20px",
-    render: (text, record) => (
-      <Space size="middle">
-        <Button type="primary">Edit</Button>
-        <Button type="primary" danger>
-          Delete
-        </Button>
-      </Space>
-    ),
+    key: 2,
+    Name: "John Brown 2",
+    Gender: "Femal",
+    Department: "Chemistry",
+    Position: "Assistant Professor",
+    Email: "aa2@gmail.com",
+    "Reports To": "John Doe",
   },
 ];
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function StaffDirectory() {
-  const columnsHeader = columnsList;
-  const [columns, setColumns] = useState(columnsHeader);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(exampleData);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingKey, setEditingKey] = useState(null);
+
   const [formErrorMessages, setFormErrorMessages] = useState([]);
 
   const {
@@ -151,6 +126,15 @@ export default function StaffDirectory() {
   }, [departmentList, positionList, targetKeys]);
 
   const [formAdd] = Form.useForm();
+
+  const columnsHeader = columnsList(
+    setDrawerOpen,
+    setEditingKey,
+    formAdd,
+    data,
+    setData
+  );
+  const [columns, setColumns] = useState(columnsHeader);
   const [formAddColumns] = Form.useForm();
   const [columnAddModalOpen, setColumnAddModalOpen] = useState(false);
   const [formAddDepartment] = Form.useForm();
@@ -174,48 +158,58 @@ export default function StaffDirectory() {
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
   const handleAddFormFinish = (values) => {
-    const mappedData = columns.map((column) => {
-      if (column.dataIndex !== "Action") {
-        return {
-          key: data.length + 1,
-          [column.dataIndex]: Array.isArray(values[column.dataIndex])
-            ? values[column.dataIndex].join("; ")
-            : values[column.dataIndex],
-        };
+    if (editingKey) {
+      const newData = [...data];
+      const index = newData.findIndex((item) => editingKey === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, { ...item, ...values });
+        setData(newData);
+        notification.success({
+          message: "Staff Edited",
+          description: "Staff has been edited successfully",
+        });
+        setEditingKey(null);
       }
-    });
-    const newData = Object.assign({}, ...mappedData);
+    } else {
+      const mappedData = columns.map((column) => {
+        if (column.dataIndex !== "Action") {
+          return {
+            key: uuidv4(),
+            [column.dataIndex]: values[column.dataIndex],
+          };
+        }
+      });
+      const newData = Object.assign({}, ...mappedData);
 
-    setData([...data, newData]);
-    notification.success({
-      message: "Staff Added",
-      description: "Staff has been added successfully",
-    });
+      setData([...data, newData]);
+      notification.success({
+        message: "Staff Added",
+        description: "Staff has been added successfully",
+      });
+      setEditingKey(null);
+    }
   };
 
   if (departmentListError && positionListError && targetKeysError) {
     return (
       <div className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
-          Failed to load data from server
+          Failed to load data from server. Please try to refresh the page or try
+          again later.
         </Typography.Title>
       </div>
     );
   }
-  if (departmentListLoading && positionListLoading && targetKeysLoading) {
-    return (
-      <div className="w-full justify-center items-center flex">
-        <Spin size="large" />
-      </div>
-    );
-  } else if (targetKeys && departmentList && positionList) {
+
+  if (targetKeys && departmentList && positionList) {
     return (
       <div className="w-full">
         <Typography.Title level={1} className="w-full text-center">
           Staff Directory
         </Typography.Title>
         <Divider orientation="left">Departments</Divider>
-        <Space wrap className="mb-4">
+        <Space wrap className="mb-4" isLoading={departmentListLoading}>
           {departmentList.map((department) => (
             <Tag
               color={colorTheme === "dark" ? "geekblue" : "blue"}
@@ -227,7 +221,7 @@ export default function StaffDirectory() {
           <Divider type="vertical" className="h-8 shadow-2xl border-2" />
           <CustomTooltip title="Add Department">
             <Button
-              className="border-0 bg-transparent"
+              type="text"
               icon={
                 <PlusOutlined
                   onClick={() => {
@@ -239,7 +233,7 @@ export default function StaffDirectory() {
           </CustomTooltip>
           <CustomTooltip title="Delete Department">
             <Button
-              className="border-0 bg-transparent"
+              type="text"
               icon={
                 <DeleteOutlined
                   className="text-red-500"
@@ -258,6 +252,8 @@ export default function StaffDirectory() {
           setTargetKeys={setTargetKeys}
           setPositionAddModalOpen={setPositionAddModalOpen}
           setPositionDeleteModalOpen={setPositionDeleteModalOpen}
+          loadingPositions={positionListLoading}
+          loadingTargetKeys={targetKeysLoading}
         />
         <Divider orientation="left">Staff Table</Divider>
         <AddStaffDrawer
@@ -319,14 +315,14 @@ export default function StaffDirectory() {
                   <Button
                     onClick={() => setDrawerOpen(true)}
                     icon={<AiOutlineUserAdd className="text-xl" />}
-                    className="border-0 bg-transparent"
+                    type="text"
                   />
                 </CustomTooltip>
                 <CustomTooltip title="Add Column">
                   <Button
                     onClick={() => setColumnAddModalOpen(true)}
                     icon={<RiInsertColumnRight className="text-xl" />}
-                    className="border-0 bg-transparent"
+                    type="text"
                   />
                 </CustomTooltip>
               </Space>
@@ -338,6 +334,12 @@ export default function StaffDirectory() {
           bordered
           style={{
             maxWidth: `calc(${width}px - ${widthCalc})`,
+          }}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (selectedRowKeys) => {
+              setSelectedRowKeys(selectedRowKeys);
+            },
           }}
         />
       </div>

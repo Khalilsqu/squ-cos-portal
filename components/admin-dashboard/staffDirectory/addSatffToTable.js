@@ -1,4 +1,4 @@
-import { Drawer, Button, Form, Select, Input, Row, Col } from "antd";
+import { Drawer, Button, Form, Select, Input, Row, Col, Radio } from "antd";
 import { useWindowSize } from "@/components/utils/windowSize";
 import { useState } from "react";
 
@@ -6,6 +6,8 @@ import { MailOutlined } from "@ant-design/icons";
 import { RxInput } from "react-icons/rx";
 import { BsCardList } from "react-icons/bs";
 import CustomTooltip from "@/components/tooltip/customtooltip";
+
+import { FaMale, FaFemale } from "react-icons/fa";
 
 export const AddStaffDrawer = ({
   drawerOpen,
@@ -17,6 +19,7 @@ export const AddStaffDrawer = ({
   targetKeys,
   columns,
   data,
+  Space,
 }) => {
   const [reportsToMethod, setReportsToMethod] = useState("Select");
 
@@ -161,7 +164,7 @@ export const AddStaffDrawer = ({
           if (column.dataIndex === "Reports To") {
             return (
               <Row key={column.dataIndex} className="w-full" align="middle">
-                <Col flex={6}>
+                <Col flex={7}>
                   <Form.Item
                     key={column.dataIndex}
                     name={column.dataIndex}
@@ -174,10 +177,7 @@ export const AddStaffDrawer = ({
                     ]}
                   >
                     {reportsToMethod === "Input" ? (
-                      <Input
-                        suffix={<BsCardList />}
-                        placeholder="Enter a name"
-                      />
+                      <Input placeholder="Enter a name" />
                     ) : (
                       <Select
                         showSearch
@@ -220,6 +220,31 @@ export const AddStaffDrawer = ({
                   </Row>
                 </Col>
               </Row>
+            );
+          }
+
+          if (column.dataIndex === "Gender") {
+            return (
+              <Form.Item
+                key={column.dataIndex}
+                name={column.dataIndex}
+                label={column.title}
+                rules={[
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                ]}
+              >
+                <Radio.Group>
+                  <Radio value="Male">
+                    <FaMale className="text-lg" />
+                  </Radio>
+                  <Radio value="Femal">
+                    <FaFemale className="text-lg" />
+                  </Radio>
+                </Radio.Group>
+              </Form.Item>
             );
           }
 
