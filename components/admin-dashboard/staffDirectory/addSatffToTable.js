@@ -121,6 +121,21 @@ export const AddStaffDrawer = ({
                     type: "email",
                     message: "Please input a valid email address",
                   },
+                  {
+                    validator: (_, value) => {
+                      const staffRow = data.find(
+                        (item) => item.Email === value
+                      );
+                      if (staffRow) {
+                        return Promise.reject(
+                          new Error(
+                            `This email is already assigned to ${staffRow.Name}`
+                          )
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
               >
                 <Input suffix={<MailOutlined />} placeholder="Enter an email" />
