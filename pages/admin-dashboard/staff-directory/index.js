@@ -12,12 +12,13 @@ import {
   Divider,
   Tag,
   Spin,
+  Popconfirm,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -325,6 +326,30 @@ export default function StaffDirectory() {
                     type="text"
                   />
                 </CustomTooltip>
+                {selectedRowKeys.length > 0 && (
+                  <CustomTooltip title="Delete Selected Staff(s)">
+                    <Popconfirm
+                      title="Are you sure?"
+                      onConfirm={() => {
+                        const newData = [...data];
+                        selectedRowKeys.forEach((key) => {
+                          const index = newData.findIndex(
+                            (item) => item.key === key
+                          );
+                          newData.splice(index, 1);
+                        });
+                        setData(newData);
+                        setSelectedRowKeys([]);
+                      }}
+                    >
+                      <Button
+                        icon={<AiOutlineUserDelete className="text-xl" />}
+                        type="text"
+                        danger
+                      />
+                    </Popconfirm>
+                  </CustomTooltip>
+                )}
               </Space>
             );
           }}
