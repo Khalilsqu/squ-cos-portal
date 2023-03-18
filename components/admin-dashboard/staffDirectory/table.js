@@ -1,5 +1,5 @@
 import { Tag, Space, Button, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
@@ -24,6 +24,19 @@ export const columnsList = (
       dataIndex: "Email",
       editable: true,
       width: columnWidth,
+      render: (text, record) => {
+        // send email to staff when clicked
+        return (
+          <a href={`mailto:${record.Email}`}>
+            <Space size="middle" className="flex justify-between">
+              {text}
+              <CustomTooltip title="Send Email" placement="left">
+                <MailOutlined />
+              </CustomTooltip>
+            </Space>
+          </a>
+        );
+      },
     },
     {
       title: "Department",

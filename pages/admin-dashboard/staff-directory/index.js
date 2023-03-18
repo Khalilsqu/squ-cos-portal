@@ -203,6 +203,14 @@ export default function StaffDirectory() {
     );
   }
 
+  if (departmentListLoading || positionListLoading || targetKeysLoading) {
+    return (
+      <div className="w-full justify-center items-center flex">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   if (targetKeys && departmentList && positionList) {
     return (
       <div className="w-full">
