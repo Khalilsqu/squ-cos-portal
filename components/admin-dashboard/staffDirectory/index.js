@@ -245,20 +245,10 @@ export const AddColumnModal = ({
               .then((values) => {
                 const newColumns = [...columns];
 
-                // const columnExists = newColumns.find(
-                //   (column) =>
-                //     column.title.toLowerCase() === values.title.toLowerCase()
-                // );
-                // if (columnExists) {
-                //   message.error(
-                //     "Column already exists. Please use a different name"
-                //   );
-                //   return;
-                // }
-
                 newColumns.splice(newColumns.length - 1, 0, {
                   title: values.title,
                   dataIndex: values.title,
+                  columnType: values.columnType,
                   editable: true,
                   width: columnWidth,
                 });

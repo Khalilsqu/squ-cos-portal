@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       const sheet = authentication();
       const response = await sheet.spreadsheets.values.get({
         spreadsheetId: process.env.GOOGLE_SHEET_DEPARTMENT_NAME,
-        range: "Sheet1!A:A",
+        range: "Sheet1!A:B",
       });
       const rows = response.data.values;
       const data = [];

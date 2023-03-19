@@ -48,7 +48,7 @@ const exampleData = [
   {
     key: 2,
     Name: "John Brown 2",
-    Gender: "Femal",
+    Gender: "Female",
     Department: "Chemistry",
     Position: "Assistant Professor",
     Email: "aa2@gmail.com",
@@ -164,6 +164,7 @@ export default function StaffDirectory() {
       const index = newData.findIndex((item) => editingKey === item.key);
       if (index > -1) {
         const item = newData[index];
+
         newData.splice(index, 1, { ...item, ...values });
         setData(newData);
         notification.success({
@@ -175,9 +176,18 @@ export default function StaffDirectory() {
     } else {
       const mappedData = columns.map((column) => {
         if (column.dataIndex !== "Action") {
+          let columnValue = null;
+          if (column.columnType === "date") {
+            columnValue = values[column.dataIndex].format("YYYY-MM-DD");
+          } else if (column.columnType === "boolean") {
+            columnValue = values[column.dataIndex] ? "true" : "false";
+          } else {
+            columnValue = values[column.dataIndex];
+          }
+
           return {
             key: uuidv4(),
-            [column.dataIndex]: values[column.dataIndex],
+            [column.dataIndex]: columnValue,
           };
         }
       });
@@ -276,6 +286,7 @@ export default function StaffDirectory() {
           positionList={positionList}
           columns={columns}
           data={data}
+          editingKey={editingKey}
         />
         <AddColumnModal
           columns={columns}

@@ -1,4 +1,16 @@
-import { Drawer, Button, Form, Select, Input, Row, Col, Radio } from "antd";
+import {
+  Drawer,
+  Button,
+  Form,
+  Select,
+  Input,
+  Row,
+  Col,
+  Radio,
+  Switch,
+  DatePicker,
+  InputNumber,
+} from "antd";
 import { useWindowSize } from "@/components/utils/windowSize";
 import { useState } from "react";
 
@@ -19,7 +31,7 @@ export const AddStaffDrawer = ({
   targetKeys,
   columns,
   data,
-  Space,
+  editingKey,
 }) => {
   const [reportsToMethod, setReportsToMethod] = useState("Select");
 
@@ -126,7 +138,7 @@ export const AddStaffDrawer = ({
                       const staffRow = data.find(
                         (item) => item.Email === value
                       );
-                      if (staffRow) {
+                      if (staffRow & (staffRow.key !== editingKey)) {
                         return Promise.reject(
                           new Error(
                             `This email is already assigned to ${staffRow.Name}`
@@ -255,7 +267,7 @@ export const AddStaffDrawer = ({
                   <Radio value="Male">
                     <FaMale className="text-lg" />
                   </Radio>
-                  <Radio value="Femal">
+                  <Radio value="Female">
                     <FaFemale className="text-lg" />
                   </Radio>
                 </Radio.Group>
@@ -275,7 +287,22 @@ export const AddStaffDrawer = ({
                 },
               ]}
             >
-              <Input placeholder={"Enter " + column.title} />
+              {column.columnType === "date" ? (
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  placeholder="Select a date"
+                  style={{ width: "100%" }}
+                />
+              ) : column.columnType === "number" ? (
+                <InputNumber
+                  placeholder={"Enter " + column.title}
+                  style={{ width: "100%" }}
+                />
+              ) : column.columnType === "boolean" ? (
+                <Switch />
+              ) : (
+                <Input placeholder={"Enter " + column.title} />
+              )}
             </Form.Item>
           );
         })}
