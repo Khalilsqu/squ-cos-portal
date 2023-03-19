@@ -15,6 +15,7 @@ import {
   Popconfirm,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
@@ -164,6 +165,30 @@ export default function StaffDirectory() {
       const index = newData.findIndex((item) => editingKey === item.key);
       if (index > -1) {
         const item = newData[index];
+
+        // try to convert date to string and boolean to string before sending to backend
+        // const newValues = Object.keys(values).reduce((acc, key) => {
+        //   if (values[key] instanceof moment) {
+        //     acc[key] = values[key].format("YYYY-MM-DD");
+        //   } else {
+        //     acc[key] = values[key];
+        //   }
+        //   return acc;
+        // }, {});
+
+        // const newValues = {
+        //   ...Object.keys(values).reduce((acc, key) => {
+        //     if (moment(acc[key], "YYYY-MM-DD", true).isValid()) {
+        //       acc[key] = moment(acc[key]).format("YYYY-MM-DD");
+        //     } else {
+        //       acc[key] = values[key];
+        //     }
+        //     return acc;
+        //   }, {}),
+        // };
+
+        // console.log(newValues);
+        // console.log(values);
 
         newData.splice(index, 1, { ...item, ...values });
         setData(newData);

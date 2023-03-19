@@ -1,12 +1,5 @@
-import {
-  Modal,
-  Button,
-  notification,
-  Form,
-  Input,
-  Select,
-  message,
-} from "antd";
+import { Modal, Button, notification, Form, Input, Select, Switch } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { columnWidth } from "./table";
 
@@ -328,6 +321,14 @@ export const AddColumnModal = ({
             <Select.Option value="date">Date</Select.Option>
             <Select.Option value="boolean">Boolean</Select.Option>
           </Select>
+        </Form.Item>
+
+        <Form.Item name="required" label="Required" valuePropName="checked">
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            defaultChecked
+          />
         </Form.Item>
       </Form>
     </Modal>

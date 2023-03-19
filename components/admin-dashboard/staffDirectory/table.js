@@ -1,5 +1,7 @@
 import { Tag, Space, Button, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons";
+import moment from "moment";
+import dayjs from "dayjs";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
@@ -92,12 +94,14 @@ export const columnsList = (
                 setDrawerOpen(true);
                 setEditingKey(record.key);
                 formAdd.setFieldsValue({
-                  Name: record.Name,
-                  Email: record.Email,
-                  Department: record.Department,
-                  Position: record.Position,
-                  Gender: record.Gender,
-                  "Reports To": record["Reports To"],
+                  ...Object.keys(record).reduce((acc, key) => {
+                    acc[key] = record[key];
+                    // ckeck if acc can be parsed as date having a format of YYYY-MM-DD
+                    if (moment(acc[key], "YYYY-MM-DD", true).isValid()) {
+                      acc[key] = dayjs(acc[key], "YYYY-MM-DD");
+                    }
+                    return acc;
+                  }, {}),
                 });
               }}
               type="text"

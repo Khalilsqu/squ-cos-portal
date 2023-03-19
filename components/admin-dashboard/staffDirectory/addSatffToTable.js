@@ -138,7 +138,7 @@ export const AddStaffDrawer = ({
                       const staffRow = data.find(
                         (item) => item.Email === value
                       );
-                      if (staffRow & (staffRow.key !== editingKey)) {
+                      if (staffRow && staffRow.key !== editingKey) {
                         return Promise.reject(
                           new Error(
                             `This email is already assigned to ${staffRow.Name}`
@@ -280,12 +280,14 @@ export const AddStaffDrawer = ({
               key={column.dataIndex}
               name={column.dataIndex}
               label={column.title}
-              rules={[
-                {
-                  required: true,
-                  message: `Please input the ${column.title.toLowerCase()}!`,
-                },
-              ]}
+              rules={
+                column.required === true && [
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                ]
+              }
             >
               {column.columnType === "date" ? (
                 <DatePicker
