@@ -21,6 +21,8 @@ import CustomTooltip from "@/components/tooltip/customtooltip";
 
 import { FaMale, FaFemale } from "react-icons/fa";
 
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+
 export const AddStaffDrawer = ({
   drawerOpen,
   setDrawerOpen,
@@ -301,7 +303,10 @@ export const AddStaffDrawer = ({
                   style={{ width: "100%" }}
                 />
               ) : column.columnType === "boolean" ? (
-                <Switch />
+                <Switch
+                  checkedChildren={<CheckOutlined />}
+                  unCheckedChildren={<CloseOutlined />}
+                />
               ) : (
                 <Input placeholder={"Enter " + column.title} />
               )}

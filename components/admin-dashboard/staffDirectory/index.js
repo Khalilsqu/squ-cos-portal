@@ -1,5 +1,6 @@
 import { Modal, Button, notification, Form, Input, Select, Switch } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 import { columnWidth } from "./table";
 
@@ -244,6 +245,17 @@ export const AddColumnModal = ({
                   columnType: values.columnType,
                   editable: true,
                   width: columnWidth,
+                  render: (text, record) => {
+                    if (values.columnType === "boolean") {
+                      return text ? <CheckOutlined /> : <CloseOutlined />;
+                    } else if (values.columnType === "date") {
+                      if (text !== undefined && text !== null) {
+                        return text.format("DD/MMM/YYYY");
+                      }
+                    } else {
+                      return text;
+                    }
+                  },
                 });
                 setColumns(newColumns);
                 setColumnAddModalOpen(false);

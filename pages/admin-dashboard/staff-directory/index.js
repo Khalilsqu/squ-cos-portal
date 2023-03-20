@@ -15,7 +15,6 @@ import {
   Popconfirm,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
@@ -57,7 +56,18 @@ const exampleData = [
   },
 ];
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
 
 export default function StaffDirectory() {
   const [data, setData] = useState(exampleData);
@@ -166,30 +176,6 @@ export default function StaffDirectory() {
       if (index > -1) {
         const item = newData[index];
 
-        // try to convert date to string and boolean to string before sending to backend
-        // const newValues = Object.keys(values).reduce((acc, key) => {
-        //   if (values[key] instanceof moment) {
-        //     acc[key] = values[key].format("YYYY-MM-DD");
-        //   } else {
-        //     acc[key] = values[key];
-        //   }
-        //   return acc;
-        // }, {});
-
-        // const newValues = {
-        //   ...Object.keys(values).reduce((acc, key) => {
-        //     if (moment(acc[key], "YYYY-MM-DD", true).isValid()) {
-        //       acc[key] = moment(acc[key]).format("YYYY-MM-DD");
-        //     } else {
-        //       acc[key] = values[key];
-        //     }
-        //     return acc;
-        //   }, {}),
-        // };
-
-        // console.log(newValues);
-        // console.log(values);
-
         newData.splice(index, 1, { ...item, ...values });
         setData(newData);
         notification.success({
@@ -201,18 +187,9 @@ export default function StaffDirectory() {
     } else {
       const mappedData = columns.map((column) => {
         if (column.dataIndex !== "Action") {
-          let columnValue = null;
-          if (column.columnType === "date") {
-            columnValue = values[column.dataIndex].format("YYYY-MM-DD");
-          } else if (column.columnType === "boolean") {
-            columnValue = values[column.dataIndex] ? "true" : "false";
-          } else {
-            columnValue = values[column.dataIndex];
-          }
-
           return {
             key: uuidv4(),
-            [column.dataIndex]: columnValue,
+            [column.dataIndex]: values[column.dataIndex],
           };
         }
       });
@@ -253,7 +230,7 @@ export default function StaffDirectory() {
           Staff Directory
         </Typography.Title>
         <Divider orientation="left">Departments</Divider>
-        <Space wrap className="mb-4" isLoading={departmentListLoading}>
+        <Space wrap className="mb-4">
           {departmentList.map((department) => (
             <Tag
               color={colorTheme === "dark" ? "geekblue" : "blue"}

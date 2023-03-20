@@ -2,6 +2,7 @@ import { Tag, Space, Button, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
@@ -97,8 +98,9 @@ export const columnsList = (
                   ...Object.keys(record).reduce((acc, key) => {
                     acc[key] = record[key];
                     // ckeck if acc can be parsed as date having a format of YYYY-MM-DD
-                    if (moment(acc[key], "YYYY-MM-DD", true).isValid()) {
-                      acc[key] = dayjs(acc[key], "YYYY-MM-DD");
+                    console.log(typeof acc[key]);
+                    if (moment(acc[key], "DD/MMM/YYYY", true).isValid()) {
+                      acc[key] = dayjs(acc[key]);
                     }
                     return acc;
                   }, {}),
