@@ -38,6 +38,7 @@ export const AddStaffDrawer = ({
   const [reportsToMethod, setReportsToMethod] = useState("Select");
 
   const { width } = useWindowSize();
+
   return (
     <Drawer
       title="Add Staff"
@@ -282,14 +283,17 @@ export const AddStaffDrawer = ({
               key={column.dataIndex}
               name={column.dataIndex}
               label={column.title}
-              rules={
-                column.required === true && [
-                  {
-                    required: true,
-                    message: `Please input the ${column.title.toLowerCase()}!`,
-                  },
-                ]
+              valuePropName={
+                column.columnType === "boolean" ? "checked" : "value"
               }
+              rules={[
+                column.required
+                  ? {
+                      required: true,
+                      message: `Please input the ${column.title.toLowerCase()}!`,
+                    }
+                  : [],
+              ]}
             >
               {column.columnType === "date" ? (
                 <DatePicker

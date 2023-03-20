@@ -1,6 +1,5 @@
 import { Modal, Button, notification, Form, Input, Select, Switch } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import moment from "moment";
 
 import { columnWidth } from "./table";
 
@@ -243,17 +242,17 @@ export const AddColumnModal = ({
                   title: values.title,
                   dataIndex: values.title,
                   columnType: values.columnType,
+                  required: values.required,
                   editable: true,
                   width: columnWidth,
                   render: (text, record) => {
-                    if (values.columnType === "boolean") {
-                      return text ? <CheckOutlined /> : <CloseOutlined />;
-                    } else if (values.columnType === "date") {
-                      if (text !== undefined && text !== null) {
+                    if (text !== undefined && text !== null) {
+                      if (values.columnType === "date") {
                         return text.format("DD/MMM/YYYY");
                       }
-                    } else {
-                      return text;
+                    }
+                    if (values.columnType === "boolean") {
+                      return text ? <CheckOutlined /> : <CloseOutlined />;
                     }
                   },
                 });
@@ -335,11 +334,22 @@ export const AddColumnModal = ({
           </Select>
         </Form.Item>
 
-        <Form.Item name="required" label="Required" valuePropName="checked">
+        <Form.Item
+          name="required"
+          label="Required"
+          valuePropName="checked"
+          initialValue={true}
+          rules={[
+            {
+              required: true,
+              message: "Please select if the column is required!",
+            },
+          ]}
+        >
           <Switch
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
-            defaultChecked
+            checked={true}
           />
         </Form.Item>
       </Form>
