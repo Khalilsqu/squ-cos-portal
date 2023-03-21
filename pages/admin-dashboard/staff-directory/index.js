@@ -13,13 +13,18 @@ import {
   Tag,
   Spin,
   Popconfirm,
+  Upload,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
-import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
-import { TbTableExport } from "react-icons/tb";
+import {
+  AiOutlineUserAdd,
+  AiOutlineUserDelete,
+  AiOutlineFileExcel,
+  AiOutlineUpload,
+} from "react-icons/ai";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -35,6 +40,7 @@ import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory
 import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { columnsList } from "@/components/admin-dashboard/staffDirectory/table";
+import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
 
 const exampleData = [
   {
@@ -45,6 +51,7 @@ const exampleData = [
     Position: "Assistant Professor",
     Email: "aa@gmail.com",
     "Reports To": "John Doe",
+    "Office Phone": "99999999",
   },
   {
     key: 2,
@@ -54,6 +61,7 @@ const exampleData = [
     Position: "Assistant Professor",
     Email: "aa2@gmail.com",
     "Reports To": "John Doe",
+    "Office Phone": "99999999",
   },
 ];
 
@@ -224,13 +232,6 @@ export default function StaffDirectory() {
     );
   }
 
-  const exportToExcel = (selectedData) => {
-    const ws = XLSX.utils.json_to_sheet(selectedData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Staff Directory");
-    XLSX.writeFile(wb, "Staff Directory.xlsx");
-  };
-
   if (targetKeys && departmentList && positionList) {
     return (
       <div className="w-full">
@@ -372,34 +373,35 @@ export default function StaffDirectory() {
                     </Popconfirm>
                   </CustomTooltip>
                 )}
-                {selectedRowKeys.length > 0 && (
-                  <CustomTooltip title="Export Selected Staff(s)">
+                <ExportExcel data={data} selectedRowKeys={selectedRowKeys} />
+                <Upload
+                  beforeUpload={(file) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      const result = e.target.result;
+                      const workbook = XLSX.read(result, {
+                        type: "binary",
+                      });
+                      const sheetName = workbook.SheetNames[0];
+                      const sheet = workbook.Sheets[sheetName];
+                      const data = XLSX.utils.sheet_to_json(sheet, {
+                        header: 1,
+                      });
+                      const newData = [...data];
+                      newData.shift();
+                      setData(newData);
+                    };
+                    reader.readAsBinaryString(file);
+                  }}
+                  showUploadList={false}
+                >
+                  <CustomTooltip title="Import Staff">
                     <Button
-                      icon={<TbTableExport className="text-xl" />}
+                      icon={<AiOutlineUpload className="text-xl" />}
                       type="text"
-                      onClick={() => {
-                        const newData = [...data];
-                        const selectedData = [];
-                        selectedRowKeys.forEach((key) => {
-                          const index = newData.findIndex(
-                            (item) => item.key === key
-                          );
-                          selectedData.push(newData[index]);
-                        });
-
-                        // check if there is array in the data
-                        selectedData.forEach((item) => {
-                          Object.keys(item).forEach((key) => {
-                            if (Array.isArray(item[key])) {
-                              item[key] = item[key].join(", ");
-                            }
-                          });
-                        });
-                        exportToExcel(selectedData);
-                      }}
                     />
                   </CustomTooltip>
-                )}
+                </Upload>
               </Space>
             );
           }}

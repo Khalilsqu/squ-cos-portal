@@ -21,7 +21,7 @@ import CustomTooltip from "@/components/tooltip/customtooltip";
 
 import { FaMale, FaFemale } from "react-icons/fa";
 
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, PhoneOutlined } from "@ant-design/icons";
 
 export const AddStaffDrawer = ({
   drawerOpen,
@@ -274,6 +274,43 @@ export const AddStaffDrawer = ({
                     <FaFemale className="text-lg" />
                   </Radio>
                 </Radio.Group>
+              </Form.Item>
+            );
+          }
+
+          if (column.dataIndex === "Office Phone") {
+            return (
+              <Form.Item
+                key={column.dataIndex}
+                name={column.dataIndex}
+                label={column.title}
+                rules={[
+                  {
+                    required: true,
+                    message: `Please input the ${column.title.toLowerCase()}!`,
+                  },
+                  {
+                    validator: (_, value) => {
+                      const staffRow = data.find(
+                        (item) => item["Phone Number"] === value
+                      );
+                      if (staffRow && staffRow.key !== editingKey) {
+                        return Promise.reject(
+                          new Error(
+                            `This phone number is already assigned to ${staffRow.Name}`
+                          )
+                        );
+                      }
+                      return Promise.resolve();
+                    }, // TODO: check if phone number is valid
+                  },
+                ]}
+              >
+                <Input
+                  // country flag
+                  suffix={<PhoneOutlined />}
+                  placeholder="Enter a phone number"
+                />
               </Form.Item>
             );
           }

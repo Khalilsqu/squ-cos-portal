@@ -1,5 +1,10 @@
-import { Tag, Space, Button, Popconfirm, Switch } from "antd";
-import { EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons";
+import { Tag, Space, Button, Popconfirm, Switch, Typography } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  MailOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
 
@@ -29,9 +34,9 @@ export const columnsList = (
       render: (text, record) => {
         // send email to staff when clicked
         return (
-          <a href={`mailto:${record.Email}`}>
+          <a href={`mailto:${record.Email}`} target={"_blank"} rel="noreferrer">
             <Space size="middle" className="flex justify-between">
-              {text}
+              <Typography.Text>{text}</Typography.Text>
               <CustomTooltip title="Send Email" placement="left">
                 <MailOutlined />
               </CustomTooltip>
@@ -80,6 +85,23 @@ export const columnsList = (
       title: "Reports To",
       dataIndex: "Reports To",
       width: columnWidth,
+    },
+    {
+      title: "Office Phone",
+      dataIndex: "Office Phone",
+      width: columnWidth,
+      render: (text, record) => (
+        <a href={`tel:${record["Office Phone"]}`}>
+          <Space size="middle" className="flex justify-between">
+            {/* show country code and flag before the office phone number */}
+
+            {text}
+            <CustomTooltip title="Call" placement="left">
+              <PhoneOutlined />
+            </CustomTooltip>
+          </Space>
+        </a>
+      ),
     },
 
     {
