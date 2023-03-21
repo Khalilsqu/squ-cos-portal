@@ -15,10 +15,11 @@ import {
   Popconfirm,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
-
+import * as XLSX from "xlsx";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
 import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
+import { TbTableExport } from "react-icons/tb";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -223,6 +224,13 @@ export default function StaffDirectory() {
     );
   }
 
+  const exportToExcel = (selectedData) => {
+    const ws = XLSX.utils.json_to_sheet(selectedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Staff Directory");
+    XLSX.writeFile(wb, "Staff Directory.xlsx");
+  };
+
   if (targetKeys && departmentList && positionList) {
     return (
       <div className="w-full">
@@ -243,26 +251,19 @@ export default function StaffDirectory() {
           <CustomTooltip title="Add Department">
             <Button
               type="text"
-              icon={
-                <PlusOutlined
-                  onClick={() => {
-                    setDepartmentAddModalOpen(true);
-                  }}
-                />
-              }
+              onClick={() => {
+                setDepartmentAddModalOpen(true);
+              }}
+              icon={<PlusOutlined />}
             />
           </CustomTooltip>
           <CustomTooltip title="Delete Department">
             <Button
               type="text"
-              icon={
-                <DeleteOutlined
-                  className="text-red-500"
-                  onClick={() => {
-                    setDepartmentDeleteModalOpen(true);
-                  }}
-                />
-              }
+              onClick={() => {
+                setDepartmentDeleteModalOpen(true);
+              }}
+              icon={<DeleteOutlined className="text-red-500" />}
             />
           </CustomTooltip>
         </Space>
@@ -369,6 +370,34 @@ export default function StaffDirectory() {
                         danger
                       />
                     </Popconfirm>
+                  </CustomTooltip>
+                )}
+                {selectedRowKeys.length > 0 && (
+                  <CustomTooltip title="Export Selected Staff(s)">
+                    <Button
+                      icon={<TbTableExport className="text-xl" />}
+                      type="text"
+                      onClick={() => {
+                        const newData = [...data];
+                        const selectedData = [];
+                        selectedRowKeys.forEach((key) => {
+                          const index = newData.findIndex(
+                            (item) => item.key === key
+                          );
+                          selectedData.push(newData[index]);
+                        });
+
+                        // check if there is array in the data
+                        selectedData.forEach((item) => {
+                          Object.keys(item).forEach((key) => {
+                            if (Array.isArray(item[key])) {
+                              item[key] = item[key].join(", ");
+                            }
+                          });
+                        });
+                        exportToExcel(selectedData);
+                      }}
+                    />
                   </CustomTooltip>
                 )}
               </Space>

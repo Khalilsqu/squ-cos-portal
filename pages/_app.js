@@ -24,7 +24,7 @@ export default function App({
   }, []);
   if ([...appProps.router.asPath.split("/")].includes("auth"))
     return (
-      <SessionProvider session={session} refetchInterval={60 * 30}>
+      <SessionProvider session={session} refetchInterval={60 * 60}>
         <Component {...pageProps} />
       </SessionProvider>
     );
