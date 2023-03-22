@@ -5,6 +5,10 @@ import { TbTableExport } from "react-icons/tb";
 
 export default function ExportExcel({ data, selectedRowKeys }) {
   const exportToExcel = (selectedData) => {
+    // dont export key
+    selectedData.forEach((item) => {
+      delete item.key;
+    });
     const ws = XLSX.utils.json_to_sheet(selectedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Staff Directory");
