@@ -7,11 +7,17 @@ import { Player, Controls } from "@lottiefiles/react-lottie-player";
 
 import { FcGoogle } from "react-icons/fc";
 import { FcHome } from "react-icons/fc";
-import { colorThemeState } from "@/components/layout/pageLayout";
 import { useRouter } from "next/router";
 
+import { getCookie, hasCookie } from "cookies-next";
+
 export default function Signin({ providers }) {
-  const themeColor = colorThemeState().colorTheme;
+  if (hasCookie("themeColor")) {
+    var themeColor = getCookie("themeColor");
+  } else {
+    var themeColor = "light";
+  }
+
   const router = useRouter();
 
   return (
@@ -64,7 +70,7 @@ export default function Signin({ providers }) {
       </Typography.Text>
       <Button
         onClick={() => signIn("google", { callbackUrl: "/" })}
-        className="flex text-center align-middle content-center items-center rounded-md"
+        className="flex text-center align-middle content-center items-center rounded-md gap-2"
         size="large"
         icon={<FcGoogle className="text-xl" />}
       >
