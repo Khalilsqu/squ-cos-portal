@@ -1,16 +1,16 @@
-import { Upload, message, Button } from "antd";
+import { Upload, message, Button, notification } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 import { AiOutlineUpload } from "react-icons/ai";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
-const isEmail = (email) => {
-  // use regex to check if email is valid
-
-  const re =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 };
 
 export default function ImportExcel({
@@ -48,10 +48,9 @@ export default function ImportExcel({
             return;
           }
           // check if emails are valid in excel file and unique
-          const emails = newData.map((item) => item.email);
-          // report the line number of invalid email
+          const emails = newData.map((item) => item.Email);
 
-          if (emails.some((email) => isEmail(email))) {
+          if (emails.some((email) => !validateEmail(email))) {
             message.error("Emails in excel file are not valid");
             return;
           }
