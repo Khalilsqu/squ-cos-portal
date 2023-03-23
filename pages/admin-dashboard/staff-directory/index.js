@@ -42,6 +42,7 @@ import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { columnsList } from "@/components/admin-dashboard/staffDirectory/table";
 import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
+import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
 
 const exampleData = [
   {
@@ -375,62 +376,14 @@ export default function StaffDirectory() {
                   </CustomTooltip>
                 )}
                 <ExportExcel data={data} selectedRowKeys={selectedRowKeys} />
-                <Upload
-                  beforeUpload={(file) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                      const result = e.target.result;
-                      const workbook = XLSX.read(result, {
-                        type: "binary",
-                      });
-                      const sheetName = workbook.SheetNames[0];
-                      const sheet = workbook.Sheets[sheetName];
-                      const data = XLSX.utils.sheet_to_json(sheet);
-                      // create a unique key for each row
-                      data.forEach((row, index) => {
-                        row.key = uuidv4();
-                      });
-                      console.log(data);
-                      // ckeck column list is unique
-                      const columnList = data[0];
-                      const columnListSet = new Set(columnList);
-                      if (columnList.length !== columnListSet.size) {
-                        message.error("Column is not unique");
-                        return;
-                      }
-                      // check if the column list is the same as the table
-                      const tableColumnList = columns.map((column) => {
-                        return column.title;
-                      });
-                      const tableColumnListSet = new Set(tableColumnList);
-                      if (columnList.length !== tableColumnList.length) {
-                        message.error("Column list is not the same");
-                        return;
-                      }
-
-                      for (let i = 0; i < columnList.length; i++) {
-                        if (!tableColumnListSet.has(columnList[i])) {
-                          message.error("Column list is not the same");
-                          return;
-                        }
-                      }
-
-                      const newData = [...data];
-                      // newData.shift();
-
-                      // setData(newData);
-                    };
-                    reader.readAsBinaryString(file);
-                  }}
-                  showUploadList={false}
-                >
-                  <CustomTooltip title="Import Excel">
-                    <Button
-                      icon={<AiOutlineUpload className="text-xl" />}
-                      type="text"
-                    />
-                  </CustomTooltip>
-                </Upload>
+                <ImportExcel
+                  data={data}
+                  setData={setData}
+                  columns={columns}
+                  departmentList={departmentList}
+                  positionList={positionList}
+                  targetKeys={targetKeys}
+                />
               </Space>
             );
           }}

@@ -35,8 +35,8 @@ export const columnsList = (
         // send email to staff when clicked
         return (
           <a href={`mailto:${record.Email}`} target={"_blank"} rel="noreferrer">
-            <Space size="middle" className="flex justify-between">
-              <Typography.Text>{text}</Typography.Text>
+            <Space size="middle" className="flex justify-between w-full">
+              {text}
               <CustomTooltip title="Send Email" placement="left">
                 <MailOutlined />
               </CustomTooltip>
