@@ -5,11 +5,14 @@ import { TbTableExport } from "react-icons/tb";
 
 export default function ExportExcel({ data, selectedRowKeys }) {
   const exportToExcel = (selectedData) => {
-    // dont export key
-    selectedData.forEach((item) => {
-      delete item.key;
+    // please do not use delete item.key, it will delete the key in the original data
+    const selectedDataWithoutKey = selectedData.map((item) => {
+      const newItem = { ...item };
+      delete newItem.key;
+      return newItem;
     });
-    const ws = XLSX.utils.json_to_sheet(selectedData);
+
+    const ws = XLSX.utils.json_to_sheet(selectedDataWithoutKey);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Staff Directory");
     XLSX.writeFile(wb, "Staff Directory.xlsx");

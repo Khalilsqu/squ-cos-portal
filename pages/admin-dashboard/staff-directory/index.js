@@ -13,18 +13,13 @@ import {
   Tag,
   Spin,
   Popconfirm,
-  Upload,
-  message,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import * as XLSX from "xlsx";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
 import {
   AiOutlineUserAdd,
   AiOutlineUserDelete,
-  AiOutlineFileExcel,
-  AiOutlineUpload,
 } from "react-icons/ai";
 
 import { useWindowSize } from "@/components/utils/windowSize";
