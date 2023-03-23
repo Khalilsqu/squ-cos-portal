@@ -65,12 +65,12 @@ export default function Signin({ providers }) {
           " flex first-letter:uppercase text-center align-middle content-center items-center"
         }
       >
-        You will be redirected to Google Account to sign in. Acess is resitrcted
+        You will be redirected to Google Account to sign in. Acess is restricted
         to SQU accounts.
       </Typography.Text>
       <Button
         onClick={() => signIn("google", { callbackUrl: "/" })}
-        className="flex text-center align-middle content-center items-center rounded-md gap-2"
+        className="flex text-center align-middle content-center items-center rounded-md gap-3"
         size="large"
         icon={<FcGoogle className="text-xl" />}
       >
@@ -86,7 +86,7 @@ export default function Signin({ providers }) {
       </Typography.Text>
       <Button
         onClick={() => router.push("/")}
-        className="flex text-center align-middle content-center items-center rounded-md"
+        className="flex text-center align-middle content-center items-center rounded-md gap-3"
         size="large"
         icon={<FcHome className="text-xl" />}
       >
