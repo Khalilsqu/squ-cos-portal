@@ -1,8 +1,7 @@
-import { Carousel, Progress, Space, Typography } from "antd";
+import { Carousel, Space, Typography } from "antd";
 import { google } from "googleapis";
 import moment from "moment/moment";
 import Link from "next/link";
-import { useState } from "react";
 
 export default function IndexPage(props) {
   const { data } = props;
@@ -48,10 +47,7 @@ export default function IndexPage(props) {
 
   return (
     <div className="block w-full pt-2 rounded-xl">
-      <Carousel
-        autoplay
-        autoplaySpeed={5000}
-      >
+      <Carousel autoplay autoplaySpeed={5000}>
         {carsouel}
       </Carousel>
     </div>
