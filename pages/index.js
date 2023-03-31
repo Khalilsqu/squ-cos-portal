@@ -1,10 +1,32 @@
 import { Carousel, Space, Typography } from "antd";
-import { google } from "googleapis";
 import moment from "moment/moment";
 import Link from "next/link";
+import useSWR from "swr";
 
-export default function IndexPage(props) {
-  const { data } = props;
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
+
+export default function IndexPage() {
+  const { data, error, isLoading } = useSWR(
+    "/api/dashboard/news/fetchNews",
+    fetcher,
+    {
+      revalidateOnFocus: true,
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+      refreshInterval: 0,
+    }
+  );
 
   if (!data) {
     return;
@@ -34,7 +56,23 @@ export default function IndexPage(props) {
           >
             <Space direction="vertical" className="justify-between">
               <Typography.Title level={2}>
-                <Link href="/newsKey" as={`/${item.key}`}>
+                <Link
+                  href={{
+                    pathname: "/[newsKey]",
+                    query: { newsKey: item.key },
+                  }}
+                  as={
+                    "/" + // news title without special characters and spaces
+                    item.title
+                      .replace(/[^a-zA-Z0-9 ]/g, "")
+                      .replace(/\s/g, "-") +
+                    "/" +
+                    item.datePosted
+                      .replace(/\s/g, "-") // replace / with - to prevent error
+                      .replace(/\//g, "-") // replace , with nothing to prevent error
+                      .replace(/,/g, "")
+                  }
+                >
                   {item.title}
                 </Link>
               </Typography.Title>
@@ -52,83 +90,4 @@ export default function IndexPage(props) {
       </Carousel>
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACOUNT_EMAIL,
-        client_id: process.env.GOOGLE_SERVICE_CLIENT_ID,
-        private_key: process.env.GOOGLE_SERVICE_PRIVATE_KEY,
-      },
-      scopes: [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive",
-      ],
-    });
-
-    const sheet = google.sheets({ version: "v4", auth });
-
-    const response = await sheet.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: "Sheet1!A:E",
-    });
-
-    const rows = response.data.values;
-
-    //get image url from google drive from folder id
-
-    const drive = google.drive({ version: "v3", auth });
-
-    const imageResponse = await drive.files.list({
-      q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
-      fields: "files(id, name, mimeType, webContentLink, webViewLink, size)",
-    });
-
-    const imageRows = imageResponse.data.files;
-
-    // map image url to rows
-
-    const imageMap = imageRows.map((row) => {
-      return {
-        key: row.name,
-        image: {
-          url: row.webContentLink,
-          type: row.mimeType,
-          linkView: row.webViewLink,
-          size: row.size,
-        },
-
-        Headers: {
-          "Content-Type": row.mimeType,
-        },
-      };
-    });
-
-    // map image url to rows
-
-    const rowsWithImage = rows.map((row) => {
-      const image = imageMap.find((image) => image.key === row[0]);
-      return {
-        key: row[0],
-        title: row[1],
-        description: row[2],
-        image: image.image,
-        expiryDate: row[4],
-      };
-    });
-
-    return {
-      props: {
-        data: rowsWithImage,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        data: [],
-      },
-    };
-  }
 }
