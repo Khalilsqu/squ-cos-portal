@@ -337,6 +337,7 @@ export const AddStaffDrawer = ({
                   format="DD/MM/YYYY"
                   placeholder="Select a date"
                   style={{ width: "100%" }}
+                  inputReadOnly
                 />
               ) : column.columnType === "number" ? (
                 <InputNumber

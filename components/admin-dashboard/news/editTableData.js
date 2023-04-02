@@ -172,7 +172,10 @@ export function columnsData({
                               }
                             };
                           } else {
-                            if (fileList[0]?.width / fileList[0]?.height < 2.5) {
+                            if (
+                              fileList[0]?.width / fileList[0]?.height <
+                              2.5
+                            ) {
                               reject(
                                 "Image width must be greater than 2.5 times the height"
                               );
@@ -204,7 +207,6 @@ export function columnsData({
                       if (file.size > 1024 * 1024 * 4.5) {
                         reject("Maximum file size allowed is 4.5MB!");
                       } else if (fileTypeArray.includes(file.type) === false) {
-
                         reject(
                           "File type is not supported!. Supported types: png, jpg, jpeg"
                         );
@@ -286,9 +288,7 @@ export function columnsData({
                     : moment(record.expiryDate, "ddd, MMM Do YYYY")
                 }
                 getValueProps={(i) => ({
-                  value: dayjs(
-                    moment(i, "ddd, MMM Do YYYY").format("YYYY-MM-DD")
-                  ),
+                  value: dayjs(i),
                 })}
                 initialValue={date}
                 rules={[
