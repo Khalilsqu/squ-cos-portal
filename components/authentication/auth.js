@@ -42,7 +42,7 @@ export default function Authentication(props) {
   };
 
   return (
-    <>
+    <div>
       {status === "authenticated" ? (
         <Dropdown
           menu={{
@@ -75,6 +75,6 @@ export default function Authentication(props) {
         </CustomTooltip>
       ) : null}
       <LogOutModal ref={childRef} />
-    </>
+    </div>
   );
 }

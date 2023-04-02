@@ -31,21 +31,19 @@ export default function CustomTooltip(props) {
   };
 
   if (width < 768) {
-    return <>{children}</>;
+    return <div>{children}</div>;
   }
 
   return (
-    <>
-      <Tooltip
-        title={title}
-        mouseLeaveDelay={0}
-        placement={placement}
-        open={visible}
-        onMouseEnter={handleShowTooltip}
-        onMouseLeave={handleHideTooltip}
-      >
-        {children}
-      </Tooltip>
-    </>
+    <Tooltip
+      title={title}
+      mouseLeaveDelay={0}
+      placement={placement}
+      open={visible}
+      onMouseEnter={handleShowTooltip}
+      onMouseLeave={handleHideTooltip}
+    >
+      {children}
+    </Tooltip>
   );
 }
