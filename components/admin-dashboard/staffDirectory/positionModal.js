@@ -29,37 +29,42 @@ export const AddNewPositionModal = ({
           key="submit"
           type="primary"
           onClick={() => {
-            formAddPosition.validateFields().then(async (values) => {
-              setPositionAddModalOpen(false);
-              const response = await fetch(
-                "/api/dashboard/staffDirectory/positionsAvailable",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    positions: Array.isArray(values.positions)
-                      ? values.positions
-                      : [values.positions],
-                  }),
-                }
-              );
+            formAddPosition
+              .validateFields()
+              .then(async (values) => {
+                setPositionAddModalOpen(false);
+                const response = await fetch(
+                  "/api/dashboard/staffDirectory/positionsAvailable",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      positions: Array.isArray(values.positions)
+                        ? values.positions
+                        : [values.positions],
+                    }),
+                  }
+                );
 
-              if (response.ok) {
-                setPositionList([...positionList, values.positions]);
-                notification.success({
-                  message: "Position Added",
-                  description: "Position has been added successfully",
-                });
-                formAddPosition.resetFields();
-              } else {
-                notification.error({
-                  message: "Position Not Added",
-                  description: "Position has not been added",
-                });
-              }
-            });
+                if (response.ok) {
+                  setPositionList([...positionList, values.positions]);
+                  notification.success({
+                    message: "Position Added",
+                    description: "Position has been added successfully",
+                  });
+                  formAddPosition.resetFields();
+                } else {
+                  notification.error({
+                    message: "Position Not Added",
+                    description: "Position has not been added",
+                  });
+                }
+              })
+              .catch((info) => {
+                console.log("Validate Failed:", info);
+              });
           }}
         >
           Add
@@ -138,63 +143,69 @@ export const DeletePositionModal = ({
           type="primary"
           danger
           onClick={() => {
-            formDeletePosition.validateFields().then(async (values) => {
-              setPositionDeleteModalOpen(false);
-              const response = await fetch(
-                "/api/dashboard/staffDirectory/positionsAvailable",
-                {
-                  method: "DELETE",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    positions: values.positions,
-                  }),
-                }
-              );
+            formDeletePosition
+              .validateFields()
+              .then(async (values) => {
+                setPositionDeleteModalOpen(false);
+                const response = await fetch(
+                  "/api/dashboard/staffDirectory/positionsAvailable",
+                  {
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      positions: values.positions,
+                    }),
+                  }
+                );
 
-              const responseTragetKeys = await fetch(
-                "/api/dashboard/staffDirectory/positionsSelected",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    positions: targetKeys.filter(
+                const responseTragetKeys = await fetch(
+                  "/api/dashboard/staffDirectory/positionsSelected",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      positions: targetKeys.filter(
+                        (targetKey) => !values.positions.includes(targetKey)
+                      ),
+                    }),
+                  }
+                );
+
+                if (responseTragetKeys.ok) {
+                  setTargetKeys(
+                    targetKeys.filter(
                       (targetKey) => !values.positions.includes(targetKey)
                     ),
-                  }),
+                    false
+                  );
                 }
-              );
 
-              if (responseTragetKeys.ok) {
-                setTargetKeys(
-                  targetKeys.filter(
-                    (targetKey) => !values.positions.includes(targetKey)
-                  ),
-                  false
-                );
-              }
-
-              if (response.ok) {
-                setPositionList(
-                  positionList.filter(
-                    (position) => !values.positions.includes(position)
-                  )
-                );
-                notification.success({
-                  message: "Position(s) Deleted",
-                  description: "Position(s) has/have been deleted successfully",
-                });
-                formDeletePosition.resetFields();
-              } else {
-                notification.error({
-                  message: "Position(s) Not Deleted",
-                  description: "Position(s) has/have not been deleted",
-                });
-              }
-            });
+                if (response.ok) {
+                  setPositionList(
+                    positionList.filter(
+                      (position) => !values.positions.includes(position)
+                    )
+                  );
+                  notification.success({
+                    message: "Position(s) Deleted",
+                    description:
+                      "Position(s) has/have been deleted successfully",
+                  });
+                  formDeletePosition.resetFields();
+                } else {
+                  notification.error({
+                    message: "Position(s) Not Deleted",
+                    description: "Position(s) has/have not been deleted",
+                  });
+                }
+              })
+              .catch((info) => {
+                console.log("Validate Failed:", info);
+              });
           }}
         >
           Delete
