@@ -20,6 +20,12 @@ import {
 import dayjs from "dayjs";
 import moment from "moment/moment";
 
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
+
 export function columnsData({
   handleDelete,
   editingRowKey,
@@ -75,16 +81,16 @@ export function columnsData({
                     message:
                       "Please input description of minimum 5 characters!",
                     min: 5,
-                    max: 500,
+                    max: 1000,
                   },
                 ]}
               >
-                <Input.TextArea showCount maxLength={500} minLength={5} />
+                <ReactQuill theme="snow" style={{ height: "200px" }} />
               </Form.Item>
             </Form>
           );
         } else {
-          return <p>{text}</p>;
+          return <ReactQuill theme="bubble" value={text} readOnly />;
         }
       },
     },

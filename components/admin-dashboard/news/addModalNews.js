@@ -9,6 +9,11 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+
 const ModalData = (props) => {
   const {
     formAdd,
@@ -74,15 +79,13 @@ const ModalData = (props) => {
               required: true,
               message: "Please input description!",
               min: 5,
-              max: 500,
+              max: 1000,
             },
           ]}
         >
-          <Input.TextArea
+          <ReactQuill
+            theme="snow"
             placeholder="Write a description of the news"
-            showCount
-            maxLength={500}
-            minLength={5}
           />
         </Form.Item>
         <Form.Item

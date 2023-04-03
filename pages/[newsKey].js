@@ -3,6 +3,11 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Typography, Spin } from "antd";
 
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.bubble.css";
+
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function NewsDetails() {
@@ -55,9 +60,7 @@ export default function NewsDetails() {
             <Typography.Title level={1} className="text-6xl font-bold">
               {newsData.title}
             </Typography.Title>
-            <Typography.Text className="mt-3 text-2xl">
-              {newsData.description}
-            </Typography.Text>
+            <ReactQuill value={newsData.description} readOnly theme="bubble" />
           </div>
         </main>
       </div>
