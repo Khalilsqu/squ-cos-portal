@@ -13,6 +13,8 @@ import ModalData from "../../../components/admin-dashboard/news/addModalNews";
 import { columnsData } from "../../../components/admin-dashboard/news/editTableData";
 
 import { useWindowSize } from "@/components/utils/windowSize";
+import { collapsedState } from "@/components/layout/pageLayout";
+import { isBreakPointState } from "@/components/layout/pageLayout";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -53,6 +55,11 @@ export default function News(props) {
   const [dataUploadedToDB, setDataUploadedToDB] = useState(false);
 
   const { width } = useWindowSize();
+
+  const isBreakPoint = isBreakPointState().isBreakPoint;
+  const collapsed = collapsedState().collapsed;
+
+  const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
   const currentdate = new Date();
 
@@ -259,9 +266,8 @@ export default function News(props) {
           tableLayout="auto"
           bordered
           style={{
-            maxWidth: width > 768 ? "100%" : width > 500 ? "450px" : "280px",
+            maxWidth: `calc(${width}px - ${widthCalc})`,
           }}
-          className="py-2 px-4"
         />
       </Space>
     );

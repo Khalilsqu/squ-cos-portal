@@ -85,7 +85,7 @@ export function columnsData({
                   },
                 ]}
               >
-                <ReactQuill theme="snow" style={{ height: "200px" }} />
+                <ReactQuill theme="snow" />
               </Form.Item>
             </Form>
           );
