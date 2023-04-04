@@ -124,11 +124,6 @@ export default function PageLayout({ children }) {
       setCookie("isBreakPoint", "true", {
         maxAge: 60 * 60 * 24 * 90,
       }); // 90 days
-    } else {
-      setBreakPoint(false);
-      setCookie("isBreakPoint", "false", {
-        maxAge: 60 * 60 * 24 * 90,
-      }); // 90 days
     }
   }, [themeColor, collapsed, isBreakPoint, showAdminPanel, status, width]);
 
