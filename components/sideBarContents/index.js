@@ -25,8 +25,6 @@ export function getItem(label, key, icon, children, title) {
   };
 }
 
-const dashboardBaths = ["admin-dashboard", "news", "admins"];
-
 export const SideBarContents = (props) => {
   const {
     themeColor,

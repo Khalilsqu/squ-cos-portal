@@ -8,6 +8,7 @@ import SettingGear from "../setting";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import { useWindowSize } from "../utils/windowSize";
 
 import { LayoutContext } from "@/components/layout/pageLayout";
 
@@ -34,6 +35,8 @@ export default function HeaderComponent(props) {
 
   const router = useRouter();
 
+  const { width } = useWindowSize();
+
   return (
     <Header
       style={
@@ -50,35 +53,36 @@ export default function HeaderComponent(props) {
             rowGap: 20,
           }}
         >
-          {isBreakPoint ? (
-            <CustomTooltip
-              title="Open Sidebar"
-              mouseLeaveDelay={0}
-              placement="right"
-            >
-              <MenuUnfoldOutlined
-                onClick={handleBreakPoint}
-                style={{
-                  fontSize: "24px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
-            </CustomTooltip>
-          ) : (
-            <CustomTooltip
-              title="Close Sidebar"
-              mouseLeaveDelay={0}
-              placement="right"
-            >
-              <MenuFoldOutlined
-                onClick={handleBreakPoint}
-                style={{
-                  fontSize: "24px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
-            </CustomTooltip>
-          )}
+          {width > 576 &&
+            (isBreakPoint ? (
+              <CustomTooltip
+                title="Open Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuUnfoldOutlined
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "24px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </CustomTooltip>
+            ) : (
+              <CustomTooltip
+                title="Close Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuFoldOutlined
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "24px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </CustomTooltip>
+            ))}
         </Space>
         <Space
           style={{
