@@ -14,14 +14,31 @@ import {
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
 import { useState } from "react";
+import useSWR from "swr";
 import { v4 as uuidv4 } from "uuid";
+
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
-export default function Admins({ data }) {
-  const [tableData, setTableData] = useState(data);
+export default function Admins() {
   const [modalAddRowOpen, setModalAddRowOpen] = useState(false);
   const [needToSave, setNeedToSave] = useState(false);
+
+  const { data: tableData, mutate } = useSWR("/api/dashboard/admins", fetcher, {
+    refreshInterval: 0,
+  });
 
   const columns = [
     {
@@ -44,7 +61,7 @@ export default function Admins({ data }) {
             name="canEditNews"
             initialValues={{ canEditNews: record.canEditNews }}
             onValuesChange={(changedValues, allValues) => {
-              setTableData((prev) => {
+              mutate((prev) => {
                 const newData = [...prev];
                 const index = newData.findIndex(
                   (item) => record.key === item.key
@@ -77,7 +94,7 @@ export default function Admins({ data }) {
             name="canEditStaff"
             initialValues={{ canEditStaff: record.canEditStaff }}
             onValuesChange={(changedValues, allValues) => {
-              setTableData((prev) => {
+              mutate((prev) => {
                 const newData = [...prev];
                 const index = newData.findIndex(
                   (item) => record.key === item.key
@@ -86,7 +103,6 @@ export default function Admins({ data }) {
                 newData.splice(index, 1, { ...item, ...changedValues });
                 return newData;
               });
-
               setNeedToSave(true);
             }}
           >
@@ -143,7 +159,7 @@ export default function Admins({ data }) {
             type="text"
             danger
             onClick={() => {
-              setTableData((prev) => {
+              mutate((prev) => {
                 const newData = [...prev];
                 const index = newData.findIndex(
                   (item) => record.key === item.key
@@ -164,13 +180,15 @@ export default function Admins({ data }) {
                 notification.success({
                   message: "Success",
                   description: "Admin deleted successfully",
-                  duration: 3000,
+                  duration: 4,
+                  placement: "bottomRight",
                 });
               } else {
                 notification.error({
                   message: "Error",
                   description: "Admin could not be deleted",
-                  duration: 3000,
+                  duration: 4,
+                  placement: "bottomRight",
                 });
               }
             }}
@@ -216,13 +234,15 @@ export default function Admins({ data }) {
                         notification.success({
                           message: "Success",
                           description: "Admins updated successfully",
-                          duration: 3000,
+                          duration: 4,
+                          placement: "bottomRight",
                         });
                       } else {
                         notification.error({
                           message: "Error",
                           description: "Error updating admins",
-                          duration: 3000,
+                          duration: 4,
+                          placement: "bottomRight",
                         });
                       }
                     }}
@@ -336,12 +356,10 @@ export async function getServerSideProps(context) {
   const databases = new appwriteSdk.Databases(client);
 
   try {
-    let promise = databases.listDocuments(
+    const result = await databases.listDocuments(
       process.env.APPWRITE_DATABASE_ID_USERS,
       process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS
     );
-
-    const result = await promise;
 
     result.documents.forEach((element) => {
       if (element["canEditAdmins"] == true) {
@@ -354,23 +372,15 @@ export async function getServerSideProps(context) {
         redirect: { destination: "/" },
       };
     }
-
-    return {
-      props: {
-        data: result.documents.map((element) => {
-          return {
-            key: element["$id"],
-            email: element["email"],
-            canEditNews: element["canEditNews"],
-            canEditStaff: element["canEditStaff"],
-            canEditAdmins: element["canEditAdmins"],
-          };
-        }),
-      },
-    };
   } catch (error) {
     return {
       redirect: { destination: "/" },
     };
   }
+
+  return {
+    props: {
+      session,
+    },
+  };
 }

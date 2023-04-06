@@ -51,41 +51,36 @@ export default async function addHandler(req, res) {
   }
 
   if (req.method == "DELETE") {
-    const data = req.body;
+    const row = req.body;
 
+    try {
+      const result = await databases.deleteDocument(
+        process.env.APPWRITE_DATABASE_ID_USERS,
+        process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
+        row.key
+      );
+      res.status(200).json({ message: "Success" });
+    } catch (error) {
+      res.status(400).json({ message: "Error" });
+    }
+  }
+
+  if (req.method == "GET") {
     try {
       const result = await databases.listDocuments(
         process.env.APPWRITE_DATABASE_ID_USERS,
-        process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
-        [
-          Query.equal(
-            "email",
-            data.map((item) => item.email)
-          ),
-        ]
+        process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS
       );
 
-      const emails = result.documents.map((item) => item.email);
-      const existingEmails = data.filter((item) => emails.includes(item.email));
+      const data = result.documents.map((item) => ({
+        key: item.$id,
+        email: item.email,
+        canEditNews: item.canEditNews,
+        canEditStaff: item.canEditStaff,
+        canEditAdmins: item.canEditAdmins,
+      }));
 
-      if (existingEmails.length > 0) {
-        const existingUsers = existingEmails.map((item) => ({
-          email: item.email,
-          canEditNews: item.canEditNews,
-          canEditStaff: item.canEditStaff,
-          canEditAdmins: item.canEditAdmins,
-        }));
-
-        for (let i = 0; i < existingUsers.length; i++) {
-          const result = await databases.deleteDocument(
-            process.env.APPWRITE_DATABASE_ID_USERS,
-            process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
-            existingUsers[i].$id
-          );
-        }
-      }
-
-      res.status(200).json({ message: "Success" });
+      res.status(200).json(data);
     } catch (error) {
       res.status(400).json({ message: "Error" });
     }
