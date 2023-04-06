@@ -1,13 +1,4 @@
-import {
-  Layout,
-  theme,
-  ConfigProvider,
-  FloatButton,
-  Cascader,
-  Space,
-  Typography,
-  Button,
-} from "antd";
+import { Layout, theme, ConfigProvider, FloatButton } from "antd";
 import { useState, createContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -16,9 +7,8 @@ import { create } from "zustand";
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import SiderComponent from "./siderbar";
+import CascaderNav from "@/components/cascaderNav";
 import { useWindowSize } from "../utils/windowSize";
-
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 const { Content } = Layout;
 export const LayoutContext = createContext();
@@ -100,9 +90,6 @@ export default function PageLayout({ children }) {
     }); // 1 day
   };
 
-  const [cascaderOpen, setCascaderOpen] = useState(false);
-  const [cascaderValue, setCascaderValue] = useState([]);
-
   useEffect(() => {
     setThemeColor(getCookie("themeColor"));
     setCollapsed(getCookie("collapsed"));
@@ -114,83 +101,7 @@ export default function PageLayout({ children }) {
       router.push("/");
     }
     setShowAdminPanel(getCookie("showAdminPanel"));
-
-    // for smartphone view only set breakpoint to true
-    if (width < 576) {
-      setBreakPoint(true);
-      setCascaderValue([]);
-      setCascaderOpen(false);
-
-      setCookie("isBreakPoint", "true", {
-        maxAge: 60 * 60 * 24 * 90,
-      }); // 90 days
-    }
-  }, [themeColor, collapsed, isBreakPoint, showAdminPanel, status, width]);
-
-  const items = [
-    {
-      value: "staff",
-      label: (
-        <Space className="flex justify-between">
-          <Typography.Text>Staff</Typography.Text>
-          <Button
-            icon={<AiOutlineUsergroupAdd />}
-            size="small"
-            onClick={() => {
-              router.push("/staff");
-              setCascaderOpen(false);
-              setCascaderValue(["staff"]);
-            }}
-          />
-        </Space>
-      ),
-      children: [
-        {
-          value: "faculty",
-          label: "Faculty",
-        },
-        {
-          value: "technician",
-          label: "Technician",
-        },
-        {
-          value: "adminstrator",
-          label: "Adminstrator",
-        },
-      ],
-    },
-    {
-      value: "students",
-      label: (
-        <Space className="flex justify-between">
-          <Typography.Text>Students</Typography.Text>
-          <Button
-            icon={<AiOutlineUsergroupAdd />}
-            size="small"
-            onClick={() => {
-              router.push("/students");
-              setCascaderOpen(false);
-              setCascaderValue(["students"]);
-            }}
-          />
-        </Space>
-      ),
-      children: [
-        {
-          value: "undergraduate",
-          label: "Undergraduate",
-        },
-        {
-          value: "postgraduate",
-          label: "Postgraduate",
-        },
-      ],
-    },
-    {
-      value: "adminstrative",
-      label: "Adminstrative",
-    },
-  ];
+  }, [themeColor, collapsed, isBreakPoint, showAdminPanel, status]);
 
   return (
     <LayoutContext.Provider
@@ -240,52 +151,7 @@ export default function PageLayout({ children }) {
               }
             >
               <Content className="flex flex-col">
-                {width < 576 && (
-                  <Cascader
-                    showSearch
-                    value={cascaderValue}
-                    open={cascaderOpen}
-                    options={items}
-                    expandTrigger="hover"
-                    displayRender={(label) => {
-                      if (Array.isArray(label)) {
-                        const firstVlaue = label[0];
-                        const remainingValues = label.slice(1);
-
-                        if (typeof firstVlaue === "object") {
-                          if (remainingValues.length === 0) {
-                            return firstVlaue.props.children[0].props.children;
-                          } else {
-                            return (
-                              firstVlaue.props.children[0].props.children +
-                              " / " +
-                              remainingValues.join(" / ")
-                            );
-                          }
-                        }
-                      }
-                      return label.join(" / ");
-                    }}
-                    bordered={false}
-                    style={{ margin: "16px 0" }}
-                    placeholder="Navigation"
-                    onClear={() => {
-                      setCascaderValue([]);
-                      router.push("/");
-                    }}
-                    onChange={(value) => {
-                      setCascaderValue(value);
-                      if (value !== undefined) {
-                        router.push("/" + value.join("/"));
-                      }
-                    }}
-                    onPopupVisibleChange={(value) => {
-                      setCascaderOpen(value);
-                    }}
-                    size="middle"
-                    className="shadow-md rounded-xl w-full"
-                  />
-                )}
+                <CascaderNav setBreakPoint={setBreakPoint} />
                 {children}
                 <FloatButton.BackTop
                   style={{
