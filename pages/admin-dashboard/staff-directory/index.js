@@ -17,10 +17,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { RiInsertColumnRight } from "react-icons/ri";
-import {
-  AiOutlineUserAdd,
-  AiOutlineUserDelete,
-} from "react-icons/ai";
+import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
 
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
@@ -212,20 +209,20 @@ export default function StaffDirectory() {
 
   if (departmentListError && positionListError && targetKeysError) {
     return (
-      <div className="w-full justify-center items-center flex">
+      <Space className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
           Failed to load data from server. Please try to refresh the page or try
           again later.
         </Typography.Title>
-      </div>
+      </Space>
     );
   }
 
   if (departmentListLoading || positionListLoading || targetKeysLoading) {
     return (
-      <div className="w-full justify-center items-center flex">
+      <Space className="w-full justify-center items-center flex">
         <Spin size="large" />
-      </div>
+      </Space>
     );
   }
 
