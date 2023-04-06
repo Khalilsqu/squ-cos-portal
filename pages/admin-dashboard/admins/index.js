@@ -1,4 +1,3 @@
-import { Client, Databases, Query } from "appwrite";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 export default function Admins(props) {
@@ -10,17 +9,19 @@ export default function Admins(props) {
 }
 
 export async function getServerSideProps(context) {
+  const appwriteSdk = await import("node-appwrite");
   const session = await getServerSession(context.req, context.res, authOptions);
 
   const adminEmails = new Array();
 
-  const client = new Client();
+  const client = new appwriteSdk.Client();
 
   client
     .setEndpoint(process.env.APPWRITE_ENDPOINT)
-    .setProject(process.env.APPWRITE_PROJECT_ID);
+    .setProject(process.env.APPWRITE_PROJECT_ID)
+    .setKey(process.env.APPWRITE_DATABASE_API_KEY);
 
-  const databases = new Databases(client);
+  const databases = new appwriteSdk.Databases(client);
 
   try {
     let promise = databases.listDocuments(
