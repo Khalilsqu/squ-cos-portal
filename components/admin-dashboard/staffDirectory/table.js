@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
-export const columnWidth = "200px";
+export const columnWidth = "fit-content";
 
 export const columnsList = (
   setDrawerOpen,

@@ -380,7 +380,7 @@ export default function StaffDirectory() {
             );
           }}
           size="small"
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
           tableLayout="auto"
           bordered
           style={{

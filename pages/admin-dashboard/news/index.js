@@ -262,7 +262,7 @@ export default function News(props) {
             );
           }}
           size="small"
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
           tableLayout="auto"
           bordered
           style={{

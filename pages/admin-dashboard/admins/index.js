@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
+import { columnWidth } from "@/components/admin-dashboard/staffDirectory/table";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -48,8 +49,6 @@ export default function Admins() {
   const collapsed = collapsedState().collapsed;
 
   const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
-
-  const columnWidth = "200px";
 
   const {
     data: tableData,
@@ -247,7 +246,7 @@ export default function Admins() {
         dataSource={tableData}
         pagination={false}
         size="small"
-        scroll={{ x: true }}
+        scroll={{ x: "max-content" }}
         tableLayout="auto"
         bordered
         style={{
