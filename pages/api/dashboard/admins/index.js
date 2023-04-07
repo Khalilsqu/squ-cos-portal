@@ -38,7 +38,7 @@ export default async function addHandler(req, res) {
       );
 
       console.log(listDocuments);
-      
+
       const result = await databases.deleteDocument(
         process.env.APPWRITE_DATABASE_ID_USERS,
         process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
@@ -66,6 +66,29 @@ export default async function addHandler(req, res) {
       }));
 
       res.status(200).json(data);
+    } catch (error) {
+      res.status(400).json({ message: "Error" });
+    }
+  }
+
+  if (req.method == "PATCH") {
+    const data = req.body;
+
+    try {
+      data.map(async (item) => {
+        const result = await databases.updateDocument(
+          process.env.APPWRITE_DATABASE_ID_USERS,
+          process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
+          item.key,
+          {
+            canEditNews: item.canEditNews,
+            canEditStaff: item.canEditStaff,
+            canEditAdmins: item.canEditAdmins,
+          }
+        );
+      });
+
+      res.status(200).json({ message: "Success" });
     } catch (error) {
       res.status(400).json({ message: "Error" });
     }

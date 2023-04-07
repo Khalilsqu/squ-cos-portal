@@ -35,8 +35,13 @@ import CustomTooltip from "@/components/tooltip/customtooltip";
 export default function Admins() {
   const [modalAddRowOpen, setModalAddRowOpen] = useState(false);
   const [needToSave, setNeedToSave] = useState(false);
+  const [editingKeys, setEditingKeys] = useState([]);
 
-  const { data: tableData, mutate } = useSWR("/api/dashboard/admins", fetcher, {
+  const {
+    data: tableData,
+    mutate,
+    isLoading,
+  } = useSWR("/api/dashboard/admins", fetcher, {
     refreshInterval: 0,
   });
 
@@ -61,17 +66,21 @@ export default function Admins() {
             name="canEditNews"
             initialValues={{ canEditNews: record.canEditNews }}
             onValuesChange={(changedValues, allValues) => {
-              mutate((prev) => {
-                const newData = [...prev];
-                const index = newData.findIndex(
-                  (item) => record.key === item.key
-                );
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...changedValues });
-                return newData, false;
-              });
+              const newData = () => {
+                const data = [...tableData];
+                const index = data.findIndex((item) => record.key === item.key);
+                const item = data[index];
+                data.splice(index, 1, { ...item, ...changedValues });
+                return data;
+              };
+
+              mutate(newData, false);
 
               setNeedToSave(true);
+
+              if (editingKeys.indexOf(record.key) === -1) {
+                setEditingKeys([...editingKeys, record.key]);
+              }
             }}
           >
             <Form.Item name="canEditNews" valuePropName="checked">
@@ -94,16 +103,19 @@ export default function Admins() {
             name="canEditStaff"
             initialValues={{ canEditStaff: record.canEditStaff }}
             onValuesChange={(changedValues, allValues) => {
-              mutate((prev) => {
-                const newData = [...prev];
-                const index = newData.findIndex(
-                  (item) => record.key === item.key
-                );
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...changedValues });
-                return newData, false;
-              });
+              const newData = () => {
+                const data = [...tableData];
+                const index = data.findIndex((item) => record.key === item.key);
+                const item = data[index];
+                data.splice(index, 1, { ...item, ...changedValues });
+                return data;
+              };
+              mutate(newData, false);
               setNeedToSave(true);
+
+              if (editingKeys.indexOf(record.key) === -1) {
+                setEditingKeys([...editingKeys, record.key]);
+              }
             }}
           >
             <Form.Item name="canEditStaff" valuePropName="checked">
@@ -126,17 +138,20 @@ export default function Admins() {
             name="canEditAdmins"
             initialValues={{ canEditAdmins: record.canEditAdmins }}
             onValuesChange={(changedValues, allValues) => {
-              mutate((prev) => {
-                const newData = [...prev];
-                const index = newData.findIndex(
-                  (item) => record.key === item.key
-                );
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...changedValues });
-                return newData, false;
-              });
+              const newData = () => {
+                const data = [...tableData];
+                const index = data.findIndex((item) => record.key === item.key);
+                const item = data[index];
+                data.splice(index, 1, { ...item, ...changedValues });
+                return data;
+              };
+              mutate(newData, false);
 
               setNeedToSave(true);
+
+              if (editingKeys.indexOf(record.key) === -1) {
+                setEditingKeys([...editingKeys, record.key]);
+              }
             }}
           >
             <Form.Item name="canEditAdmins" valuePropName="checked">
@@ -203,6 +218,7 @@ export default function Admins() {
   return (
     <div>
       <Table
+        loading={isLoading}
         columns={columns}
         dataSource={tableData}
         footer={() => {
@@ -220,9 +236,38 @@ export default function Admins() {
                 <CustomTooltip title="Save Changes to Database">
                   <Button
                     type="text"
+                    disabled={!needToSave}
                     onClick={async () => {
-                      setNeedToSave(false);
-                      console.log(tableData);
+                      // find data having recod key
+                      const data = tableData.filter((item) =>
+                        editingKeys.includes(item.key)
+                      );
+
+                      const response = await fetch("/api/dashboard/admins", {
+                        method: "PATCH",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                      });
+
+                      if (response.ok) {
+                        notification.success({
+                          message: "Success",
+                          description: "Admins updated successfully",
+                          duration: 4,
+                          placement: "bottomRight",
+                        });
+                        setEditingKeys([]);
+                        setNeedToSave(false);
+                      } else {
+                        notification.error({
+                          message: "Error",
+                          description: "Admins could not be updated",
+                          duration: 4,
+                          placement: "bottomRight",
+                        });
+                      }
                     }}
                     icon={<SaveOutlined />}
                     danger={needToSave}
@@ -387,7 +432,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      session,
+      data: [],
     },
   };
 }
