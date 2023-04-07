@@ -68,7 +68,7 @@ export default function Admins() {
                 );
                 const item = newData[index];
                 newData.splice(index, 1, { ...item, ...changedValues });
-                return newData;
+                return newData, false;
               });
 
               setNeedToSave(true);
@@ -101,7 +101,7 @@ export default function Admins() {
                 );
                 const item = newData[index];
                 newData.splice(index, 1, { ...item, ...changedValues });
-                return newData;
+                return newData, false;
               });
               setNeedToSave(true);
             }}
@@ -126,14 +126,14 @@ export default function Admins() {
             name="canEditAdmins"
             initialValues={{ canEditAdmins: record.canEditAdmins }}
             onValuesChange={(changedValues, allValues) => {
-              setTableData((prev) => {
+              mutate((prev) => {
                 const newData = [...prev];
                 const index = newData.findIndex(
                   (item) => record.key === item.key
                 );
                 const item = newData[index];
                 newData.splice(index, 1, { ...item, ...changedValues });
-                return newData;
+                return newData, false;
               });
 
               setNeedToSave(true);
@@ -158,23 +158,24 @@ export default function Admins() {
           <Button
             type="text"
             danger
-            onClick={() => {
-              mutate((prev) => {
-                const newData = [...prev];
-                const index = newData.findIndex(
-                  (item) => record.key === item.key
-                );
-                newData.splice(index, 1);
-                return newData;
-              });
+            onClick={async () => {
+              const newData = () => {
+                const data = [...tableData];
+                const index = data.findIndex((item) => record.key === item.key);
+                data.splice(index, 1);
+                return data;
+              };
+              mutate(newData, false);
 
-              const response = fetch("/api/dashboard/admins", {
+              const response = await fetch("/api/dashboard/admins", {
                 method: "DELETE",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify(record),
               });
+
+              console.log(response);
 
               if (response.ok) {
                 notification.success({
@@ -221,30 +222,7 @@ export default function Admins() {
                     type="text"
                     onClick={async () => {
                       setNeedToSave(false);
-
-                      const response = await fetch("/api/dashboard/admins", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(tableData),
-                      });
-
-                      if (response.ok) {
-                        notification.success({
-                          message: "Success",
-                          description: "Admins updated successfully",
-                          duration: 4,
-                          placement: "bottomRight",
-                        });
-                      } else {
-                        notification.error({
-                          message: "Error",
-                          description: "Error updating admins",
-                          duration: 4,
-                          placement: "bottomRight",
-                        });
-                      }
+                      console.log(tableData);
                     }}
                     icon={<SaveOutlined />}
                     danger={needToSave}
@@ -283,20 +261,49 @@ export default function Admins() {
       >
         <Form
           name="addAdmin"
-          onFinish={(values) => {
-            setTableData((prev) => {
-              const newData = [...prev];
-              newData.push({
+          onFinish={async (values) => {
+            const newData = () => {
+              const data = [...tableData];
+              data.push({
                 key: uuidv4(),
                 email: values.email,
                 canEditNews: false,
                 canEditStaff: false,
                 canEditAdmins: false,
               });
-              return newData;
-            });
+              return data;
+            };
+
+            mutate(newData, false);
             setModalAddRowOpen(false);
-            setNeedToSave(true);
+            const response = await fetch("/api/dashboard/admins", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: values.email,
+                canEditNews: false,
+                canEditStaff: false,
+                canEditAdmins: false,
+              }),
+            });
+
+            if (response.ok) {
+              notification.success({
+                message: "Success",
+                description: "Admins updated successfully",
+                duration: 4,
+                placement: "bottomRight",
+              });
+            } else {
+              notification.error({
+                message: "Error",
+                description: "Error updating admins",
+                duration: 4,
+                placement: "bottomRight",
+              });
+            }
           }}
         >
           <Form.Item

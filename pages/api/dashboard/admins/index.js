@@ -12,37 +12,12 @@ export default async function addHandler(req, res) {
     const data = req.body;
 
     try {
-      const result = await databases.listDocuments(
+      const createDocument = await databases.createDocument(
         process.env.APPWRITE_DATABASE_ID_USERS,
         process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
-        [
-          Query.equal(
-            "email",
-            data.map((item) => item.email)
-          ),
-        ]
+        ID.unique(),
+        data
       );
-
-      const emails = result.documents.map((item) => item.email);
-      const newEmails = data.filter((item) => !emails.includes(item.email));
-
-      if (newEmails.length > 0) {
-        const newUsers = newEmails.map((item) => ({
-          email: item.email,
-          canEditNews: item.canEditNews,
-          canEditStaff: item.canEditStaff,
-          canEditAdmins: item.canEditAdmins,
-        }));
-
-        for (let i = 0; i < newUsers.length; i++) {
-          const result = await databases.createDocument(
-            process.env.APPWRITE_DATABASE_ID_USERS,
-            process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
-            ID.unique(),
-            newUsers[i]
-          );
-        }
-      }
 
       res.status(200).json({ message: "Success" });
     } catch (error) {
@@ -53,11 +28,21 @@ export default async function addHandler(req, res) {
   if (req.method == "DELETE") {
     const row = req.body;
 
+    console.log(row);
+
     try {
+      const listDocuments = await databases.listDocuments(
+        process.env.APPWRITE_DATABASE_ID_USERS,
+        process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
+        [Query.equal("email", row.email)]
+      );
+
+      console.log(listDocuments);
+      
       const result = await databases.deleteDocument(
         process.env.APPWRITE_DATABASE_ID_USERS,
         process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
-        row.key
+        listDocuments.documents[0].$id
       );
       res.status(200).json({ message: "Success" });
     } catch (error) {
