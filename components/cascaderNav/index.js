@@ -28,7 +28,7 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
 
   const { data: session, status } = useSession();
 
-  const { data: adminUsers } = useSWR("api/dashboard/admins", fetcher, {
+  const { data: adminUsers } = useSWR("/api/dashboard/admins", fetcher, {
     refreshInterval: 0,
   });
 

@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/router";
-import { Button, Layout, Space } from "antd";
+import { Button, Layout, Space, Spin } from "antd";
 import Authentication from "../authentication/auth";
 import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
@@ -47,10 +47,10 @@ export default function HeaderComponent(props) {
     handleShowAdminPanel,
   } = props;
   const { themeColor } = useContext(LayoutContext);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const { data: adminUsers, isLoading } = useSWR(
-    "api/dashboard/admins",
+    "/api/dashboard/admins",
     fetcher,
     {
       refreshInterval: 0,
@@ -126,20 +126,22 @@ export default function HeaderComponent(props) {
             rowGap: 20,
           }}
         >
-          {isAdmin && (
-            <CustomTooltip title="Admin Dashboard" placement="left">
-              <Button
-                loading={isLoading}
-                onClick={() => {
-                  handleShowAdminPanel(true);
-                  router.push("/admin-dashboard");
-                }}
-                type="text"
-                icon={<MdOutlineDashboardCustomize />}
-                className="text-2xl flex items-center justify-center"
-              />
-            </CustomTooltip>
-          )}
+          {isAdmin &&
+            (isLoading ? (
+              <Spin className="flex items-center justify-center" />
+            ) : (
+              <CustomTooltip title="Admin Dashboard" placement="left">
+                <Button
+                  onClick={() => {
+                    handleShowAdminPanel(true);
+                    router.push("/admin-dashboard");
+                  }}
+                  type="text"
+                  icon={<MdOutlineDashboardCustomize />}
+                  className="text-2xl flex items-center justify-center"
+                />
+              </CustomTooltip>
+            ))}
           <Authentication
             themeColor={themeColor}
             handleShowAdminPanel={handleShowAdminPanel}

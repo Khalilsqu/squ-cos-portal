@@ -18,6 +18,10 @@ import { useState } from "react";
 import useSWR from "swr";
 import { v4 as uuidv4 } from "uuid";
 
+import { useWindowSize } from "@/components/utils/windowSize";
+import { collapsedState } from "@/components/layout/pageLayout";
+import { isBreakPointState } from "@/components/layout/pageLayout";
+
 const fetcher = async (url) => {
   const res = await fetch(url);
 
@@ -38,6 +42,15 @@ export default function Admins() {
   const [needToSave, setNeedToSave] = useState(false);
   const [editingKeys, setEditingKeys] = useState([]);
 
+  const { width } = useWindowSize();
+
+  const isBreakPoint = isBreakPointState().isBreakPoint;
+  const collapsed = collapsedState().collapsed;
+
+  const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
+
+  const columnWidth = "200px";
+
   const {
     data: tableData,
     mutate,
@@ -50,6 +63,10 @@ export default function Admins() {
     {
       title: "Email",
       dataIndex: "email",
+      fixed: "left",
+      sorter: (a, b) => a.email.localeCompare(b.email),
+      sortDirections: ["descend", "ascend"],
+      width: columnWidth,
     },
     {
       title: (
@@ -90,6 +107,8 @@ export default function Admins() {
           </Form>
         </Space>
       ),
+
+      width: columnWidth,
     },
     {
       title: (
@@ -125,6 +144,8 @@ export default function Admins() {
           </Form>
         </Space>
       ),
+
+      width: columnWidth,
     },
     {
       title: (
@@ -161,6 +182,8 @@ export default function Admins() {
           </Form>
         </Space>
       ),
+
+      width: columnWidth,
     },
     {
       title: (
@@ -211,6 +234,8 @@ export default function Admins() {
           </Popconfirm>
         </Space>
       ),
+
+      width: columnWidth,
     },
   ];
 
@@ -220,6 +245,14 @@ export default function Admins() {
         loading={isLoading}
         columns={columns}
         dataSource={tableData}
+        pagination={false}
+        size="small"
+        scroll={{ x: true }}
+        tableLayout="auto"
+        bordered
+        style={{
+          maxWidth: `calc(${width}px - ${widthCalc})`,
+        }}
         footer={() => {
           return (
             <Space
