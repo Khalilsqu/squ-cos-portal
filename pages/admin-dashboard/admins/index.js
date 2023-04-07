@@ -10,6 +10,7 @@ import {
   Input,
   Typography,
   notification,
+  Popconfirm,
 } from "antd";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
@@ -164,16 +165,15 @@ export default function Admins() {
     {
       title: (
         <Typography.Text className="flex justify-center items-center">
-          Action
+          Delete
         </Typography.Text>
       ),
-      dataIndex: "action",
+      dataIndex: "delete",
       render: (text, record) => (
         <Space size="small" className="flex justify-center">
-          <Button
-            type="text"
-            danger
-            onClick={async () => {
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={async () => {
               const newData = () => {
                 const data = [...tableData];
                 const index = data.findIndex((item) => record.key === item.key);
@@ -208,15 +208,16 @@ export default function Admins() {
                 });
               }
             }}
-            icon={<DeleteOutlined />}
-          />
+          >
+            <Button type="text" danger icon={<DeleteOutlined />} />
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
   return (
-    <div>
+    <div className="my-4">
       <Table
         loading={isLoading}
         columns={columns}

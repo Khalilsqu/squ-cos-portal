@@ -220,7 +220,7 @@ export default function StaffDirectory() {
 
   if (departmentListLoading || positionListLoading || targetKeysLoading) {
     return (
-      <Space className="w-full justify-center items-center flex">
+      <Space className="w-full h-full justify-center items-center flex">
         <Spin size="large" />
       </Space>
     );
@@ -228,7 +228,7 @@ export default function StaffDirectory() {
 
   if (targetKeys && departmentList && positionList) {
     return (
-      <div className="w-full">
+      <div className="my-4">
         <Typography.Title level={1} className="w-full text-center">
           Staff Directory
         </Typography.Title>

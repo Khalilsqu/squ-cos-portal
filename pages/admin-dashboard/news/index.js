@@ -196,7 +196,7 @@ export default function News(props) {
 
   if (data !== undefined && data?.length > 0) {
     return (
-      <Space className="w-full h-full justify-center items-center">
+      <div className="my-4">
         <ModalData
           formAdd={formAdd}
           isModalVisible={isModalVisible}
@@ -269,7 +269,7 @@ export default function News(props) {
             maxWidth: `calc(${width}px - ${widthCalc})`,
           }}
         />
-      </Space>
+      </div>
     );
   }
 }
