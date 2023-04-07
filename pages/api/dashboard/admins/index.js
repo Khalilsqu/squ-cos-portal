@@ -28,7 +28,6 @@ export default async function addHandler(req, res) {
   if (req.method == "DELETE") {
     const row = req.body;
 
-    console.log(row);
 
     try {
       const listDocuments = await databases.listDocuments(
@@ -36,8 +35,6 @@ export default async function addHandler(req, res) {
         process.env.APPWRITE_DATABASE_COLLECTION_ID_USERS,
         [Query.equal("email", row.email)]
       );
-
-      console.log(listDocuments);
 
       const result = await databases.deleteDocument(
         process.env.APPWRITE_DATABASE_ID_USERS,

@@ -190,8 +190,6 @@ export default function Admins() {
                 body: JSON.stringify(record),
               });
 
-              console.log(response);
-
               if (response.ok) {
                 notification.success({
                   message: "Success",
