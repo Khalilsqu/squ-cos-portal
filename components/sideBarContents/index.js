@@ -12,8 +12,22 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import useSWR from "swr";
 import CustomTooltip from "../tooltip/customtooltip";
 import { AdminMenu } from "./adminOptions";
+
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
 
 export function getItem(label, key, icon, children, title) {
   return {
@@ -37,6 +51,14 @@ export const SideBarContents = (props) => {
   const [openKeys, setOpenKeys] = useState([]);
 
   const { data: session, status } = useSession();
+
+  const { data: adminUsers } = useSWR("api/dashboard/admins", fetcher, {
+    refreshInterval: 0,
+  });
+
+  const adminEmails = adminUsers?.map((user) => user.email);
+
+  const isAdmin = adminEmails?.includes(session?.user?.email);
 
   const router = useRouter();
 
@@ -200,7 +222,7 @@ export const SideBarContents = (props) => {
           openKeys={openKeys}
         />
       ) : (
-        status === "authenticated" && (
+        isAdmin && (
           <AdminMenu
             themeColor={themeColor}
             collapsed={collapsed}

@@ -5,14 +5,36 @@ import { useRouter } from "next/router";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { Button, Cascader, Space, Typography } from "antd";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
 
-export default function CascaderNav({ setBreakPoint }) {
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
+
+export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
   const [cascaderOpen, setCascaderOpen] = useState(false);
   const [cascaderValue, setCascaderValue] = useState([]);
   const { width } = useWindowSize();
   const router = useRouter();
 
   const { data: session, status } = useSession();
+
+  const { data: adminUsers } = useSWR("api/dashboard/admins", fetcher, {
+    refreshInterval: 0,
+  });
+
+  const adminEmails = adminUsers?.map((user) => user.email);
+
+  const isAdmin = adminEmails?.includes(session?.user?.email);
 
   useEffect(() => {
     if (width < 576) {
@@ -93,26 +115,31 @@ export default function CascaderNav({ setBreakPoint }) {
 
   const adminItems = [
     {
-      value: "admins",
-      label: "Admins",
-    },
-    {
-      value: "news",
-      label: "News",
-    },
-    {
-      value: "staff-directory",
-      label: "Staff Directory",
+      value: "admin-dashboard",
+      label: "Admin Dashboard",
+      children: [
+        {
+          value: "admins",
+          label: "Admins",
+        },
+        {
+          value: "news",
+          label: "News",
+        },
+        {
+          value: "staff-directory",
+          label: "Staff Directory",
+        },
+      ],
     },
   ];
 
   return (
     width < 576 && (
       <Cascader
-        showSearch
         value={cascaderValue}
         open={cascaderOpen}
-        options={items}
+        options={!showAdminPanel ? items : isAdmin && adminItems}
         expandTrigger="hover"
         displayRender={(label) => {
           const routerPathName = router.pathname;
@@ -129,7 +156,12 @@ export default function CascaderNav({ setBreakPoint }) {
         placeholder="Navigation"
         onClear={() => {
           setCascaderValue([]);
-          router.push("/");
+
+          if (!showAdminPanel && isAdmin) {
+            router.push("/");
+          } else if (showAdminPanel && isAdmin) {
+            router.push("/admin-dashboard");
+          }
         }}
         onChange={(value) => {
           setCascaderValue(value);

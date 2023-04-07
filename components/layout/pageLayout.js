@@ -151,7 +151,10 @@ export default function PageLayout({ children }) {
               }
             >
               <Content className="flex flex-col">
-                <CascaderNav setBreakPoint={setBreakPoint} />
+                <CascaderNav
+                  setBreakPoint={setBreakPoint}
+                  showAdminPanel={showAdminPanel}
+                />
                 {children}
                 <FloatButton.BackTop
                   style={{

@@ -1,9 +1,12 @@
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
-import { Layout, Space } from "antd";
+import { Button, Layout, Space } from "antd";
 import Authentication from "../authentication/auth";
 import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
+
+import useSWR from "swr";
+import Image from "next/image";
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -23,6 +26,19 @@ const additionalStyles = {
   zIndex: 100,
 };
 
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
+
 export default function HeaderComponent(props) {
   const {
     handleBreakPoint,
@@ -32,6 +48,18 @@ export default function HeaderComponent(props) {
   } = props;
   const { themeColor } = useContext(LayoutContext);
   const { data: session, status } = useSession();
+
+  const { data: adminUsers, isLoading } = useSWR(
+    "api/dashboard/admins",
+    fetcher,
+    {
+      refreshInterval: 0,
+    }
+  );
+
+  const adminEmails = adminUsers?.map((user) => user.email);
+
+  const isAdmin = adminEmails?.includes(session?.user?.email);
 
   const router = useRouter();
 
@@ -46,15 +74,9 @@ export default function HeaderComponent(props) {
       }
     >
       <Space className="flex justify-between">
-        <Space
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            rowGap: 20,
-          }}
-        >
-          {width > 576 &&
-            (isBreakPoint ? (
+        <Space className="flex justify-start items-center gap-5">
+          {width > 576 ? (
+            isBreakPoint ? (
               <CustomTooltip
                 title="Open Sidebar"
                 mouseLeaveDelay={0}
@@ -82,21 +104,39 @@ export default function HeaderComponent(props) {
                   }}
                 />
               </CustomTooltip>
-            ))}
+            )
+          ) : (
+            <CustomTooltip title="Home" placement="right">
+              <Image
+                src="/squ.png"
+                width={30}
+                height={40}
+                alt="SQU Logo"
+                onClick={() => {
+                  router.push("/");
+                  handleShowAdminPanel(false);
+                }}
+                className="cursor-pointer flex items-center justify-center"
+              />
+            </CustomTooltip>
+          )}
         </Space>
         <Space
           style={{
             rowGap: 20,
           }}
         >
-          {status === "authenticated" && (
+          {isAdmin && (
             <CustomTooltip title="Admin Dashboard" placement="left">
-              <MdOutlineDashboardCustomize
+              <Button
+                loading={isLoading}
                 onClick={() => {
                   handleShowAdminPanel(true);
                   router.push("/admin-dashboard");
                 }}
-                className="flex cursor-pointer text-2xl"
+                type="text"
+                icon={<MdOutlineDashboardCustomize />}
+                className="text-2xl flex items-center justify-center"
               />
             </CustomTooltip>
           )}
