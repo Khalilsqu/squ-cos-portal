@@ -1,6 +1,6 @@
-// import { signIn, getProviders } from "next-auth/react";
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { signIn, getProviders } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Button, Typography, Space } from "antd";
 import Head from "next/head";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
@@ -71,21 +71,7 @@ export default function Signin({ providers }) {
         to SQU accounts.
       </Typography.Text>
       <Button
-        onClick={() => {
-          const client = new Client();
-          client
-            .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
-            .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID);
-
-          const account = new Account(client);
-
-          account.createOAuth2Session(
-            "google",
-            process.env.NEXT_PUBLIC_APPWRITE_GOOGLE_REDIRECT_URI,
-            "https://squ-cos-portal.vercel.app",
-            ["https://www.googleapis.com/auth/userinfo.email"]
-          );
-        }}
+        onClick={() => signIn("google", { callbackUrl: "/" })}
         className="flex text-center align-middle content-center items-center rounded-md gap-3"
         size="large"
         icon={<FcGoogle className="text-xl" />}
@@ -112,18 +98,18 @@ export default function Signin({ providers }) {
   );
 }
 
-// export async function getServerSideProps(context) {
-//   const session = await getServerSession(context.req, context.res, authOptions);
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-//   if (session) {
-//     return {
-//       redirect: { destination: "/" },
-//     };
-//   }
+  if (session) {
+    return {
+      redirect: { destination: "/" },
+    };
+  }
 
-//   const providers = await getProviders(context);
+  const providers = await getProviders(context);
 
-//   return {
-//     props: { providers: providers ?? [] },
-//   };
-// }
+  return {
+    props: { providers: providers ?? [] },
+  };
+}
