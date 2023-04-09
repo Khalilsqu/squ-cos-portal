@@ -17,7 +17,7 @@ const CopyRight = (props) => {
       </Typography.Link>
       <Typography.Text className="hidden sm:flex text-start md:w-2/6 md:text-end">
         This site is not affiliated with Sultan Qaboos University, but Developed
-        by DataBase Team in College of Sciences
+        by the DataBase Team in College of Science
       </Typography.Text>
     </div>
   );
