@@ -109,8 +109,8 @@ export default function HeaderComponent(props) {
             <CustomTooltip title="Home" placement="right">
               <Image
                 src="/squ.png"
-                width={30}
-                height={40}
+                width={35}
+                height={45}
                 alt="SQU Logo"
                 onClick={() => {
                   router.push("/");

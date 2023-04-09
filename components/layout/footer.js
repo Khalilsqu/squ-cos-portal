@@ -19,7 +19,7 @@ export default function FooterComponent(props) {
     <div>
       <Divider />
       <Footer className="flex flex-col">
-        {width > 480 && <CopyRight year={year} />}
+        <CopyRight year={year} />
       </Footer>
     </div>
   );
