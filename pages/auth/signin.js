@@ -11,8 +11,6 @@ import { useRouter } from "next/router";
 
 import { getCookie, hasCookie } from "cookies-next";
 
-import { Client, Account } from "appwrite";
-
 export default function Signin({ providers }) {
   if (hasCookie("themeColor")) {
     var themeColor = getCookie("themeColor");
