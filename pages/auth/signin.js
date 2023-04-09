@@ -82,7 +82,7 @@ export default function Signin({ providers }) {
           account.createOAuth2Session(
             "google",
             process.env.NEXT_PUBLIC_APPWRITE_GOOGLE_REDIRECT_URI,
-            "https://squ-cos-portal.vercel.app/",
+            "https://squ-cos-portal.vercel.app",
             ["https://www.googleapis.com/auth/userinfo.email"]
           );
         }}
