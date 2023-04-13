@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 import {
   Form,
   Table,
@@ -36,44 +37,8 @@ import { columnsList } from "@/components/admin-dashboard/staffDirectory/table";
 import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
 import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
 
-const exampleData = [
-  {
-    key: 1,
-    Name: "John Brown 1",
-    Gender: "Male",
-    Department: ["Chemistry", "Physics"],
-    Position: "Assistant Professor",
-    Email: "aa@gmail.com",
-    "Reports To": "John Doe",
-    "Office Phone": "99999999",
-  },
-  {
-    key: 2,
-    Name: "John Brown 2",
-    Gender: "Female",
-    Department: "Chemistry",
-    Position: "Assistant Professor",
-    Email: "aa2@gmail.com",
-    "Reports To": "John Doe",
-    "Office Phone": "99999999",
-  },
-];
-
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const error = new Error("An error occurred while fetching the data.");
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-};
-
 export default function StaffDirectory() {
-  const [data, setData] = useState(exampleData);
+  const [data, setData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);

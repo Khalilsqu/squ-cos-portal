@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 import { Typography, Spin } from "antd";
 
 import dynamic from "next/dynamic";
@@ -8,7 +9,6 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.bubble.css";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function NewsDetails() {
   const router = useRouter();

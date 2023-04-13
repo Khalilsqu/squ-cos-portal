@@ -5,6 +5,7 @@ import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -15,19 +16,6 @@ import { columnsData } from "../../../components/admin-dashboard/news/editTableD
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
-
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const error = new Error("An error occurred while fetching the data.");
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-};
 
 export default function News(props) {
   const [formAdd] = Form.useForm();

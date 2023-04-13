@@ -3,18 +3,7 @@ import moment from "moment/moment";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const error = new Error("An error occurred while fetching the data.");
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-};
+import { fetcher } from "@/components/utils/useSwrFetcher";
 
 export default function CarsouelNews() {
   const { data, error, isLoading } = useSWR(

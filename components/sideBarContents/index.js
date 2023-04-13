@@ -13,21 +13,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 import CustomTooltip from "../tooltip/customtooltip";
 import { AdminMenu } from "./adminOptions";
-
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const error = new Error("An error occurred while fetching the data.");
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-};
 
 export function getItem(label, key, icon, children, title) {
   return {
@@ -52,8 +40,12 @@ export const SideBarContents = (props) => {
 
   const { data: session, status } = useSession();
 
-  const { data: adminUsers } = useSWR("api/dashboard/admins", fetcher, {
+  const { data: adminUsers } = useSWR("/api/dashboard/admins", fetcher, {
     refreshInterval: 0,
+    revalidateOnMount: true,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+    revalidateIfStale: false,
   });
 
   const adminEmails = adminUsers?.map((user) => user.email);

@@ -16,6 +16,7 @@ import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
 import { useState } from "react";
 import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 import { v4 as uuidv4 } from "uuid";
 
 import { useWindowSize } from "@/components/utils/windowSize";
@@ -23,18 +24,6 @@ import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 import { columnWidth } from "@/components/admin-dashboard/staffDirectory/table";
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const error = new Error("An error occurred while fetching the data.");
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-};
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
