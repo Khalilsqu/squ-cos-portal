@@ -25,7 +25,7 @@ import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/tr
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
-import { columnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
+import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
 
 export default function StaffDirectory() {
@@ -97,7 +97,7 @@ export default function StaffDirectory() {
 
   const [formAdd] = Form.useForm();
 
-  const columnsHeader = columnsList(
+  const columnsHeader = useColumnsList(
     setDrawerOpen,
     setEditingKey,
     formAdd,

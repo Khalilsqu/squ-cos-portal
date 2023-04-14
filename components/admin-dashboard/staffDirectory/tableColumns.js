@@ -7,18 +7,28 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
+import useSWR from "swr";
+import { fetcher } from "@/components/utils/useSwrFetcher";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export const columnWidth = "fit-content";
 
-export const columnsList = (
+export const useColumnsList = (
   setDrawerOpen,
   setEditingKey,
   formAdd,
   data,
   setData
 ) => {
+  const { data: staffColumns, mutate } = useSWR(
+    "/api/dashboard/staffDirecory/getColumnNames",
+    fetcher,
+    {
+      refreshInterval: 0,
+    }
+  );
+
   return [
     {
       title: "Name",
