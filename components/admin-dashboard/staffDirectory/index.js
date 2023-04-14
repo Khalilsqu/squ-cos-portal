@@ -1,7 +1,7 @@
 import { Modal, Button, notification, Form, Input, Select, Switch } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import { columnWidth } from "./table";
+import { columnWidth } from "./tableColumns";
 
 export const AddDepartmentModal = ({
   departmentAddModalOpen,

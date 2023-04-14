@@ -22,8 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useWindowSize } from "@/components/utils/windowSize";
 import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
-import { columnWidth } from "@/components/admin-dashboard/staffDirectory/table";
-
+import { columnWidth } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 

@@ -1,26 +1,27 @@
-import { Tag, Space, Button, Popconfirm, Switch, Typography } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  MailOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
-import moment from "moment";
-import dayjs from "dayjs";
+import { Table, Popconfirm, Button, Space } from "antd";
 import useSWR from "swr";
+import { useState } from "react";
 import { fetcher } from "@/components/utils/useSwrFetcher";
-
 import CustomTooltip from "@/components/tooltip/customtooltip";
+import { RiInsertColumnRight } from "react-icons/ri";
+import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
 
-export const columnWidth = "fit-content";
+import { useWindowSize } from "@/components/utils/windowSize";
+import { collapsedState } from "@/components/layout/pageLayout";
+import { isBreakPointState } from "@/components/layout/pageLayout";
+import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
+import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
 
-export const columnsList = (
+export default function TableComponent({
   setDrawerOpen,
-  setEditingKey,
-  formAdd,
+  setColumnAddModalOpen,
+  targetKeys,
+  departmentList,
+  positionList,
+  columns,
   data,
-  setData
-) => {
+  setData,
+}) {
   const { data: staffColumns, mutate } = useSWR(
     "/api/dashboard/staffDirecory/getColumnNames",
     fetcher,
@@ -28,142 +29,85 @@ export const columnsList = (
       refreshInterval: 0,
     }
   );
-  console.log("staffColumns", staffColumns);
-  return [
-    {
-      title: "Name",
-      dataIndex: "Name",
-      editable: true,
-      width: columnWidth,
-    },
-    {
-      title: "Email",
-      dataIndex: "Email",
-      editable: true,
-      width: columnWidth,
-      render: (text, record) => {
-        // send email to staff when clicked
+
+  const { width } = useWindowSize();
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const isBreakPoint = isBreakPointState().isBreakPoint;
+  const collapsed = collapsedState().collapsed;
+  const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
+
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      footer={() => {
         return (
-          <a href={`mailto:${record.Email}`} target={"_blank"} rel="noreferrer">
-            <Space size="middle" className="flex justify-between w-full">
-              {text}
-              <CustomTooltip title="Send Email" placement="left">
-                <MailOutlined />
-              </CustomTooltip>
-            </Space>
-          </a>
-        );
-      },
-    },
-    {
-      title: "Department",
-      dataIndex: "Department",
-      editable: true,
-      width: columnWidth,
-      render: (text, record) => {
-        if (Array.isArray(text)) {
-          return text.map((department) => (
-            <Tag key={department}>{department}</Tag>
-          ));
-        } else {
-          return <Tag>{text}</Tag>;
-        }
-      },
-    },
-    {
-      title: "Gender",
-      dataIndex: "Gender",
-      editable: true,
-      width: columnWidth,
-      render: (text, record) => (
-        <Tag color={text === "Male" ? "blue" : "pink"}>{text}</Tag>
-      ),
-    },
-    {
-      title: "Position",
-      dataIndex: "Position",
-      width: columnWidth,
-      render: (text, record) => {
-        if (Array.isArray(text)) {
-          return text.map((position) => <Tag key={position}>{position}</Tag>);
-        } else {
-          return <Tag>{text}</Tag>;
-        }
-      },
-    },
-    {
-      title: "Reports To",
-      dataIndex: "Reports To",
-      width: columnWidth,
-    },
-    {
-      title: "Office Phone",
-      dataIndex: "Office Phone",
-      width: columnWidth,
-      render: (text, record) => (
-        <a href={`tel:${record["Office Phone"]}`}>
-          <Space size="middle" className="flex justify-between">
-            {/* show country code and flag before the office phone number */}
-
-            {text}
-            <CustomTooltip title="Call" placement="left">
-              <PhoneOutlined />
-            </CustomTooltip>
-          </Space>
-        </a>
-      ),
-    },
-
-    {
-      title: "Action",
-      dataIndex: "Action",
-      width: "20px",
-      render: (text, record) => (
-        <Space size="middle" className="flex justify-center">
-          <CustomTooltip title="Edit Staff" placement="left">
-            <Button
-              onClick={() => {
-                setDrawerOpen(true);
-                setEditingKey(record.key);
-                formAdd.setFieldsValue({
-                  ...Object.keys(record).reduce((acc, key) => {
-                    acc[key] = record[key];
-                    if (moment(acc[key], "DD/MMM/YYYY", true).isValid()) {
-                      acc[key] = dayjs(acc[key]);
-                    }
-                    return acc;
-                  }, {}),
-                });
-              }}
-              type="text"
-              icon={<EditOutlined />}
-              className="rounder-full"
-            />
-          </CustomTooltip>
-          <CustomTooltip title="Delete Staff" placement="left">
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => {
-                setData(
-                  data.filter((staff) => {
-                    return staff.key !== record.key;
-                  })
-                );
-              }}
-              cancelText="No"
-              okText="Yes"
-              okType="danger"
-            >
+          <Space>
+            <CustomTooltip title="Add Staff">
               <Button
+                onClick={() => setDrawerOpen(true)}
+                icon={<AiOutlineUserAdd className="text-xl" />}
                 type="text"
-                danger
-                icon={<DeleteOutlined />}
-                className="rounder-full"
               />
-            </Popconfirm>
-          </CustomTooltip>
-        </Space>
-      ),
-    },
-  ];
-};
+            </CustomTooltip>
+            <CustomTooltip title="Add Column">
+              <Button
+                onClick={() => setColumnAddModalOpen(true)}
+                icon={<RiInsertColumnRight className="text-xl" />}
+                type="text"
+              />
+            </CustomTooltip>
+            {selectedRowKeys.length > 0 && (
+              <CustomTooltip title="Delete Selected Staff(s)">
+                <Popconfirm
+                  title="Are you sure?"
+                  onConfirm={() => {
+                    const newData = [...data];
+                    selectedRowKeys.forEach((key) => {
+                      const index = newData.findIndex(
+                        (item) => item.key === key
+                      );
+                      newData.splice(index, 1);
+                    });
+                    setData(newData);
+                    setSelectedRowKeys([]);
+                  }}
+                >
+                  <Button
+                    icon={<AiOutlineUserDelete className="text-xl" />}
+                    type="text"
+                    danger
+                  />
+                </Popconfirm>
+              </CustomTooltip>
+            )}
+            <ExportExcel data={data} selectedRowKeys={selectedRowKeys} />
+            <ImportExcel
+              data={data}
+              setData={setData}
+              columns={columns}
+              departmentList={departmentList}
+              positionList={positionList}
+              targetKeys={targetKeys}
+            />
+          </Space>
+        );
+      }}
+      size="small"
+      scroll={{ x: "max-content" }}
+      tableLayout="auto"
+      bordered
+      style={{
+        maxWidth: `calc(${width}px - ${widthCalc})`,
+      }}
+      rowSelection={{
+        selectedRowKeys,
+        onChange: (selectedRowKeys) => {
+          setSelectedRowKeys(selectedRowKeys);
+        },
+      }}
+    />
+  );
+}

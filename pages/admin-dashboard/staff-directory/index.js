@@ -5,7 +5,6 @@ import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
 import {
   Form,
-  Table,
   Button,
   Space,
   notification,
@@ -13,16 +12,9 @@ import {
   Divider,
   Tag,
   Spin,
-  Popconfirm,
 } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { RiInsertColumnRight } from "react-icons/ri";
-import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
-
-import { useWindowSize } from "@/components/utils/windowSize";
-import { collapsedState } from "@/components/layout/pageLayout";
-import { isBreakPointState } from "@/components/layout/pageLayout";
 import { colorThemeState } from "@/components/layout/pageLayout";
 
 import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
@@ -33,13 +25,11 @@ import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/tr
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
-import { columnsList } from "@/components/admin-dashboard/staffDirectory/table";
-import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
-import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
+import { columnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
+import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
 
 export default function StaffDirectory() {
   const [data, setData] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingKey, setEditingKey] = useState(null);
@@ -129,13 +119,7 @@ export default function StaffDirectory() {
   const [formDeletePosition] = Form.useForm();
   const [positionDeleteModalOpen, setPositionDeleteModalOpen] = useState(false);
 
-  const { width } = useWindowSize();
-
-  const isBreakPoint = isBreakPointState().isBreakPoint;
-  const collapsed = collapsedState().collapsed;
   const colorTheme = colorThemeState().colorTheme;
-
-  const widthCalc = isBreakPoint ? "20px" : collapsed ? "100px" : "220px";
 
   const handleAddFormFinish = (values) => {
     if (editingKey) {
@@ -288,75 +272,15 @@ export default function StaffDirectory() {
           targetKeys={targetKeys}
           setTargetKeys={setTargetKeys}
         />
-        <Table
+        <TableComponent
+          setDrawerOpen={setDrawerOpen}
+          setColumnAddModalOpen={setColumnAddModalOpen}
+          targetKeys={targetKeys}
+          departmentList={departmentList}
+          positionList={positionList}
           columns={columns}
-          dataSource={data}
-          footer={() => {
-            return (
-              <Space>
-                <CustomTooltip title="Add Staff">
-                  <Button
-                    onClick={() => setDrawerOpen(true)}
-                    icon={<AiOutlineUserAdd className="text-xl" />}
-                    type="text"
-                  />
-                </CustomTooltip>
-                <CustomTooltip title="Add Column">
-                  <Button
-                    onClick={() => setColumnAddModalOpen(true)}
-                    icon={<RiInsertColumnRight className="text-xl" />}
-                    type="text"
-                  />
-                </CustomTooltip>
-                {selectedRowKeys.length > 0 && (
-                  <CustomTooltip title="Delete Selected Staff(s)">
-                    <Popconfirm
-                      title="Are you sure?"
-                      onConfirm={() => {
-                        const newData = [...data];
-                        selectedRowKeys.forEach((key) => {
-                          const index = newData.findIndex(
-                            (item) => item.key === key
-                          );
-                          newData.splice(index, 1);
-                        });
-                        setData(newData);
-                        setSelectedRowKeys([]);
-                      }}
-                    >
-                      <Button
-                        icon={<AiOutlineUserDelete className="text-xl" />}
-                        type="text"
-                        danger
-                      />
-                    </Popconfirm>
-                  </CustomTooltip>
-                )}
-                <ExportExcel data={data} selectedRowKeys={selectedRowKeys} />
-                <ImportExcel
-                  data={data}
-                  setData={setData}
-                  columns={columns}
-                  departmentList={departmentList}
-                  positionList={positionList}
-                  targetKeys={targetKeys}
-                />
-              </Space>
-            );
-          }}
-          size="small"
-          scroll={{ x: "max-content" }}
-          tableLayout="auto"
-          bordered
-          style={{
-            maxWidth: `calc(${width}px - ${widthCalc})`,
-          }}
-          rowSelection={{
-            selectedRowKeys,
-            onChange: (selectedRowKeys) => {
-              setSelectedRowKeys(selectedRowKeys);
-            },
-          }}
+          data={data}
+          setData={setData}
         />
       </div>
     );
