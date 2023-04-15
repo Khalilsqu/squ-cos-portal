@@ -24,7 +24,7 @@ import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 import { columnWidth } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 
-// import CustomTooltip from "@/components/tooltip/customtooltip";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export default function Admins() {
   const [modalAddRowOpen, setModalAddRowOpen] = useState(false);
@@ -252,7 +252,7 @@ export default function Admins() {
                 size="small"
                 className="flex justify-start"
               >
-                {/* <CustomTooltip title="Save Changes to Database"> */}
+                <CustomTooltip title="Save Changes to Database">
                   <Button
                     type="text"
                     disabled={!needToSave}
@@ -291,8 +291,8 @@ export default function Admins() {
                     icon={<SaveOutlined />}
                     danger={needToSave}
                   />
-                {/* </CustomTooltip> */}
-                {/* <CustomTooltip title="Add New Admin"> */}
+                </CustomTooltip>
+                <CustomTooltip title="Add New Admin">
                   <Button
                     type="text"
                     onClick={() => {
@@ -300,7 +300,7 @@ export default function Admins() {
                     }}
                     icon={<AiOutlineInsertRowBelow className="text-xl" />}
                   />
-                {/* </CustomTooltip> */}
+                </CustomTooltip>
               </Space>
               <Space
                 direction="horizontal"

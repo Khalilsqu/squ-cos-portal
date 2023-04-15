@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 import { Button } from "antd";
-// import CustomTooltip from "@/components/tooltip/customtooltip";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 import { TbTableExport } from "react-icons/tb";
 
 export default function ExportExcel({ data, selectedRowKeys }) {
@@ -19,7 +19,7 @@ export default function ExportExcel({ data, selectedRowKeys }) {
   };
   if (selectedRowKeys.length === 0) {
     return (
-      // <CustomTooltip title="Export All Staff">
+      <CustomTooltip title="Export All Staff">
         <Button
           icon={<TbTableExport className="text-xl" />}
           type="text"
@@ -41,12 +41,12 @@ export default function ExportExcel({ data, selectedRowKeys }) {
             exportToExcel(selectedData);
           }}
         />
-      // </CustomTooltip>
+      </CustomTooltip>
     );
   }
 
   return (
-    // <CustomTooltip title="Export Selected Staff">
+    <CustomTooltip title="Export Selected Staff">
       <Button
         icon={<TbTableExport className="text-xl" />}
         type="text"
@@ -70,6 +70,6 @@ export default function ExportExcel({ data, selectedRowKeys }) {
           exportToExcel(selectedData);
         }}
       />
-    // </CustomTooltip>
+    </CustomTooltip>
   );
 }

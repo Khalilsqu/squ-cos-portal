@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import { useContext, forwardRef } from "react";
 import { useRouter } from "next/router";
 import { Button, Layout, Space, Spin } from "antd";
+import Icon from "@ant-design/icons";
 import Authentication from "../authentication/auth";
-// import CustomTooltip from "../tooltip/customtooltip";
+import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
 
 import useSWR from "swr";
@@ -26,6 +27,14 @@ const additionalStyles = {
   padding: "0 10px",
   zIndex: 100,
 };
+
+const MenuFoldOutlinedIcon = forwardRef((props, ref) => (
+  <Icon component={MenuFoldOutlined} ref={ref} {...props} />
+));
+
+const MenuUnfoldOutlinedIcon = forwardRef((props, ref) => (
+  <Icon component={MenuUnfoldOutlined} ref={ref} {...props} />
+));
 
 export default function HeaderComponent(props) {
   const {
@@ -65,48 +74,48 @@ export default function HeaderComponent(props) {
         <Space className="flex justify-start items-center gap-5">
           {width > 576 ? (
             isBreakPoint ? (
-              // <CustomTooltip
-              //   title="Open Sidebar"
-              //   mouseLeaveDelay={0}
-              //   placement="right"
-              // >
-              <MenuUnfoldOutlined
-                onClick={handleBreakPoint}
-                style={{
-                  fontSize: "24px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
+              <CustomTooltip
+                title="Open Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuUnfoldOutlinedIcon
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "24px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </CustomTooltip>
             ) : (
-              // </CustomTooltip>
-              // <CustomTooltip
-              //   title="Close Sidebar"
-              //   mouseLeaveDelay={0}
-              //   placement="right"
-              // >
-              <MenuFoldOutlined
-                onClick={handleBreakPoint}
-                style={{
-                  fontSize: "24px",
-                  color: themeColor === "light" ? "#001529" : "#fff",
-                }}
-              />
-              // </CustomTooltip>
+              <CustomTooltip
+                title="Close Sidebar"
+                mouseLeaveDelay={0}
+                placement="right"
+              >
+                <MenuFoldOutlinedIcon
+                  onClick={handleBreakPoint}
+                  style={{
+                    fontSize: "24px",
+                    color: themeColor === "light" ? "#001529" : "#fff",
+                  }}
+                />
+              </CustomTooltip>
             )
           ) : (
-            // <CustomTooltip title="Home" placement="right">
-            <Image
-              src="/squ.png"
-              width={35}
-              height={45}
-              alt="SQU Logo"
-              onClick={() => {
-                router.push("/");
-                handleShowAdminPanel(false);
-              }}
-              className="cursor-pointer flex items-center justify-center"
-            />
-            // </CustomTooltip>
+            <CustomTooltip title="Home" placement="right">
+              <Image
+                src="/squ.png"
+                width={35}
+                height={45}
+                alt="SQU Logo"
+                onClick={() => {
+                  router.push("/");
+                  handleShowAdminPanel(false);
+                }}
+                className="cursor-pointer flex items-center justify-center"
+              />
+            </CustomTooltip>
           )}
         </Space>
         <Space
@@ -118,17 +127,17 @@ export default function HeaderComponent(props) {
             (isLoading ? (
               <Spin className="flex items-center justify-center" />
             ) : (
-              // <CustomTooltip title="Admin Dashboard" placement="left">
-              <Button
-                onClick={() => {
-                  handleShowAdminPanel(true);
-                  router.push("/admin-dashboard");
-                }}
-                type="text"
-                icon={<MdOutlineDashboardCustomize />}
-                className="text-2xl flex items-center justify-center"
-              />
-              // </CustomTooltip>
+              <CustomTooltip title="Admin Dashboard" placement="left">
+                <Button
+                  onClick={() => {
+                    handleShowAdminPanel(true);
+                    router.push("/admin-dashboard");
+                  }}
+                  type="text"
+                  icon={<MdOutlineDashboardCustomize />}
+                  className="text-2xl flex items-center justify-center"
+                />
+              </CustomTooltip>
             ))}
           <Authentication
             themeColor={themeColor}

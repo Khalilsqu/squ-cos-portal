@@ -1,6 +1,6 @@
 import { Transfer, Button, Space } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-// import CustomTooltip from "@/components/tooltip/customtooltip";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 import { useEffect } from "react";
 
 export function TransferPosition({
@@ -53,7 +53,7 @@ export function TransferPosition({
         if (props.direction === "left") {
           return (
             <Space direction="horizontal">
-              {/* <CustomTooltip title="Add a new Position"> */}
+              <CustomTooltip title="Add a new Position">
                 <Button
                   className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
                   onClick={() => {
@@ -61,8 +61,8 @@ export function TransferPosition({
                   }}
                   icon={<PlusOutlined />}
                 />
-              {/* </CustomTooltip> */}
-              {/* <CustomTooltip title="Delete a Position"> */}
+              </CustomTooltip>
+              <CustomTooltip title="Delete a Position">
                 <Button
                   className="border-0 bg-transparent text-blue-500 hover:text-blue-700"
                   onClick={() => {
@@ -71,7 +71,7 @@ export function TransferPosition({
                   icon={<DeleteOutlined />}
                   danger
                 />
-              {/* </CustomTooltip> */}
+              </CustomTooltip>
             </Space>
           );
         }

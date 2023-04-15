@@ -17,7 +17,7 @@ import { useState } from "react";
 import { MailOutlined } from "@ant-design/icons";
 import { RxInput } from "react-icons/rx";
 import { BsCardList } from "react-icons/bs";
-// import CustomTooltip from "@/components/tooltip/customtooltip";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 
 import { FaMale, FaFemale } from "react-icons/fa";
 
@@ -229,7 +229,7 @@ export const AddStaffDrawer = ({
                 </Col>
                 <Col flex={1}>
                   <Row justify="end">
-                    {/* <CustomTooltip title="Change input method" placement="left"> */}
+                    <CustomTooltip title="Change input method" placement="left">
                       <Button
                         className="justify-end border-0 bg-transparent text-lg rounded-full"
                         onClick={() => {
@@ -246,7 +246,7 @@ export const AddStaffDrawer = ({
                           )
                         }
                       />
-                    {/* </CustomTooltip> */}
+                    </CustomTooltip>
                   </Row>
                 </Col>
               </Row>

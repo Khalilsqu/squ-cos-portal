@@ -5,7 +5,7 @@ import { GoSignOut } from "react-icons/go";
 import { AiOutlineUser } from "react-icons/ai";
 import { useRef } from "react";
 
-// import CustomTooltip from "../tooltip/customtooltip";
+import CustomTooltip from "../tooltip/customtooltip";
 import LogOutModal from "./logOutModal";
 
 export default function Authentication(props) {
@@ -58,22 +58,22 @@ export default function Authentication(props) {
           />
         </Dropdown>
       ) : router.pathname !== "/auth/signin" ? (
-        // <CustomTooltip title="Click to sign-in">
-        <Avatar
-          size={50}
-          onClick={handleSignIn}
-          className="cursor-pointer"
-          icon={
-            <AiOutlineUser
-              className={
-                "text-center text-5xl " +
-                (themeColor === "dark" ? "text-white" : "text-stone-900")
-              }
-            />
-          }
-        />
-      ) : // </CustomTooltip>
-      null}
+        <CustomTooltip title="Click to sign-in">
+          <Avatar
+            size={50}
+            onClick={handleSignIn}
+            className="cursor-pointer"
+            icon={
+              <AiOutlineUser
+                className={
+                  "text-center text-5xl " +
+                  (themeColor === "dark" ? "text-white" : "text-stone-900")
+                }
+              />
+            }
+          />
+        </CustomTooltip>
+      ) : null}
       <LogOutModal ref={childRef} />
     </div>
   );

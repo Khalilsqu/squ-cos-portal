@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 import { AiOutlineUpload } from "react-icons/ai";
 
-// import CustomTooltip from "@/components/tooltip/customtooltip";
+import CustomTooltip from "@/components/tooltip/customtooltip";
 
 const validateEmail = (email) => {
   return String(email)
@@ -106,9 +106,9 @@ export default function ImportExcel({
       }}
       showUploadList={false}
     >
-      {/* <CustomTooltip title="Import Excel"> */}
+      <CustomTooltip title="Import Excel">
         <Button icon={<AiOutlineUpload className="text-xl" />} type="text" />
-      {/* </CustomTooltip> */}
+      </CustomTooltip>
     </Upload>
   );
 }

@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
-// import CustomTooltip from "../tooltip/customtooltip";
+import CustomTooltip from "../tooltip/customtooltip";
 import { AdminMenu } from "./adminOptions";
 
 export function getItem(label, key, icon, children, title) {
@@ -177,27 +177,27 @@ export const SideBarContents = (props) => {
     "
     >
       <Space className="w-full justify-center">
-        {/* <CustomTooltip title="Home " placement="right"> */}
-        <Image
-          src="/squ.png"
-          width={60}
-          height={80}
-          alt="SQU Logo"
-          // hide the image from screen readers when collapsed or isBreakPoint
-          className={
-            (isBreakPoint
-              ? "hidden"
-              : collapsed
-              ? "w-5 h-7 rotate-[360deg] hover:cursor-pointer"
-              : "flex") +
-            " mt-4 transition-all duration-1000 hover:cursor-pointer"
-          }
-          onClick={() => {
-            router.push("/");
-            handleShowAdminPanel(false);
-          }}
-        />
-        {/* </CustomTooltip> */}
+        <CustomTooltip title="Home " placement="right">
+          <Image
+            src="/squ.png"
+            width={60}
+            height={80}
+            alt="SQU Logo"
+            // hide the image from screen readers when collapsed or isBreakPoint
+            className={
+              (isBreakPoint
+                ? "hidden"
+                : collapsed
+                ? "w-5 h-7 rotate-[360deg] hover:cursor-pointer"
+                : "flex") +
+              " mt-4 transition-all duration-1000 hover:cursor-pointer"
+            }
+            onClick={() => {
+              router.push("/");
+              handleShowAdminPanel(false);
+            }}
+          />
+        </CustomTooltip>
       </Space>
       {!showAdminPanel ? (
         <Menu
