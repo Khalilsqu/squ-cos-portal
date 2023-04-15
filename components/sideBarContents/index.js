@@ -8,7 +8,7 @@ import { FaUserGraduate } from "react-icons/fa";
 import { IoIosSchool } from "react-icons/io";
 import { MdEmojiPeople } from "react-icons/md";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { TiContacts } from "react-icons/ti";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -61,15 +61,6 @@ export const SideBarContents = (props) => {
       router.push("/" + e.keyPath[1] + "/" + e.key);
     }
   };
-  const handleSelectionStaff = () => {
-    router.push("/staff");
-    setSelectedKey(["staff"]);
-  };
-
-  const handleSelectionStudents = () => {
-    router.push("/students");
-    setSelectedKey(["students"]);
-  };
 
   const handleOpenKeys = (keys) => {
     setOpenKeys(keys);
@@ -77,27 +68,17 @@ export const SideBarContents = (props) => {
 
   const items = [
     getItem(
-      <Space className="flex justify-between">
-        <Typography.Text
-          className={
-            (selectedKey[0] === "staff") & (themeColor === "light")
-              ? "text-blue-500"
-              : (selectedKey[0] === "staff") & (themeColor === "dark") &&
-                "text-stone-100 bg-blue-400 rounded-lg px-2"
-          }
-        >
-          Staff
-        </Typography.Text>
-        <Button
-          onClick={handleSelectionStaff}
-          shape="circle"
-          size="small"
-          icon={<AiOutlineUsergroupAdd />}
-        />
-      </Space>,
+      <Typography.Text>Staff</Typography.Text>,
       "staff",
       <FaUniversity />,
       [
+        getItem(
+          "Staff Directory",
+          "staff-directory",
+          <TiContacts />,
+          null,
+          collapsed === false ? "Staff Directory" : null
+        ),
         getItem(
           "Faculty",
           "faculty",
@@ -123,27 +104,17 @@ export const SideBarContents = (props) => {
       collapsed === false ? "Staff" : null
     ),
     getItem(
-      <Space className="flex justify-between">
-        <Typography.Text
-          className={
-            (selectedKey[0] === "students") & (themeColor === "light")
-              ? "text-blue-500"
-              : (selectedKey[0] === "students") & (themeColor === "dark") &&
-                "text-stone-100 bg-blue-400 rounded-lg px-2"
-          }
-        >
-          Students
-        </Typography.Text>
-        <Button
-          onClick={handleSelectionStudents}
-          shape="circle"
-          size="small"
-          icon={<AiOutlineUsergroupAdd />}
-        />
-      </Space>,
+      <Typography.Text>Students</Typography.Text>,
       "students",
-      <IoIosSchool onClick={(e) => router.push("/students")} />,
+      <IoIosSchool />,
       [
+        getItem(
+          "Students Directory",
+          "students-directory",
+          <TiContacts />,
+          null,
+          collapsed === false ? "Students Directory" : null
+        ),
         getItem(
           "Undergraduate",
           "undergraduate",

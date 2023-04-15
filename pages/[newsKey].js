@@ -9,7 +9,6 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.bubble.css";
 
-
 export default function NewsDetails() {
   const router = useRouter();
   const { newsKey } = router.query;
@@ -50,17 +49,17 @@ export default function NewsDetails() {
     return (
       <div>
         <Head>
-          <title>{newsData.title}</title>
-          <meta name="description" content={newsData.description} />
+          <title>{newsData?.title}</title>
+          <meta name="description" content={newsData?.description} />
           <link rel="icon" href="/squ.ico" />
         </Head>
 
         <main>
           <div className="flex flex-col justify-start">
             <Typography.Title level={1} className="text-6xl font-bold">
-              {newsData.title}
+              {newsData?.title}
             </Typography.Title>
-            <ReactQuill value={newsData.description} readOnly theme="bubble" />
+            <ReactQuill value={newsData?.description} readOnly theme="bubble" />
           </div>
         </main>
       </div>

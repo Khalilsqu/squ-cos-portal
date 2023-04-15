@@ -9,16 +9,14 @@ export function AdminMenu() {
   const router = useRouter();
 
   const items = [
-    getItem("Dashboard", "admin-dashboard", <CiViewList />, null),
+    getItem("Dashboard", "dashboard", <CiViewList />, null),
     getItem("Admin Users", "admins", <RiAdminLine />, null),
     getItem("News", "news", <BsNewspaper />, null),
     getItem("Staff Directory", "staff-directory", <RiContactsBookLine />, null),
   ];
 
   const handleClick = (e) => {
-    if (e.key === "admin-dashboard") {
-      router.push("/" + e.key);
-    } else router.push("/" + "admin-dashboard/" + e.key);
+    router.push("/" + "admin-dashboard/" + e.key);
   };
 
   return <Menu mode="inline" items={items} onClick={handleClick} />;

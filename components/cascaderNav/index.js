@@ -37,22 +37,12 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
   const items = [
     {
       value: "staff",
-      label: (
-        <Space className="flex justify-between">
-          <Typography.Text>Staff</Typography.Text>
-          <Button
-            icon={<AiOutlineUsergroupAdd />}
-            size="small"
-            shape="circle"
-            onClick={() => {
-              router.push("/staff");
-              setCascaderOpen(false);
-              setCascaderValue(["staff"]);
-            }}
-          />
-        </Space>
-      ),
+      label: <Typography.Text>Staff</Typography.Text>,
       children: [
+        {
+          value: "staff-directory",
+          label: "Staff Directory",
+        },
         {
           value: "faculty",
           label: "Faculty",
@@ -69,22 +59,12 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
     },
     {
       value: "students",
-      label: (
-        <Space className="flex justify-between">
-          <Typography.Text>Students</Typography.Text>
-          <Button
-            icon={<AiOutlineUsergroupAdd />}
-            size="small"
-            shape="circle"
-            onClick={() => {
-              router.push("/students");
-              setCascaderOpen(false);
-              setCascaderValue(["students"]);
-            }}
-          />
-        </Space>
-      ),
+      label: <Typography.Text>Students</Typography.Text>,
       children: [
+        {
+          value: "students-directory",
+          label: "Students Directory",
+        },
         {
           value: "undergraduate",
           label: "Undergraduate",
@@ -103,22 +83,20 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
 
   const adminItems = [
     {
-      value: "admin-dashboard",
-      label: "Admin Dashboard",
-      children: [
-        {
-          value: "admins",
-          label: "Admins",
-        },
-        {
-          value: "news",
-          label: "News",
-        },
-        {
-          value: "staff-directory",
-          label: "Staff Directory",
-        },
-      ],
+      value: "dashboard",
+      label: "Dashboard",
+    },
+    {
+      value: "admins",
+      label: "Admins",
+    },
+    {
+      value: "news",
+      label: "News",
+    },
+    {
+      value: "staff-directory",
+      label: "Staff Directory",
     },
   ];
 
@@ -148,7 +126,7 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
           if (!showAdminPanel && isAdmin) {
             router.push("/");
           } else if (showAdminPanel && isAdmin) {
-            router.push("/admin-dashboard");
+            router.push("/admin-dashboard/dashboard");
           }
         }}
         onChange={(value) => {

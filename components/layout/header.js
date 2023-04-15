@@ -131,7 +131,7 @@ export default function HeaderComponent(props) {
                 <Button
                   onClick={() => {
                     handleShowAdminPanel(true);
-                    router.push("/admin-dashboard");
+                    router.push("/admin-dashboard/dashboard");
                   }}
                   type="text"
                   icon={<MdOutlineDashboardCustomize />}
