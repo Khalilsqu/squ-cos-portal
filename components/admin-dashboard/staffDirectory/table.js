@@ -45,43 +45,41 @@ export default function TableComponent({
       footer={() => {
         return (
           <Space>
-            <CustomTooltip title="Add Staff">
-              <Button
-                onClick={() => setDrawerOpen(true)}
-                icon={<AiOutlineUserAdd className="text-xl" />}
-                type="text"
-              />
-            </CustomTooltip>
-            <CustomTooltip title="Add Column">
-              <Button
-                onClick={() => setColumnAddModalOpen(true)}
-                icon={<RiInsertColumnRight className="text-xl" />}
-                type="text"
-              />
-            </CustomTooltip>
+            {/* <CustomTooltip title="Add Staff"> */}
+            <Button
+              onClick={() => setDrawerOpen(true)}
+              icon={<AiOutlineUserAdd className="text-xl" />}
+              type="text"
+            />
+            {/* </CustomTooltip> */}
+            {/* <CustomTooltip title="Add Column"> */}
+            <Button
+              onClick={() => setColumnAddModalOpen(true)}
+              icon={<RiInsertColumnRight className="text-xl" />}
+              type="text"
+            />
+            {/* </CustomTooltip> */}
             {selectedRowKeys.length > 0 && (
-              <CustomTooltip title="Delete Selected Staff(s)">
-                <Popconfirm
-                  title="Are you sure?"
-                  onConfirm={() => {
-                    const newData = [...data];
-                    selectedRowKeys.forEach((key) => {
-                      const index = newData.findIndex(
-                        (item) => item.key === key
-                      );
-                      newData.splice(index, 1);
-                    });
-                    setData(newData);
-                    setSelectedRowKeys([]);
-                  }}
-                >
-                  <Button
-                    icon={<AiOutlineUserDelete className="text-xl" />}
-                    type="text"
-                    danger
-                  />
-                </Popconfirm>
-              </CustomTooltip>
+              // <CustomTooltip title="Delete Selected Staff(s)">
+              <Popconfirm
+                title="Are you sure?"
+                onConfirm={() => {
+                  const newData = [...data];
+                  selectedRowKeys.forEach((key) => {
+                    const index = newData.findIndex((item) => item.key === key);
+                    newData.splice(index, 1);
+                  });
+                  setData(newData);
+                  setSelectedRowKeys([]);
+                }}
+              >
+                <Button
+                  icon={<AiOutlineUserDelete className="text-xl" />}
+                  type="text"
+                  danger
+                />
+              </Popconfirm>
+              // </CustomTooltip>
             )}
             <ExportExcel data={data} selectedRowKeys={selectedRowKeys} />
             <ImportExcel

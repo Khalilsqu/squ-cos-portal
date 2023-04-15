@@ -24,7 +24,7 @@ import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirecto
 import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/transferPositions";
 import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
-import CustomTooltip from "@/components/tooltip/customtooltip";
+// import CustomTooltip from "@/components/tooltip/customtooltip";
 import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
 
@@ -192,24 +192,24 @@ export default function StaffDirectory() {
             </Tag>
           ))}
           <Divider type="vertical" className="h-8 shadow-2xl border-2" />
-          <CustomTooltip title="Add Department">
-            <Button
-              type="text"
-              onClick={() => {
-                setDepartmentAddModalOpen(true);
-              }}
-              icon={<PlusOutlined />}
-            />
-          </CustomTooltip>
-          <CustomTooltip title="Delete Department">
-            <Button
-              type="text"
-              onClick={() => {
-                setDepartmentDeleteModalOpen(true);
-              }}
-              icon={<DeleteOutlined className="text-red-500" />}
-            />
-          </CustomTooltip>
+          {/* <CustomTooltip title="Add Department"> */}
+          <Button
+            type="text"
+            onClick={() => {
+              setDepartmentAddModalOpen(true);
+            }}
+            icon={<PlusOutlined />}
+          />
+          {/* </CustomTooltip> */}
+          {/* <CustomTooltip title="Delete Department"> */}
+          <Button
+            type="text"
+            onClick={() => {
+              setDepartmentDeleteModalOpen(true);
+            }}
+            icon={<DeleteOutlined className="text-red-500" />}
+          />
+          {/* </CustomTooltip> */}
         </Space>
         <Divider orientation="left">Positions</Divider>
         <TransferPosition

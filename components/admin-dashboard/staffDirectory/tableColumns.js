@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
 
-import CustomTooltip from "@/components/tooltip/customtooltip";
+// import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export const columnWidth = "fit-content";
 
@@ -47,9 +47,9 @@ export const useColumnsList = (
           <a href={`mailto:${record.Email}`} target={"_blank"} rel="noreferrer">
             <Space size="middle" className="flex justify-between w-full">
               {text}
-              <CustomTooltip title="Send Email" placement="left">
-                <MailOutlined />
-              </CustomTooltip>
+              {/* <CustomTooltip title="Send Email" placement="left"> */}
+              <MailOutlined />
+              {/* </CustomTooltip> */}
             </Space>
           </a>
         );
@@ -106,9 +106,9 @@ export const useColumnsList = (
             {/* show country code and flag before the office phone number */}
 
             {text}
-            <CustomTooltip title="Call" placement="left">
-              <PhoneOutlined />
-            </CustomTooltip>
+            {/* <CustomTooltip title="Call" placement="left"> */}
+            <PhoneOutlined />
+            {/* </CustomTooltip> */}
           </Space>
         </a>
       ),
@@ -120,7 +120,7 @@ export const useColumnsList = (
       width: "20px",
       render: (text, record) => (
         <Space size="middle" className="flex justify-center">
-          <CustomTooltip title="Edit Staff" placement="left">
+          {/* <CustomTooltip title="Edit Staff" placement="left"> */}
             <Button
               onClick={() => {
                 setDrawerOpen(true);
@@ -139,8 +139,8 @@ export const useColumnsList = (
               icon={<EditOutlined />}
               className="rounder-full"
             />
-          </CustomTooltip>
-          <CustomTooltip title="Delete Staff" placement="left">
+          {/* </CustomTooltip> */}
+          {/* <CustomTooltip title="Delete Staff" placement="left"> */}
             <Popconfirm
               title="Sure to delete?"
               onConfirm={() => {
@@ -161,7 +161,7 @@ export const useColumnsList = (
                 className="rounder-full"
               />
             </Popconfirm>
-          </CustomTooltip>
+          {/* </CustomTooltip> */}
         </Space>
       ),
     },
