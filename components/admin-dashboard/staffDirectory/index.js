@@ -1,4 +1,4 @@
-import { Modal, Button, notification, Form, Input, Select, Switch } from "antd";
+import { Modal, Button, Form, Input, Select, Switch, App } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { columnWidth } from "./tableColumns";
@@ -10,6 +10,7 @@ export const AddDepartmentModal = ({
   departmentList,
   setDepartmentList,
 }) => {
+  const { notification } = App.useApp();
   return (
     <Modal
       title="Add a new department"
@@ -119,6 +120,7 @@ export const DeleteDepartmentModal = ({
   departmentList,
   setDepartmentList,
 }) => {
+  const { notification } = App.useApp();
   return (
     <Modal
       title="Delete a department"

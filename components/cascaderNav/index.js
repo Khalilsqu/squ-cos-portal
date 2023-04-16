@@ -109,13 +109,12 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
         options={!showAdminPanel ? items : isAdmin && adminItems}
         expandTrigger="hover"
         displayRender={(label) => {
-          const routerPathName = router.pathname;
+          let routerPathName = router.pathname;
           // capatilize each path name
           const paths = routerPathName.split("/").slice(1);
           const pathsValues = paths.map((path) => {
             return path.charAt(0).toUpperCase() + path.slice(1);
           });
-
           return pathsValues.join(" / ");
         }}
         bordered={themeColor === "dark" ? true : false}
@@ -132,8 +131,14 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
         }}
         onChange={(value) => {
           setCascaderValue(value);
+
           if (value !== undefined) {
-            router.push(value.join("/"));
+            let paths = value.join("/");
+            if (!showAdminPanel && isAdmin) {
+              router.push(`/${paths}`);
+            } else if (showAdminPanel && isAdmin) {
+              router.push(`/admin-dashboard/${paths}`);
+            }
           }
         }}
         onDropdownVisibleChange={(value) => {

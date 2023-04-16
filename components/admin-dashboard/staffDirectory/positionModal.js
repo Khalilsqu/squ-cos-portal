@@ -1,4 +1,4 @@
-import { Modal, Form, Button, Input, notification, Select } from "antd";
+import { Modal, Form, Button, Input, Select, App } from "antd";
 
 export const AddNewPositionModal = ({
   positionAddModalOpen,
@@ -7,6 +7,7 @@ export const AddNewPositionModal = ({
   setPositionList,
   formAddPosition,
 }) => {
+  const { notification } = App.useApp();
   return (
     <Modal
       title="Add a new Position"

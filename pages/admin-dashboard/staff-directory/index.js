@@ -3,16 +3,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
-import {
-  Form,
-  Button,
-  Space,
-  notification,
-  Typography,
-  Divider,
-  Tag,
-  Spin,
-} from "antd";
+import { Form, Button, Space, Typography, Divider, Tag, Spin, App } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { colorThemeState } from "@/components/layout/pageLayout";
@@ -29,6 +20,7 @@ import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tabl
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
 
 export default function StaffDirectory() {
+  const { notification } = App.useApp();
   const [data, setData] = useState([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);

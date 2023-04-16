@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Form, Table, Button, Space, notification, Spin } from "antd";
+import { Form, Table, Button, App, Spin } from "antd";
 import { useState } from "react";
 import moment from "moment/moment";
 import { v4 as uuidv4 } from "uuid";
@@ -18,6 +18,8 @@ import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 
 export default function News(props) {
+  const { notification } = App.useApp();
+
   const [formAdd] = Form.useForm();
   const [formEdit] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -9,8 +9,8 @@ import {
   Modal,
   Input,
   Typography,
-  notification,
   Popconfirm,
+  App,
 } from "antd";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
@@ -27,6 +27,7 @@ import { columnWidth } from "@/components/admin-dashboard/staffDirectory/tableCo
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export default function Admins() {
+  const { notification } = App.useApp();
   const [modalAddRowOpen, setModalAddRowOpen] = useState(false);
   const [needToSave, setNeedToSave] = useState(false);
   const [editingKeys, setEditingKeys] = useState([]);
