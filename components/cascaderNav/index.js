@@ -123,9 +123,9 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
         onClear={() => {
           setCascaderValue([]);
 
-          if (!showAdminPanel && isAdmin) {
+          if (!showAdminPanel) {
             router.push("/");
-          } else if (showAdminPanel && isAdmin) {
+          } else if (showAdminPanel) {
             router.push("/admin-dashboard/dashboard");
           }
         }}
@@ -134,9 +134,9 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
 
           if (value !== undefined) {
             let paths = value.join("/");
-            if (!showAdminPanel && isAdmin) {
+            if (!showAdminPanel) {
               router.push(`/${paths}`);
-            } else if (showAdminPanel && isAdmin) {
+            } else if (showAdminPanel) {
               router.push(`/admin-dashboard/${paths}`);
             }
           }
