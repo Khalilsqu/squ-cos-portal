@@ -12,12 +12,12 @@ export default async function addHandler(req, res) {
     try {
       const staffDirecory = await databases.listAttributes(
         process.env.APPWRITE_DATABASE_ID_USERS,
-        process.env.APPWRITE_DATABASE_COLLECTION_ID_STAFF
+        process.env.APPWRITE_DATABASE_COLLECTION_ID_STAFF_DIRECTORY
       );
 
       res.status(200).json(staffDirecory);
     } catch (error) {
-      res.status(400).json({ message: "Error" });
+      res.status(400).json({ message: error.message });
     }
   }
 }

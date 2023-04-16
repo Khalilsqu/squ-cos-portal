@@ -1,7 +1,6 @@
-import { useContext, forwardRef } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/router";
 import { Button, Layout, Space, Spin } from "antd";
-import Icon from "@ant-design/icons";
 import Authentication from "../authentication/auth";
 import CustomTooltip from "../tooltip/customtooltip";
 import SettingGear from "../setting";
@@ -27,14 +26,6 @@ const additionalStyles = {
   padding: "0 10px",
   zIndex: 100,
 };
-
-const MenuFoldOutlinedIcon = forwardRef((props, ref) => (
-  <Icon component={MenuFoldOutlined} ref={ref} {...props} />
-));
-
-const MenuUnfoldOutlinedIcon = forwardRef((props, ref) => (
-  <Icon component={MenuUnfoldOutlined} ref={ref} {...props} />
-));
 
 export default function HeaderComponent(props) {
   const {
@@ -79,7 +70,7 @@ export default function HeaderComponent(props) {
                 mouseLeaveDelay={0}
                 placement="right"
               >
-                <MenuUnfoldOutlinedIcon
+                <MenuUnfoldOutlined
                   onClick={handleBreakPoint}
                   style={{
                     fontSize: "24px",
@@ -93,7 +84,7 @@ export default function HeaderComponent(props) {
                 mouseLeaveDelay={0}
                 placement="right"
               >
-                <MenuFoldOutlinedIcon
+                <MenuFoldOutlined
                   onClick={handleBreakPoint}
                   style={{
                     fontSize: "24px",
