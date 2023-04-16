@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useWindowSize } from "../utils/windowSize";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { Button, Cascader, Space, Typography } from "antd";
+import { Cascader, Typography } from "antd";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
+import { LayoutContext } from "@/components/layout/pageLayout";
 
 export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
   const [cascaderOpen, setCascaderOpen] = useState(false);
@@ -15,6 +15,7 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
   const router = useRouter();
 
   const { data: session, status } = useSession();
+  const { themeColor } = useContext(LayoutContext);
 
   const { data: adminUsers } = useSWR("/api/dashboard/admins", fetcher, {
     refreshInterval: 0,
@@ -117,7 +118,7 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
 
           return pathsValues.join(" / ");
         }}
-        bordered={false}
+        bordered={themeColor === "dark" ? true : false}
         style={{ margin: "16px 0" }}
         placeholder="Navigation"
         onClear={() => {
@@ -132,14 +133,14 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
         onChange={(value) => {
           setCascaderValue(value);
           if (value !== undefined) {
-            router.push("/" + value.join("/"));
+            router.push(value.join("/"));
           }
         }}
         onDropdownVisibleChange={(value) => {
           setCascaderOpen(value);
         }}
         size="middle"
-        className="shadow-md rounded-xl w-full"
+        className="shadow-md rounded-xl w-full" // shadow-md rounded-xl and flating
       />
     )
   );
