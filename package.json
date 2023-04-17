@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@lottiefiles/react-lottie-player": "^3.5.3",
     "antd": "^5.4.2",
     "cookies-next": "^2.1.1",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "google-spreadsheet": "^3.3.0",
     "googleapis": "^118.0.0",
+    "lottie-react": "^2.4.0",
     "moment": "^2.29.4",
     "next": "13.3.0",
     "next-auth": "^4.22.0",
