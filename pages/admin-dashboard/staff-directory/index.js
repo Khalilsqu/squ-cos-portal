@@ -18,6 +18,7 @@ import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
+import PositionsList from "@/components/admin-dashboard/staffDirectory/positionsSelect";
 
 export default function StaffDirectory() {
   const { notification } = App.useApp();
@@ -274,6 +275,7 @@ export default function StaffDirectory() {
           data={data}
           setData={setData}
         />
+        <PositionsList />
       </div>
     );
   }

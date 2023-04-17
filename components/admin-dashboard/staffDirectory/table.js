@@ -22,13 +22,13 @@ export default function TableComponent({
   data,
   setData,
 }) {
-  const { data: staffColumns, mutate } = useSWR(
-    "/api/dashboard/staffDirecory/getColumnNames",
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  // const { data: staffColumns, mutate } = useSWR(
+  //   "/api/dashboard/staffDirectory/getColumnNames",
+  //   fetcher,
+  //   {
+  //     refreshInterval: 0,
+  //   }
+  // );
 
   const { width } = useWindowSize();
 

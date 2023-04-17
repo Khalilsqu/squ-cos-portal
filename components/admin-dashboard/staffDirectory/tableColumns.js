@@ -21,13 +21,13 @@ export const useColumnsList = (
   data,
   setData
 ) => {
-  const { data: staffColumns, mutate } = useSWR(
-    "/api/dashboard/staffDirecory/getColumnNames",
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  // const { data: staffColumns, mutate } = useSWR(
+  //   "/api/dashboard/staffDirectory/getColumnNames",
+  //   fetcher,
+  //   {
+  //     refreshInterval: 0,
+  //   }
+  // );
 
   return [
     {
@@ -48,7 +48,7 @@ export const useColumnsList = (
             <Space size="middle" className="flex justify-between w-full">
               {text}
               <CustomTooltip title="Send Email" placement="left">
-              <MailOutlined />
+                <MailOutlined />
               </CustomTooltip>
             </Space>
           </a>
@@ -107,7 +107,7 @@ export const useColumnsList = (
 
             {text}
             <CustomTooltip title="Call" placement="left">
-            <PhoneOutlined />
+              <PhoneOutlined />
             </CustomTooltip>
           </Space>
         </a>
