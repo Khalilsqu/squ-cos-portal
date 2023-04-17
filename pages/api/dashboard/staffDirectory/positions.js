@@ -48,5 +48,22 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
       }
     }
+  } else if (req.method === "DELETE") {
+    console.log("DELETE");
+    const data = req.body;
+    console.log(data, "Mydate");
+    try {
+      const response = await database.deleteDocument(
+        databaseId,
+        collectionId,
+        data.key
+      );
+
+      console.log(response, response);
+
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 }

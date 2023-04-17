@@ -76,6 +76,19 @@ export default function StaffDirectory() {
     revalidateOnMount: true,
   });
 
+  const {
+    data: positionsList,
+    mutate: setPositionsList,
+    isLoading: positionsListLoading,
+    error: positionsListError,
+  } = useSWR("/api/dashboard/staffDirectory/positions", fetcher, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: true,
+  });
+
   useEffect(() => {
     if (departmentList) {
       setDepartmentList(departmentList?.sort(), false);
@@ -275,7 +288,12 @@ export default function StaffDirectory() {
           data={data}
           setData={setData}
         />
-        <PositionsList />
+        <PositionsList
+          positionsList={positionsList}
+          positionsListError={positionsListError}
+          positionsListLoading={positionsListLoading}
+          setPositionsList={setPositionsList}
+        />
       </div>
     );
   }
