@@ -1,4 +1,4 @@
-import { Client, Databases } from "node-appwrite";
+import { Client, Databases, ID } from "node-appwrite";
 
 export default async function handler(req, res) {
   const client = new Client();
@@ -48,22 +48,34 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
       }
     }
-  } else if (req.method === "DELETE") {
-    console.log("DELETE");
+  } else if (req.method === "POST") {
     const data = req.body;
-    console.log(data, "Mydate");
-    try {
-      const response = await database.deleteDocument(
-        databaseId,
-        collectionId,
-        data.key
-      );
-
-      console.log(response, response);
-
-      res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    if (data.changeType === "delete") {
+      try {
+        const response = await database.deleteDocument(
+          databaseId,
+          collectionId,
+          data.key
+        );
+        res.status(200).json(response);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    } else if (data.changeType === "add") {
+      try {
+        const response = await database.createDocument(
+          databaseId,
+          collectionId,
+          ID.unique(),
+          {
+            positionName: data.positionName,
+            description: data.description,
+          }
+        );
+        res.status(201).json(response.$id);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     }
   }
 }
