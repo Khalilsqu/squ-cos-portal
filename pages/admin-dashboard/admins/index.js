@@ -10,7 +10,7 @@ import {
   Input,
   Typography,
   Popconfirm,
-  App,
+  notification,
 } from "antd";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { AiOutlineInsertRowBelow } from "react-icons/ai";
@@ -27,7 +27,8 @@ import { columnWidth } from "@/components/admin-dashboard/staffDirectory/tableCo
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export default function Admins() {
-  const { notification } = App.useApp();
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification();
   const [modalAddRowOpen, setModalAddRowOpen] = useState(false);
   const [needToSave, setNeedToSave] = useState(false);
   const [editingKeys, setEditingKeys] = useState([]);
@@ -182,6 +183,7 @@ export default function Admins() {
       dataIndex: "delete",
       render: (text, record) => (
         <Space size="small" className="flex justify-center">
+          {notificationContextHolder}
           <Popconfirm
             title="Sure to delete?"
             onConfirm={async () => {
@@ -202,18 +204,18 @@ export default function Admins() {
               });
 
               if (response.ok) {
-                notification.success({
-                  message: "Success",
-                  description: "Admin deleted successfully",
-                  duration: 4,
-                  placement: "bottomRight",
+                notificationApi["success"]({
+                  message: "Admin deleted successfully",
+                  description: "Admin deleted successfully to the database",
+                  duration: 3,
+                  placement: "topRight",
                 });
               } else {
-                notification.error({
-                  message: "Error",
-                  description: "Admin could not be deleted",
-                  duration: 4,
-                  placement: "bottomRight",
+                notificationApi["error"]({
+                  message: "Admin could not be deleted",
+                  description: "Admin could not be deleted from the database",
+                  duration: 3,
+                  placement: "topRight",
                 });
               }
             }}
@@ -248,6 +250,7 @@ export default function Admins() {
               size="large"
               className="flex justify-between"
             >
+              {notificationContextHolder}
               <Space
                 direction="horizontal"
                 size="small"
@@ -272,20 +275,22 @@ export default function Admins() {
                       });
 
                       if (response.ok) {
-                        notification.success({
-                          message: "Success",
-                          description: "Admins updated successfully",
-                          duration: 4,
-                          placement: "bottomRight",
+                        notificationApi["success"]({
+                          message: "Admins updated successfully",
+                          description:
+                            "Admins updated successfully to the database",
+                          duration: 3,
+                          placement: "topRight",
                         });
                         setEditingKeys([]);
                         setNeedToSave(false);
                       } else {
-                        notification.error({
-                          message: "Error",
-                          description: "Admins could not be updated",
-                          duration: 4,
-                          placement: "bottomRight",
+                        notificationApi["error"]({
+                          message: "Admins could not be updated",
+                          description:
+                            "Admins could not be updated to the database",
+                          duration: 3,
+                          placement: "topRight",
                         });
                       }
                     }}
@@ -324,6 +329,7 @@ export default function Admins() {
         }}
         footer={null}
       >
+        {notificationContextHolder}
         <Form
           name="addAdmin"
           onFinish={async (values) => {
@@ -355,18 +361,18 @@ export default function Admins() {
             });
 
             if (response.ok) {
-              notification.success({
-                message: "Success",
-                description: "Admins updated successfully",
-                duration: 4,
-                placement: "bottomRight",
+              notificationApi["success"]({
+                message: "Admin added successfully",
+                description: "Admins updated successfully to the database",
+                duration: 3,
+                placement: "topRight",
               });
             } else {
-              notification.error({
-                message: "Error",
-                description: "Error updating admins",
-                duration: 4,
-                placement: "bottomRight",
+              notificationApi["error"]({
+                message: "Error adding admin",
+                description: "Error updating admins to the database",
+                duration: 3,
+                placement: "topRight",
               });
             }
           }}
