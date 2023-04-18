@@ -17,6 +17,8 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
+
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export default function PositionsList({
@@ -25,6 +27,17 @@ export default function PositionsList({
   positionsListLoading,
   setPositionsList,
 }) {
+  // sort positionsList by positionName
+  positionsList?.sort((a, b) => {
+    if (a.positionName < b.positionName) {
+      return -1;
+    }
+    if (a.positionName > b.positionName) {
+      return 1;
+    }
+    return 0;
+  });
+
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -39,20 +52,35 @@ export default function PositionsList({
           bordered
           header={
             <div className="flex flex-row justify-between">
-              <Typography.Text strong>Position Name</Typography.Text>
+              <div className="flex flex-row text-center">
+                <CustomTooltip
+                  title="Tick to make the position avilable for selection"
+                  placement="top"
+                >
+                  <Button
+                    type="text"
+                    icon={<AiOutlineQuestionCircle />}
+                    className="flex rounded-full align-middle justify-center items-center"
+                  />
+                </CustomTooltip>
+                <Typography.Text strong>Position Name</Typography.Text>
+              </div>
+
               <Typography.Text strong>Actions</Typography.Text>
             </div>
           }
           footer={
-            <Button
-              type="text"
-              icon={<PlusCircleOutlined />}
-              onClick={() => {
-                setModalOpen(true);
-              }}
-            >
-              Add a Position
-            </Button>
+            <Space className="flex flex-row justify-end">
+              <Button
+                type="text"
+                icon={<PlusCircleOutlined />}
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
+                Add a Position
+              </Button>
+            </Space>
           }
           dataSource={positionsList}
           renderItem={(item) => (

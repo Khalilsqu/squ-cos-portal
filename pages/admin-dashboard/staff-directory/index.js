@@ -12,9 +12,6 @@ import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory"
 import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory/addSatffToTable";
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
-import { TransferPosition } from "@/components/admin-dashboard/staffDirectory/transferPositions";
-import { AddNewPositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
-import { DeletePositionModal } from "@/components/admin-dashboard/staffDirectory/positionModal";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
@@ -47,36 +44,6 @@ export default function StaffDirectory() {
   );
 
   const {
-    data: positionList,
-    error: positionListError,
-    mutate: setPositionList,
-    isLoading: positionListLoading,
-  } = useSWR(
-    "/api/dashboard/staffDirectory/positionsAvailable", // sort positions when fectching
-    fetcher,
-    {
-      refreshInterval: 0,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: true,
-    }
-  );
-
-  const {
-    data: targetKeys,
-    error: targetKeysError,
-    mutate: setTargetKeys,
-    isLoading: targetKeysLoading,
-  } = useSWR("/api/dashboard/staffDirectory/positionsSelected", fetcher, {
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateOnMount: true,
-  });
-
-  const {
     data: positionsList,
     mutate: setPositionsList,
     isLoading: positionsListLoading,
@@ -93,13 +60,7 @@ export default function StaffDirectory() {
     if (departmentList) {
       setDepartmentList(departmentList?.sort(), false);
     }
-    if (positionList) {
-      setPositionList(positionList?.sort(), false);
-    }
-    if (targetKeys) {
-      setTargetKeys(targetKeys?.sort(), false);
-    }
-  }, [departmentList, positionList, targetKeys]);
+  }, [departmentList]);
 
   const [formAdd] = Form.useForm();
 
@@ -118,12 +79,6 @@ export default function StaffDirectory() {
   const [formDeleteDepartment] = Form.useForm();
   const [departmentDeleteModalOpen, setDepartmentDeleteModalOpen] =
     useState(false);
-
-  const [formAddPosition] = Form.useForm();
-  const [positionAddModalOpen, setPositionAddModalOpen] = useState(false);
-
-  const [formDeletePosition] = Form.useForm();
-  const [positionDeleteModalOpen, setPositionDeleteModalOpen] = useState(false);
 
   const colorTheme = colorThemeState().colorTheme;
 
@@ -162,7 +117,7 @@ export default function StaffDirectory() {
     }
   };
 
-  if (departmentListError && positionListError && targetKeysError) {
+  if (departmentListError && positionsListError) {
     return (
       <Space className="w-full justify-center items-center flex">
         <Typography.Title level={1} className="w-full text-center">
@@ -173,7 +128,7 @@ export default function StaffDirectory() {
     );
   }
 
-  if (departmentListLoading || positionListLoading || targetKeysLoading) {
+  if (departmentListLoading || positionsListLoading) {
     return (
       <Space className="w-full h-full justify-center items-center flex">
         <Spin size="large" />
@@ -181,7 +136,7 @@ export default function StaffDirectory() {
     );
   }
 
-  if (targetKeys && departmentList && positionList) {
+  if (departmentList) {
     return (
       <div className="my-4">
         <Typography.Title level={1} className="w-full text-center">
@@ -218,14 +173,11 @@ export default function StaffDirectory() {
           </CustomTooltip>
         </Space>
         <Divider orientation="left">Positions</Divider>
-        <TransferPosition
-          positionList={positionList}
-          targetKeys={targetKeys}
-          setTargetKeys={setTargetKeys}
-          setPositionAddModalOpen={setPositionAddModalOpen}
-          setPositionDeleteModalOpen={setPositionDeleteModalOpen}
-          loadingPositions={positionListLoading}
-          loadingTargetKeys={targetKeysLoading}
+        <PositionsList
+          positionsList={positionsList}
+          positionsListError={positionsListError}
+          positionsListLoading={positionsListLoading}
+          setPositionsList={setPositionsList}
         />
         <Divider orientation="left">Staff Table</Divider>
         <AddStaffDrawer
@@ -235,8 +187,7 @@ export default function StaffDirectory() {
           handleAddFormFinish={handleAddFormFinish}
           setFormErrorMessages={setFormErrorMessages}
           departmentList={departmentList}
-          targetKeys={targetKeys}
-          positionList={positionList}
+          positionList={positionsList}
           columns={columns}
           data={data}
           editingKey={editingKey}
@@ -262,37 +213,14 @@ export default function StaffDirectory() {
           departmentList={departmentList}
           setDepartmentList={setDepartmentList}
         />
-        <AddNewPositionModal
-          positionAddModalOpen={positionAddModalOpen}
-          setPositionAddModalOpen={setPositionAddModalOpen}
-          formAddPosition={formAddPosition}
-          positionList={positionList}
-          setPositionList={setPositionList}
-        />
-        <DeletePositionModal
-          positionDeleteModalOpen={positionDeleteModalOpen}
-          setPositionDeleteModalOpen={setPositionDeleteModalOpen}
-          formDeletePosition={formDeletePosition}
-          positionList={positionList}
-          setPositionList={setPositionList}
-          targetKeys={targetKeys}
-          setTargetKeys={setTargetKeys}
-        />
         <TableComponent
           setDrawerOpen={setDrawerOpen}
           setColumnAddModalOpen={setColumnAddModalOpen}
-          targetKeys={targetKeys}
           departmentList={departmentList}
-          positionList={positionList}
+          positionList={positionsList}
           columns={columns}
           data={data}
           setData={setData}
-        />
-        <PositionsList
-          positionsList={positionsList}
-          positionsListError={positionsListError}
-          positionsListLoading={positionsListLoading}
-          setPositionsList={setPositionsList}
         />
       </div>
     );
