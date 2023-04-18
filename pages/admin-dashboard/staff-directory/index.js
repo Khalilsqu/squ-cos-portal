@@ -1,21 +1,20 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
-import { Form, Button, Space, Typography, Divider, Tag, Spin, App } from "antd";
+import { Form, Typography, Divider, App } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+
 import { colorThemeState } from "@/components/layout/pageLayout";
 
-import { AddDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
 import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory/addSatffToTable";
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
-import { DeleteDepartmentModal } from "@/components/admin-dashboard/staffDirectory";
-import CustomTooltip from "@/components/tooltip/customtooltip";
+
 import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
 import PositionsList from "@/components/admin-dashboard/staffDirectory/positionsSelect";
+import DepartmentsList from "@/components/admin-dashboard/staffDirectory/departmentList";
 
 export default function StaffDirectory() {
   const { notification } = App.useApp();
@@ -31,17 +30,13 @@ export default function StaffDirectory() {
     error: departmentListError,
     mutate: setDepartmentList,
     isLoading: departmentListLoading,
-  } = useSWR(
-    "/api/dashboard/staffDirectory/departments", // sort departments when fectching
-    fetcher,
-    {
-      refreshInterval: 0,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: true,
-    }
-  );
+  } = useSWR("/api/dashboard/staffDirectory/departments", fetcher, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: true,
+  });
 
   const {
     data: positionsList,
@@ -56,12 +51,6 @@ export default function StaffDirectory() {
     revalidateOnMount: true,
   });
 
-  useEffect(() => {
-    if (departmentList) {
-      setDepartmentList(departmentList?.sort(), false);
-    }
-  }, [departmentList]);
-
   const [formAdd] = Form.useForm();
 
   const columnsHeader = useColumnsList(
@@ -74,11 +63,6 @@ export default function StaffDirectory() {
   const [columns, setColumns] = useState(columnsHeader);
   const [formAddColumns] = Form.useForm();
   const [columnAddModalOpen, setColumnAddModalOpen] = useState(false);
-  const [formAddDepartment] = Form.useForm();
-  const [departmentAddModalOpen, setDepartmentAddModalOpen] = useState(false);
-  const [formDeleteDepartment] = Form.useForm();
-  const [departmentDeleteModalOpen, setDepartmentDeleteModalOpen] =
-    useState(false);
 
   const colorTheme = colorThemeState().colorTheme;
 
@@ -117,114 +101,57 @@ export default function StaffDirectory() {
     }
   };
 
-  if (departmentListError && positionsListError) {
-    return (
-      <Space className="w-full justify-center items-center flex">
-        <Typography.Title level={1} className="w-full text-center">
-          Failed to load data from server. Please try to refresh the page or try
-          again later.
-        </Typography.Title>
-      </Space>
-    );
-  }
+  return (
+    <div className="my-4">
+      <Typography.Title level={1} className="w-full text-center">
+        Staff Directory
+      </Typography.Title>
+      <Divider orientation="left">Departments</Divider>
+      <DepartmentsList
+        departmentList={departmentList}
+        departmentListError={departmentListError}
+        departmentListLoading={departmentListLoading}
+        setDepartmentList={setDepartmentList}
+      />
 
-  if (departmentListLoading || positionsListLoading) {
-    return (
-      <Space className="w-full h-full justify-center items-center flex">
-        <Spin size="large" />
-      </Space>
-    );
-  }
-
-  if (departmentList) {
-    return (
-      <div className="my-4">
-        <Typography.Title level={1} className="w-full text-center">
-          Staff Directory
-        </Typography.Title>
-        <Divider orientation="left">Departments</Divider>
-        <Space wrap className="mb-4">
-          {departmentList.map((department) => (
-            <Tag
-              color={colorTheme === "dark" ? "geekblue" : "blue"}
-              key={department}
-            >
-              {department}
-            </Tag>
-          ))}
-          <Divider type="vertical" className="h-8 shadow-2xl border-2" />
-          <CustomTooltip title="Add Department">
-            <Button
-              type="text"
-              onClick={() => {
-                setDepartmentAddModalOpen(true);
-              }}
-              icon={<PlusOutlined />}
-            />
-          </CustomTooltip>
-          <CustomTooltip title="Delete Department">
-            <Button
-              type="text"
-              onClick={() => {
-                setDepartmentDeleteModalOpen(true);
-              }}
-              icon={<DeleteOutlined className="text-red-500" />}
-            />
-          </CustomTooltip>
-        </Space>
-        <Divider orientation="left">Positions</Divider>
-        <PositionsList
-          positionsList={positionsList}
-          positionsListError={positionsListError}
-          positionsListLoading={positionsListLoading}
-          setPositionsList={setPositionsList}
-        />
-        <Divider orientation="left">Staff Table</Divider>
-        <AddStaffDrawer
-          drawerOpen={drawerOpen}
-          setDrawerOpen={setDrawerOpen}
-          formAdd={formAdd}
-          handleAddFormFinish={handleAddFormFinish}
-          setFormErrorMessages={setFormErrorMessages}
-          departmentList={departmentList}
-          positionList={positionsList}
-          columns={columns}
-          data={data}
-          editingKey={editingKey}
-        />
-        <AddColumnModal
-          columns={columns}
-          setColumns={setColumns}
-          columnAddModalOpen={columnAddModalOpen}
-          setColumnAddModalOpen={setColumnAddModalOpen}
-          formAddColumns={formAddColumns}
-        />
-        <AddDepartmentModal
-          departmentAddModalOpen={departmentAddModalOpen}
-          setDepartmentAddModalOpen={setDepartmentAddModalOpen}
-          formAddDepartment={formAddDepartment}
-          departmentList={departmentList}
-          setDepartmentList={setDepartmentList}
-        />
-        <DeleteDepartmentModal
-          departmentDeleteModalOpen={departmentDeleteModalOpen}
-          setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
-          formDeleteDepartment={formDeleteDepartment}
-          departmentList={departmentList}
-          setDepartmentList={setDepartmentList}
-        />
-        <TableComponent
-          setDrawerOpen={setDrawerOpen}
-          setColumnAddModalOpen={setColumnAddModalOpen}
-          departmentList={departmentList}
-          positionList={positionsList}
-          columns={columns}
-          data={data}
-          setData={setData}
-        />
-      </div>
-    );
-  }
+      <Divider orientation="left">Positions</Divider>
+      <PositionsList
+        positionsList={positionsList}
+        positionsListError={positionsListError}
+        positionsListLoading={positionsListLoading}
+        setPositionsList={setPositionsList}
+      />
+      <Divider orientation="left">Staff Table</Divider>
+      <AddStaffDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        formAdd={formAdd}
+        handleAddFormFinish={handleAddFormFinish}
+        setFormErrorMessages={setFormErrorMessages}
+        departmentList={departmentList}
+        positionList={positionsList}
+        columns={columns}
+        data={data}
+        editingKey={editingKey}
+      />
+      <AddColumnModal
+        columns={columns}
+        setColumns={setColumns}
+        columnAddModalOpen={columnAddModalOpen}
+        setColumnAddModalOpen={setColumnAddModalOpen}
+        formAddColumns={formAddColumns}
+      />
+      <TableComponent
+        setDrawerOpen={setDrawerOpen}
+        setColumnAddModalOpen={setColumnAddModalOpen}
+        departmentList={departmentList}
+        positionList={positionsList}
+        columns={columns}
+        data={data}
+        setData={setData}
+      />
+    </div>
+  );
 }
 
 export async function getServerSideProps(context) {
