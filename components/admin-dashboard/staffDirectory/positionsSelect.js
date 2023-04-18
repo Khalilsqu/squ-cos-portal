@@ -27,6 +27,8 @@ export default function PositionsList({
 }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [formEditPosition] = Form.useForm();
   const [formAddPosition] = Form.useForm();
   return (
     <div>
@@ -58,7 +60,18 @@ export default function PositionsList({
               actions={[
                 <Space key={item.key}>
                   <CustomTooltip title="Edit">
-                    <Button type="text" icon={<EditOutlined />} />
+                    <Button
+                      type="text"
+                      icon={<EditOutlined />}
+                      onClick={() => {
+                        setEditModalOpen(true);
+                        formEditPosition.setFieldsValue({
+                          key: item.key,
+                          positionName: item.positionName,
+                          description: item.description,
+                        });
+                      }}
+                    />
                   </CustomTooltip>
 
                   <Popconfirm
@@ -173,6 +186,14 @@ export default function PositionsList({
         setPositionsList={setPositionsList}
         positionsListLoading={positionsListLoading}
       />
+      <EditPositionModal
+        editModalOpen={editModalOpen}
+        setEditModalOpen={setEditModalOpen}
+        formEditPosition={formEditPosition}
+        positionsList={positionsList}
+        setPositionsList={setPositionsList}
+        positionsListLoading={positionsListLoading}
+      />
     </div>
   );
 }
@@ -259,6 +280,135 @@ export const AddPositionModal = ({
       >
         <Form
           form={formAddPosition}
+          layout="vertical"
+          name="form_in_modal"
+          initialValues={{
+            modifier: "public",
+          }}
+        >
+          <Form.Item
+            name="positionName"
+            label="Position Name"
+            rules={[
+              {
+                required: true,
+                message: "Please input the position name!",
+                max: 200,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              {
+                max: 500,
+              },
+            ]}
+          >
+            <Input type="textarea" />
+          </Form.Item>
+        </Form>
+      </Modal>
+      {contextHolder}
+    </div>
+  );
+};
+
+export const EditPositionModal = ({
+  editModalOpen,
+  setEditModalOpen,
+  formEditPosition,
+  positionsList,
+  setPositionsList,
+  positionsListLoading,
+}) => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+  return (
+    <div>
+      <Modal
+        title="Edit Position"
+        open={editModalOpen}
+        closable={false}
+        maskClosable={false}
+        onCancel={() => {
+          setEditModalOpen(false);
+          formEditPosition.resetFields();
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setEditModalOpen(false);
+              formEditPosition.resetFields();
+            }}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={positionsListLoading}
+            onClick={async () => {
+              const response = await fetch(
+                "/api/dashboard/staffDirectory/positions",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    changeType: "edit",
+                    key: formEditPosition.getFieldValue("key"),
+                    positionName:
+                      formEditPosition.getFieldValue("positionName"),
+                    description: formEditPosition.getFieldValue("description"),
+                  }),
+                }
+              );
+
+              if (response.ok) {
+                setPositionsList(
+                  positionsList.map((position) => {
+                    if (
+                      position.key === formEditPosition.getFieldValue("key")
+                    ) {
+                      return {
+                        ...position,
+                        positionName:
+                          formEditPosition.getFieldValue("positionName"),
+                        description:
+                          formEditPosition.getFieldValue("description"),
+                      };
+                    } else {
+                      return position;
+                    }
+                  }),
+                  true
+                );
+                setEditModalOpen(false);
+                formEditPosition.resetFields();
+                messageApi.open({
+                  type: "success",
+                  content: "Position updated",
+                });
+              } else {
+                messageApi.open({
+                  type: "error",
+                  content: "Position update failed",
+                });
+              }
+            }}
+          >
+            Update
+          </Button>,
+        ]}
+      >
+        <Form
+          form={formEditPosition}
           layout="vertical"
           name="form_in_modal"
           initialValues={{
