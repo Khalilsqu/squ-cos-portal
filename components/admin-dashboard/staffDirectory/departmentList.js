@@ -8,6 +8,7 @@ import {
   Select,
   notification,
   Input,
+  Skeleton,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
@@ -41,47 +42,49 @@ export default function DepartmentsList({
   return (
     <Space wrap className="mb-4">
       {contextHolder}
-      {departmentList?.map((department) => (
-        <Tag
-          color={colorTheme === "dark" ? "geekblue" : "blue"}
-          key={department.key}
-        >
-          {department.departmentName}
-        </Tag>
-      ))}
-      <Divider type="vertical" className="h-8 shadow-2xl border-2" />
-      <CustomTooltip title="Add Department">
-        <Button
-          type="text"
-          onClick={() => {
-            setDepartmentAddModalOpen(true);
-          }}
-          icon={<PlusOutlined />}
+      <Skeleton loading={departmentListLoading} active>
+        {departmentList?.map((department) => (
+          <Tag
+            color={colorTheme === "dark" ? "geekblue" : "blue"}
+            key={department.key}
+          >
+            {department.departmentName}
+          </Tag>
+        ))}
+        <Divider type="vertical" className="h-8 shadow-2xl border-2" />
+        <CustomTooltip title="Add Department">
+          <Button
+            type="text"
+            onClick={() => {
+              setDepartmentAddModalOpen(true);
+            }}
+            icon={<PlusOutlined />}
+          />
+        </CustomTooltip>
+        <CustomTooltip title="Delete Department">
+          <Button
+            type="text"
+            onClick={() => {
+              setDepartmentDeleteModalOpen(true);
+            }}
+            icon={<DeleteOutlined className="text-red-500" />}
+          />
+        </CustomTooltip>
+        <AddDepartmentModal
+          departmentAddModalOpen={departmentAddModalOpen}
+          setDepartmentAddModalOpen={setDepartmentAddModalOpen}
+          departmentList={departmentList}
+          setDepartmentList={setDepartmentList}
+          notificationApi={notificationApi}
         />
-      </CustomTooltip>
-      <CustomTooltip title="Delete Department">
-        <Button
-          type="text"
-          onClick={() => {
-            setDepartmentDeleteModalOpen(true);
-          }}
-          icon={<DeleteOutlined className="text-red-500" />}
+        <DeleteDepartmentModal
+          departmentDeleteModalOpen={departmentDeleteModalOpen}
+          setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
+          departmentList={departmentList}
+          setDepartmentList={setDepartmentList}
+          notificationApi={notificationApi}
         />
-      </CustomTooltip>
-      <AddDepartmentModal
-        departmentAddModalOpen={departmentAddModalOpen}
-        setDepartmentAddModalOpen={setDepartmentAddModalOpen}
-        departmentList={departmentList}
-        setDepartmentList={setDepartmentList}
-        notificationApi={notificationApi}
-      />
-      <DeleteDepartmentModal
-        departmentDeleteModalOpen={departmentDeleteModalOpen}
-        setDepartmentDeleteModalOpen={setDepartmentDeleteModalOpen}
-        departmentList={departmentList}
-        setDepartmentList={setDepartmentList}
-        notificationApi={notificationApi}
-      />
+      </Skeleton>
     </Space>
   );
 }
@@ -157,6 +160,22 @@ const AddDepartmentModal = ({
             {
               required: true,
               message: "Please input the department name!",
+            },
+            {
+              // prevernt duplicate department name
+              validator: async (_, value) =>
+                departmentList?.find(
+                  (department) => department.departmentName === value
+                )
+                  ? Promise.reject(new Error("Department already exists"))
+                  : Promise.resolve(),
+            },
+            {
+              // prevent trailing or leading spaces
+              validator: async (_, value) =>
+                value.trim() === value
+                  ? Promise.resolve()
+                  : Promise.reject(new Error("No leading or trailing spaces")),
             },
           ]}
         >
