@@ -3,7 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Button, Typography, Space } from "antd";
 import Head from "next/head";
-import { Player, Controls } from "@lottiefiles/react-lottie-player";
+// import { Player, Controls } from "@lottiefiles/react-lottie-player";
+import Lottie from "lottie-react";
+import animationData from "@/public/lottie/google_signin.json";
 
 import { FcGoogle } from "react-icons/fc";
 import { FcHome } from "react-icons/fc";
@@ -48,17 +50,11 @@ export default function Signin({ providers }) {
       >
         Sign in to College of Science Portal
       </Typography.Title>
-      <Player
-        autoplay
-        loop
-        src="/lottie/google_signin.json"
+      <Lottie
+        animationData={animationData}
         style={{ height: "300px", width: "300px" }}
-      >
-        <Controls
-          visible={false}
-          buttons={["play", "repeat", "frame", "debug"]}
-        />
-      </Player>
+        loop={true}
+      />
       <Typography.Text
         className={
           (themeColor === "light" ? "text-black" : "text-white") +
