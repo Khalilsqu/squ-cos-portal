@@ -295,6 +295,17 @@ export const AddPositionModal = ({
                 message: "Please input the position name!",
                 max: 200,
               },
+              {
+                validator: async (rule, value) => {
+                  if (
+                    positionsList.some(
+                      (position) => position.positionName === value
+                    )
+                  ) {
+                    throw new Error("Position already exists");
+                  }
+                },
+              },
             ]}
           >
             <Input />
@@ -423,6 +434,19 @@ export const EditPositionModal = ({
                 required: true,
                 message: "Please input the position name!",
                 max: 200,
+              },
+              {
+                validator: async (rule, value) => {
+                  if (
+                    positionsList.some(
+                      (position) =>
+                        position.positionName === value &&
+                        position.key !== formEditPosition.getFieldValue("key")
+                    )
+                  ) {
+                    throw new Error("Position already exists");
+                  }
+                },
               },
             ]}
           >
