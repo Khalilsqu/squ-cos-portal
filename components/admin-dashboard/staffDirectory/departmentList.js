@@ -264,7 +264,7 @@ const DeleteDepartmentModal = ({
           >
             <Select>
               {departmentList?.map((department) => (
-                <Select.Option value={department.key}>
+                <Select.Option value={department.key} key={department.key}>
                   {department.departmentName}
                 </Select.Option>
               ))}
