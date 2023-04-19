@@ -419,6 +419,10 @@ export default function Admins() {
 }
 
 export async function getServerSideProps(context) {
+  context.res.setHeader(
+    "Cache-Control",
+    "s-maxage=10, stale-while-revalidate=59"
+  );
   const appwriteSdk = await import("node-appwrite");
   const session = await getServerSession(context.req, context.res, authOptions);
 
