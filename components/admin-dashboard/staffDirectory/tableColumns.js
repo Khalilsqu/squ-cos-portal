@@ -7,8 +7,6 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
-import useSWR from "swr";
-import { fetcher } from "@/components/utils/useSwrFetcher";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
