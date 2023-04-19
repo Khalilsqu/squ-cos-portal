@@ -10,7 +10,6 @@ import {
   Modal,
   Form,
   Input,
-  AutoComplete,
 } from "antd";
 import { useState } from "react";
 import {
@@ -63,7 +62,7 @@ export default function PositionsList({
               setListSize(pageSize);
             },
             showOnSinglePage: false,
-            pageSizeOptions: [3, 5, 7, 9],
+            pageSizeOptions: [5],
             total: positionsList?.length,
             showSizeChanger: true,
             showQuickJumper: true,
@@ -89,8 +88,8 @@ export default function PositionsList({
               }
               return originalElement;
             },
-            // showTitle: true,
-            // hideOnSinglePage: true,
+            showTitle: true,
+            hideOnSinglePage: true,
           }}
           size="small"
           bordered
