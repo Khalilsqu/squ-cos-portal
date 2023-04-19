@@ -11,10 +11,6 @@ export default function AdminDashboard(props) {
 }
 
 export async function getServerSideProps(context) {
-  context.res.setHeader(
-    "Cache-Control",
-    "s-maxage=10, stale-while-revalidate=59"
-  );
   const session = await getServerSession(context.req, context.res, authOptions);
   const adminEmails = [
     "hooti@squ.edu.om",
