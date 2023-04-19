@@ -63,7 +63,7 @@ export default function PositionsList({
               setListSize(pageSize);
             },
             showOnSinglePage: false,
-            pageSizeOptions: [5, 10, 15, 20],
+            pageSizeOptions: [3, 5, 7, 9],
             total: positionsList?.length,
             showSizeChanger: true,
             showQuickJumper: true,
