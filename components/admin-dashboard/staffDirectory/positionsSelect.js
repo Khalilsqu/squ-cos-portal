@@ -10,12 +10,15 @@ import {
   Modal,
   Form,
   Input,
+  AutoComplete,
 } from "antd";
 import { useState } from "react";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 
 import { AiOutlineQuestionCircle } from "react-icons/ai";
@@ -38,6 +41,9 @@ export default function PositionsList({
     return 0;
   });
 
+  const [listPage, setListPage] = useState(1);
+  const [listSize, setListSize] = useState(5);
+
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -48,6 +54,44 @@ export default function PositionsList({
       {contextHolder}
       <Skeleton loading={positionsListLoading} active>
         <List
+          // className="max-h-80 overflow-y-scroll border-2 rounded-md px-2"
+          pagination={{
+            pageSize: listSize,
+            current: listPage,
+            onChange: (page, pageSize) => {
+              setListPage(page);
+              setListSize(pageSize);
+            },
+            showOnSinglePage: false,
+            pageSizeOptions: [5, 10, 15, 20],
+            total: positionsList?.length,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showLessItems: true,
+            response: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} positions`,
+            size: "small",
+            itemRender: (current, type, originalElement) => {
+              if (type === "prev") {
+                return (
+                  <a>
+                    <LeftOutlined />
+                  </a>
+                );
+              }
+              if (type === "next") {
+                return (
+                  <a>
+                    <RightOutlined />
+                  </a>
+                );
+              }
+              return originalElement;
+            },
+            // showTitle: true,
+            // hideOnSinglePage: true,
+          }}
           size="small"
           bordered
           header={
