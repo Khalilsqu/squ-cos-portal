@@ -29,12 +29,12 @@ export default function PositionsList({
   positionsListLoading,
   setPositionsList,
 }) {
-  // sort positionsList by positionName
+  // sort positionsList by positionName case insensitive
   positionsList?.sort((a, b) => {
-    if (a.positionName < b.positionName) {
+    if (a.positionName.toLowerCase() < b.positionName.toLowerCase()) {
       return -1;
     }
-    if (a.positionName > b.positionName) {
+    if (a.positionName.toLowerCase() > b.positionName.toLowerCase()) {
       return 1;
     }
     return 0;
@@ -62,7 +62,7 @@ export default function PositionsList({
               setListSize(pageSize);
             },
             showOnSinglePage: false,
-            pageSizeOptions: [5],
+            pageSizeOptions: [5, 10, 15],
             total: positionsList?.length,
             showSizeChanger: true,
             showQuickJumper: true,
