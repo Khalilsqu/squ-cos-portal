@@ -6,6 +6,7 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { useEffect } from "react";
 import Router from "next/router";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App({
   Component,
@@ -24,15 +25,21 @@ export default function App({
   }, []);
   if ([...appProps.router.asPath.split("/")].includes("auth"))
     return (
-      <SessionProvider session={session} refetchInterval={60 * 60}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <>
+        <SessionProvider session={session} refetchInterval={60 * 60}>
+          <Component {...pageProps} />
+        </SessionProvider>
+        <Analytics />
+      </>
     );
   return (
-    <SessionProvider session={session} refetchInterval={60 * 60}>
-      <PageLayout>
-        <Component {...pageProps} />
-      </PageLayout>
-    </SessionProvider>
+    <>
+      <SessionProvider session={session} refetchInterval={60 * 60}>
+        <PageLayout>
+          <Component {...pageProps} />
+        </PageLayout>
+      </SessionProvider>
+      <Analytics />
+    </>
   );
 }
