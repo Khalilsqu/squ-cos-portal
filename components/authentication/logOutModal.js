@@ -10,13 +10,13 @@ const LogOutModal = (props, ref) => {
 
   useImperativeHandle(ref, () => ({
     countDown() {
-      let secondsToGo = 15;
+      let secondsToGo = 20;
       const instance = modal.warning({
         title: "Log Out",
         content:
           "Hello " +
           userName +
-          ", If you are using a shared or a public computer, please log out after you finish using the application.",
+          ", If you are using a shared or a public computer, please log out after you finish using the application. Your session will expire in 30 minutes when idle.",
         footer: [
           <Space
             key="space1"

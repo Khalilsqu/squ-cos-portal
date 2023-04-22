@@ -23,7 +23,7 @@ export const authOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60, // 1 hour session expiry when idle
+    maxAge: 60 * 30, // 30 minutes expiration time for session cookie when Idle
   },
   secret: process.env.JWT_SECRET,
 

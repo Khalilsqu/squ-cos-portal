@@ -12,7 +12,7 @@ import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory/addS
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 
 import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
-import TableComponent from "@/components/admin-dashboard/staffDirectory/table";
+import TableComponent from "@/components/admin-dashboard/staffDirectory/tableComponent";
 import PositionsList from "@/components/admin-dashboard/staffDirectory/positionsSelect";
 import DepartmentsList from "@/components/admin-dashboard/staffDirectory/departmentList";
 

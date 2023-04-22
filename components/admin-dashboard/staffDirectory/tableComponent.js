@@ -1,7 +1,5 @@
 import { Table, Popconfirm, Button, Space } from "antd";
-import useSWR from "swr";
 import { useState } from "react";
-import { fetcher } from "@/components/utils/useSwrFetcher";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { RiInsertColumnRight } from "react-icons/ri";
 import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
