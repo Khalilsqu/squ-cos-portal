@@ -16,7 +16,6 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const response = await database.listAttributes(databaseId, collectionId);
-      console.log("response", response.attributes);
       res.status(200).json(response.attributes);
     } catch (error) {
       res.status(500).json({ error: error.message });

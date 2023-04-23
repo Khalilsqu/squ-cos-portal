@@ -9,7 +9,7 @@ import moment from "moment";
 import dayjs from "dayjs";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
-
+import { useState, useEffect } from "react";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
 export const columnWidth = "fit-content";
@@ -27,34 +27,14 @@ export const useColumnsList = (
     isLoading,
   } = useSWR("/api/dashboard/staffDirectory/staffDirectory", fetcher, {
     refreshInterval: 0,
-    refreshWhenHidden: false,
-    refreshWhenOffline: false,
   });
 
-  if (!isLoading) {
-    console.log("staffColumns", staffColumns);
-  }
   const columns = staffColumns?.map((column) => {
     return {
       title: column.key.charAt(0).toUpperCase() + column.key.slice(1), // capitalize(column.key),
       dataIndex: column.key,
       editable: true,
       width: columnWidth,
-      render: (text, record) => {
-        if (column.array) {
-          return (
-            <Space size="middle">
-              {record[column.key].map((item) => {
-                return (
-                  <Tag color="blue" key={item}>
-                    {item.toUpperCase()}
-                  </Tag>
-                );
-              })}
-            </Space>
-          );
-        }
-      },
     };
   });
 
