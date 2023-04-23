@@ -7,8 +7,6 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
-import useSWR from "swr";
-import { fetcher } from "@/components/utils/useSwrFetcher";
 
 import CustomTooltip from "@/components/tooltip/customtooltip";
 
@@ -21,45 +19,99 @@ export const useColumnsList = (
   data,
   setData
 ) => {
-  const {
-    data: staffColumns,
-    mutate,
-    isLoading,
-  } = useSWR("/api/dashboard/staffDirectory/staffDirectory", fetcher, {
-    refreshInterval: 0,
-    refreshWhenHidden: false,
-    refreshWhenOffline: false,
-  });
+  // const { data: staffColumns, mutate } = useSWR(
+  //   "/api/dashboard/staffDirectory/getColumnNames",
+  //   fetcher,
+  //   {
+  //     refreshInterval: 0,
+  //   }
+  // );
 
-  if (!isLoading) {
-    console.log("staffColumns", staffColumns);
-  }
-  const columns = staffColumns?.map((column) => {
-    return {
-      title: column.key.charAt(0).toUpperCase() + column.key.slice(1), // capitalize(column.key),
-      dataIndex: column.key,
+  return [
+    {
+      title: "Name",
+      dataIndex: "Name",
+      editable: true,
+      width: columnWidth,
+    },
+    {
+      title: "Email",
+      dataIndex: "Email",
       editable: true,
       width: columnWidth,
       render: (text, record) => {
-        if (column.array) {
-          return (
-            <Space size="middle">
-              {record[column.key].map((item) => {
-                return (
-                  <Tag color="blue" key={item}>
-                    {item.toUpperCase()}
-                  </Tag>
-                );
-              })}
+        // send email to staff when clicked
+        return (
+          <a href={`mailto:${record.Email}`} target={"_blank"} rel="noreferrer">
+            <Space size="middle" className="flex justify-between w-full">
+              {text}
+              <CustomTooltip title="Send Email" placement="left">
+                <MailOutlined />
+              </CustomTooltip>
             </Space>
-          );
+          </a>
+        );
+      },
+    },
+    {
+      title: "Department",
+      dataIndex: "Department",
+      editable: true,
+      width: columnWidth,
+      render: (text, record) => {
+        if (Array.isArray(text)) {
+          return text.map((department) => (
+            <Tag key={department}>{department}</Tag>
+          ));
+        } else {
+          return <Tag>{text}</Tag>;
         }
       },
-    };
-  });
+    },
+    {
+      title: "Gender",
+      dataIndex: "Gender",
+      editable: true,
+      width: columnWidth,
+      render: (text, record) => (
+        <Tag color={text === "Male" ? "blue" : "pink"}>{text}</Tag>
+      ),
+    },
+    {
+      title: "Position",
+      dataIndex: "Position",
+      width: columnWidth,
+      render: (text, record) => {
+        if (Array.isArray(text)) {
+          return text.map((position) => <Tag key={position}>{position}</Tag>);
+        } else {
+          return <Tag>{text}</Tag>;
+        }
+      },
+    },
+    {
+      title: "Reports To",
+      dataIndex: "Reports To",
+      width: columnWidth,
+    },
+    {
+      title: "Office Phone",
+      dataIndex: "Office Phone",
+      width: columnWidth,
+      render: (text, record) => (
+        <a href={`tel:${record["Office Phone"]}`}>
+          <Space size="middle" className="flex justify-between">
+            {/* show country code and flag before the office phone number */}
 
-  return [
-    ...columns,
+            {text}
+            <CustomTooltip title="Call" placement="left">
+              <PhoneOutlined />
+            </CustomTooltip>
+          </Space>
+        </a>
+      ),
+    },
+
     {
       title: "Action",
       dataIndex: "Action",
