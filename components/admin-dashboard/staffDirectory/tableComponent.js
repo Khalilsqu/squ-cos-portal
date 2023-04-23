@@ -9,6 +9,7 @@ import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
 import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
+import useColumnsList from "@/components/admin-dashboard/staffDirectory/tableColumns";
 
 export default function TableComponent({
   setDrawerOpen,
