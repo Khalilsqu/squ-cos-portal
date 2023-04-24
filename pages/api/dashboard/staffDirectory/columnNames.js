@@ -1,4 +1,4 @@
-import { Client, ID, Databases, Query } from "node-appwrite";
+import { Client, Databases } from "node-appwrite";
 
 export default async function addHandler(req, res) {
   const client = new Client()
@@ -15,7 +15,7 @@ export default async function addHandler(req, res) {
         process.env.APPWRITE_DATABASE_COLLECTION_ID_STAFF_DIRECTORY
       );
 
-      res.status(200).json(staffDirecory);
+      res.status(200).json(staffDirecory.attributes);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }

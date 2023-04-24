@@ -23,7 +23,7 @@ export default async function handler(req, res) {
           key: document.$id,
           positionName: document.positionName,
           selected: document.selected,
-          description: document.description,
+          category: document.category,
         });
       });
       res.status(200).json(data);
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
           ID.unique(),
           {
             positionName: data.positionName,
-            description: data.description,
+            category: data.category,
           }
         );
         res.status(201).json(response.$id);
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
           data.key,
           {
             positionName: data.positionName,
-            description: data.description,
+            category: data.category,
           }
         );
         res.status(200).json(response.$id);

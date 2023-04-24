@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/components/utils/useSwrFetcher";
 import { Form, Typography, Divider, App } from "antd";
@@ -11,7 +11,7 @@ import { colorThemeState } from "@/components/layout/pageLayout";
 import { AddStaffDrawer } from "@/components/admin-dashboard/staffDirectory/addSatffToTable";
 import { AddColumnModal } from "@/components/admin-dashboard/staffDirectory";
 
-import { useColumnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
+import { columnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 import TableComponent from "@/components/admin-dashboard/staffDirectory/tableComponent";
 import PositionsList from "@/components/admin-dashboard/staffDirectory/positionsSelect";
 import DepartmentsList from "@/components/admin-dashboard/staffDirectory/departmentList";
@@ -51,16 +51,21 @@ export default function StaffDirectory() {
     revalidateOnMount: true,
   });
 
+  const {
+    data: staffTableColumns,
+    mutate: setStaffTableColumns,
+    isLoading: staffTableColumnsLoading,
+    error: staffTableColumnsError,
+  } = useSWR("/api/dashboard/staffDirectory/columnNames", fetcher, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: true,
+  });
+
   const [formAdd] = Form.useForm();
 
-  const columnsHeader = useColumnsList(
-    setDrawerOpen,
-    setEditingKey,
-    formAdd,
-    data,
-    setData
-  );
-  const [columns, setColumns] = useState(columnsHeader);
   const [formAddColumns] = Form.useForm();
   const [columnAddModalOpen, setColumnAddModalOpen] = useState(false);
 
@@ -82,7 +87,7 @@ export default function StaffDirectory() {
         setEditingKey(null);
       }
     } else {
-      const mappedData = columns.map((column) => {
+      const mappedData = columns?.map((column) => {
         if (column.dataIndex !== "Action") {
           return {
             key: uuidv4(),
@@ -122,7 +127,7 @@ export default function StaffDirectory() {
         setPositionsList={setPositionsList}
       />
       <Divider orientation="left">Staff Table</Divider>
-      <AddStaffDrawer
+      {/* <AddStaffDrawer
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
         formAdd={formAdd}
@@ -130,23 +135,24 @@ export default function StaffDirectory() {
         setFormErrorMessages={setFormErrorMessages}
         departmentList={departmentList}
         positionList={positionsList}
-        columns={columns}
+        columns={staffTableColumns?.map((column) => column.dataIndex)}
         data={data}
         editingKey={editingKey}
       />
       <AddColumnModal
-        columns={columns}
-        setColumns={setColumns}
+        columns={staffTableColumns?.map((column) => column.dataIndex)}
+        setColumns={setStaffTableColumns}
         columnAddModalOpen={columnAddModalOpen}
         setColumnAddModalOpen={setColumnAddModalOpen}
         formAddColumns={formAddColumns}
-      />
+      /> */}
       <TableComponent
+        staffTableColumnsLoading={staffTableColumnsLoading}
         setDrawerOpen={setDrawerOpen}
         setColumnAddModalOpen={setColumnAddModalOpen}
         departmentList={departmentList}
         positionList={positionsList}
-        columns={columns}
+        staffTableColumns={staffTableColumns}
         data={data}
         setData={setData}
       />

@@ -28,7 +28,7 @@ const LogOutModal = (props, ref) => {
             }}
           >
             <Typography.Text key="countdown">
-              Closing after {secondsToGo} seconds
+              Closing in {secondsToGo} seconds
             </Typography.Text>
             <Button key="cancel" onClick={() => instance.destroy()}>
               OK
@@ -50,7 +50,7 @@ const LogOutModal = (props, ref) => {
               }}
             >
               <Typography.Text key="countdown">
-                Closing after {secondsToGo} seconds
+                Closing in {secondsToGo} seconds
               </Typography.Text>
               <Button key="cancel" onClick={() => instance.destroy()}>
                 OK

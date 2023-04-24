@@ -1,5 +1,5 @@
 import { Table, Popconfirm, Button, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomTooltip from "@/components/tooltip/customtooltip";
 import { RiInsertColumnRight } from "react-icons/ri";
 import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
@@ -9,26 +9,29 @@ import { collapsedState } from "@/components/layout/pageLayout";
 import { isBreakPointState } from "@/components/layout/pageLayout";
 import ExportExcel from "@/components/admin-dashboard/staffDirectory/exportExcel";
 import ImportExcel from "@/components/admin-dashboard/staffDirectory/importExcel";
-
+import { columnsList } from "@/components/admin-dashboard/staffDirectory/tableColumns";
 export default function TableComponent({
+  staffTableColumnsLoading,
   setDrawerOpen,
   setColumnAddModalOpen,
   targetKeys,
   departmentList,
   positionList,
-  columns,
+  staffTableColumns,
   data,
   setData,
 }) {
-  // const { data: staffColumns, mutate } = useSWR(
-  //   "/api/dashboard/staffDirectory/getColumnNames",
-  //   fetcher,
-  //   {
-  //     refreshInterval: 0,
-  //   }
-  // );
-
   const { width } = useWindowSize();
+
+  const [columns, setColumns] = useState([]);
+
+  useEffect(() => {
+    if (!staffTableColumnsLoading) {
+      const columnsData = columnsList(staffTableColumns);
+
+      setColumns(columnsData);
+    }
+  }, [staffTableColumnsLoading, staffTableColumns]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -38,6 +41,7 @@ export default function TableComponent({
 
   return (
     <Table
+      loading={staffTableColumnsLoading}
       columns={columns}
       dataSource={data}
       footer={() => {

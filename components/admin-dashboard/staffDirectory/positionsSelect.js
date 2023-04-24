@@ -10,6 +10,7 @@ import {
   Modal,
   Form,
   Input,
+  Select,
 } from "antd";
 import { useState } from "react";
 import {
@@ -139,7 +140,7 @@ export default function PositionsList({
                         formEditPosition.setFieldsValue({
                           key: item.key,
                           positionName: item.positionName,
-                          description: item.description,
+                          category: item.category,
                         });
                       }}
                     />
@@ -190,7 +191,7 @@ export default function PositionsList({
             >
               <List.Item.Meta
                 title={item.positionName}
-                description={item.description}
+                category={item.category}
                 avatar={
                   <Checkbox
                     defaultChecked={item.selected}
@@ -315,7 +316,7 @@ export const AddPositionModal = ({
                   body: JSON.stringify({
                     changeType: "add",
                     positionName: formAddPosition.getFieldValue("positionName"),
-                    description: formAddPosition.getFieldValue("description"),
+                    category: formAddPosition.getFieldValue("category"),
                   }),
                 }
               );
@@ -326,7 +327,7 @@ export const AddPositionModal = ({
                   positionsList.concat({
                     key: body.key,
                     positionName: formAddPosition.getFieldValue("positionName"),
-                    description: formAddPosition.getFieldValue("description"),
+                    category: formAddPosition.getFieldValue("category"),
                     selected: false,
                   }),
                   true
@@ -382,11 +383,12 @@ export const AddPositionModal = ({
             <Input />
           </Form.Item>
           <Form.Item
-            name="description"
-            label="Description"
+            name="category"
+            label="Category"
             rules={[
               {
-                max: 500,
+                required: true,
+                message: "Please input the category!",
               },
             ]}
           >
@@ -447,7 +449,7 @@ export const EditPositionModal = ({
                     key: formEditPosition.getFieldValue("key"),
                     positionName:
                       formEditPosition.getFieldValue("positionName"),
-                    description: formEditPosition.getFieldValue("description"),
+                    category: formEditPosition.getFieldValue("category"),
                   }),
                 }
               );
@@ -462,8 +464,7 @@ export const EditPositionModal = ({
                         ...position,
                         positionName:
                           formEditPosition.getFieldValue("positionName"),
-                        description:
-                          formEditPosition.getFieldValue("description"),
+                        category: formEditPosition.getFieldValue("category"),
                       };
                     } else {
                       return position;
@@ -524,11 +525,12 @@ export const EditPositionModal = ({
             <Input />
           </Form.Item>
           <Form.Item
-            name="description"
-            label="Description"
+            name="category"
+            label="Category"
             rules={[
               {
-                max: 500,
+                required: true,
+                message: "Please select the category!",
               },
             ]}
           >
