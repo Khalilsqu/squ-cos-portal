@@ -31,11 +31,22 @@ export default function PositionsList({
   setPositionsList,
 }) {
   // sort positionsList by positionName case insensitive
-  positionsList?.sort((a, b) => {
+  positionsList?.data.sort((a, b) => {
     if (a.positionName.toLowerCase() < b.positionName.toLowerCase()) {
       return -1;
     }
     if (a.positionName.toLowerCase() > b.positionName.toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+
+  // sort positionsList.categoryList by category case insensitive
+  positionsList?.categoryList.sort((a, b) => {
+    if (a.toLowerCase() < b.toLowerCase()) {
+      return -1;
+    }
+    if (a.toLowerCase() > b.toLowerCase()) {
       return 1;
     }
     return 0;
@@ -64,7 +75,7 @@ export default function PositionsList({
             },
             showOnSinglePage: false,
             pageSizeOptions: [5, 10, 15],
-            total: positionsList?.length,
+            total: positionsList?.data.length,
             showSizeChanger: true,
             showQuickJumper: true,
             showLessItems: true,
@@ -126,7 +137,7 @@ export default function PositionsList({
               </Button>
             </Space>
           }
-          dataSource={positionsList}
+          dataSource={positionsList?.data}
           renderItem={(item) => (
             <List.Item
               actions={[
@@ -167,9 +178,12 @@ export default function PositionsList({
 
                       if (responseDelete.ok) {
                         setPositionsList(
-                          positionsList.filter(
-                            (position) => position.key !== item.key
-                          ),
+                          {
+                            data: positionsList.data.filter(
+                              (position) => position.key !== item.key
+                            ),
+                            categoryList: positionsList.categoryList,
+                          },
                           false
                         );
                         messageApi.open({
@@ -191,7 +205,7 @@ export default function PositionsList({
             >
               <List.Item.Meta
                 title={item.positionName}
-                category={item.category}
+                description={item.category}
                 avatar={
                   <Checkbox
                     defaultChecked={item.selected}
@@ -212,17 +226,26 @@ export default function PositionsList({
                       );
 
                       if (response.ok) {
+                        const newData = positionsList.data.map((position) => {
+                          if (position.positionName === item.positionName) {
+                            return {
+                              ...position,
+                              selected: e.target.checked,
+                            };
+                          } else {
+                            return position;
+                          }
+                        });
+
+                        const newCategoryList = positionsList.categoryList;
+
+                        // combine data and categoryList
+
                         setPositionsList(
-                          positionsList.map((position) => {
-                            if (position.positionName === item.positionName) {
-                              return {
-                                ...position,
-                                selected: e.target.checked,
-                              };
-                            } else {
-                              return position;
-                            }
-                          }),
+                          {
+                            data: newData,
+                            categoryList: newCategoryList,
+                          },
                           false
                         );
                         if (e.target.checked) {
@@ -324,12 +347,16 @@ export const AddPositionModal = ({
               if (response.ok) {
                 const body = await response.json();
                 setPositionsList(
-                  positionsList.concat({
-                    key: body.key,
-                    positionName: formAddPosition.getFieldValue("positionName"),
-                    category: formAddPosition.getFieldValue("category"),
-                    selected: false,
-                  }),
+                  {
+                    data: positionsList.data.concat({
+                      key: body.key,
+                      positionName:
+                        formAddPosition.getFieldValue("positionName"),
+                      category: formAddPosition.getFieldValue("category"),
+                      selected: false,
+                    }),
+                    categoryList: positionsList.categoryList,
+                  },
                   true
                 );
                 setModalOpen(false);
@@ -370,7 +397,7 @@ export const AddPositionModal = ({
               {
                 validator: async (rule, value) => {
                   if (
-                    positionsList.some(
+                    positionsList.data.some(
                       (position) => position.positionName === value
                     )
                   ) {
@@ -380,7 +407,7 @@ export const AddPositionModal = ({
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Type position name" />
           </Form.Item>
           <Form.Item
             name="category"
@@ -392,7 +419,13 @@ export const AddPositionModal = ({
               },
             ]}
           >
-            <Input type="textarea" />
+            <Select placeholder="Select a category">
+              {positionsList.categoryList.map((category) => (
+                <Select.Option key={category} value={category}>
+                  {category}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
@@ -456,20 +489,23 @@ export const EditPositionModal = ({
 
               if (response.ok) {
                 setPositionsList(
-                  positionsList.map((position) => {
-                    if (
-                      position.key === formEditPosition.getFieldValue("key")
-                    ) {
-                      return {
-                        ...position,
-                        positionName:
-                          formEditPosition.getFieldValue("positionName"),
-                        category: formEditPosition.getFieldValue("category"),
-                      };
-                    } else {
-                      return position;
-                    }
-                  }),
+                  {
+                    data: positionsList.data.map((position) => {
+                      if (
+                        position.key === formEditPosition.getFieldValue("key")
+                      ) {
+                        return {
+                          ...position,
+                          positionName:
+                            formEditPosition.getFieldValue("positionName"),
+                          category: formEditPosition.getFieldValue("category"),
+                        };
+                      } else {
+                        return position;
+                      }
+                    }),
+                    categoryList: positionsList.categoryList,
+                  },
                   true
                 );
                 setEditModalOpen(false);
@@ -510,7 +546,7 @@ export const EditPositionModal = ({
               {
                 validator: async (rule, value) => {
                   if (
-                    positionsList.some(
+                    positionsList.data.some(
                       (position) =>
                         position.positionName === value &&
                         position.key !== formEditPosition.getFieldValue("key")
@@ -534,7 +570,13 @@ export const EditPositionModal = ({
               },
             ]}
           >
-            <Input type="textarea" />
+            <Select placeholder="Select a category">
+              {positionsList.categoryList.map((category) => (
+                <Select.Option key={category} value={category}>
+                  {category}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>

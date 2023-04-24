@@ -14,11 +14,16 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      const response = await database.listDocuments(databaseId, collectionId);
+      // const response = await database.listDocuments(databaseId, collectionId);
+
+      const [dataResponse, categoryResponse] = await Promise.all([
+        database.listDocuments(databaseId, collectionId),
+        database.getAttribute(databaseId, collectionId, "category"),
+      ]);
 
       // return on the fields positionName and selected
       const data = [];
-      response.documents.map((document) => {
+      dataResponse.documents.map((document) => {
         data.push({
           key: document.$id,
           positionName: document.positionName,
@@ -26,7 +31,10 @@ export default async function handler(req, res) {
           category: document.category,
         });
       });
-      res.status(200).json(data);
+
+      const categoryList = categoryResponse.elements;
+
+      res.status(200).json({ data, categoryList });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
