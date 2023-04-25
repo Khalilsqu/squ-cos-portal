@@ -99,6 +99,23 @@ export default async function handler(req, res) {
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
+    } else if (data.changeType === "categoryAdd") {
+      const response = () =>
+        database
+          .deleteAttribute(databaseId, collectionId, "category")
+          .then(
+            database.createEnumAttribute(
+              databaseId,
+              collectionId,
+              "category",
+              data.categoryList,
+              true
+            )
+          )
+          .then(res.status(200).json({ message: "success" }))
+          .catch((error) => res.status(500).json({ error: error.message }));
+
+      response();
     }
   }
 }

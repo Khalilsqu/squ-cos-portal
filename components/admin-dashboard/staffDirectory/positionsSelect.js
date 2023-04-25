@@ -58,8 +58,10 @@ export default function PositionsList({
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [formEditPosition] = Form.useForm();
   const [formAddPosition] = Form.useForm();
+  const [formAddCategory] = Form.useForm();
   return (
     <div>
       {contextHolder}
@@ -134,6 +136,15 @@ export default function PositionsList({
                 }}
               >
                 Add a Position
+              </Button>
+              <Button
+                type="text"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setCategoryModalOpen(true);
+                }}
+              >
+                Categories
               </Button>
             </Space>
           }
@@ -289,6 +300,14 @@ export default function PositionsList({
         setPositionsList={setPositionsList}
         positionsListLoading={positionsListLoading}
       />
+      <EditCategoriesModal
+        categoryModalOpen={categoryModalOpen}
+        setCategoryModalOpen={setCategoryModalOpen}
+        formAddCategory={formAddCategory}
+        positionsList={positionsList}
+        setPositionsList={setPositionsList}
+        positionsListLoading={positionsListLoading}
+      />
     </div>
   );
 }
@@ -420,7 +439,7 @@ export const AddPositionModal = ({
             ]}
           >
             <Select placeholder="Select a category">
-              {positionsList.categoryList.map((category) => (
+              {positionsList?.categoryList.map((category) => (
                 <Select.Option key={category} value={category}>
                   {category}
                 </Select.Option>
@@ -571,12 +590,142 @@ export const EditPositionModal = ({
             ]}
           >
             <Select placeholder="Select a category">
-              {positionsList.categoryList.map((category) => (
+              {positionsList?.categoryList.map((category) => (
                 <Select.Option key={category} value={category}>
                   {category}
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+      {contextHolder}
+    </div>
+  );
+};
+
+export const EditCategoriesModal = ({
+  categoryModalOpen,
+  setCategoryModalOpen,
+  formAddCategory,
+  positionsList,
+  setPositionsList,
+  positionsListLoading,
+}) => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+  return (
+    <div>
+      <Modal
+        title="Categories"
+        open={categoryModalOpen}
+        closable={false}
+        maskClosable={false}
+        onCancel={() => {
+          setCategoryModalOpen(false);
+          formAddCategory.resetFields();
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setCategoryModalOpen(false);
+              formAddCategory.resetFields();
+            }}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={positionsListLoading}
+            onClick={async () => {
+              console.log(formAddCategory.getFieldValue("categoryAdd"));
+              const response = await fetch(
+                "/api/dashboard/staffDirectory/positions",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    changeType: "categoryAdd",
+                    categoryList: positionsList.categoryList.concat(
+                      formAddCategory.getFieldValue("categoryAdd")
+                    ),
+                  }),
+                }
+              );
+
+              const responseMessage = await response.json();
+
+              if (response.ok) {
+                setPositionsList(
+                  {
+                    data: positionsList.data,
+                    categoryList: positionsList.categoryList.concat(
+                      formAddCategory.getFieldValue("categoryAdd")
+                    ),
+                  },
+                  true
+                );
+                setCategoryModalOpen(false);
+                formAddCategory.resetFields();
+                messageApi.open({
+                  type: "success",
+                  content: "Categories updated",
+                });
+              } else {
+                messageApi.open({
+                  type: "error",
+                  content: `Categories update failed - ${responseMessage.error}`,
+                });
+              }
+            }}
+          >
+            Add
+          </Button>,
+        ]}
+      >
+        <Form
+          form={formAddCategory}
+          layout="vertical"
+          name="form_in_modal"
+          initialValues={{
+            modifier: "public",
+          }}
+        >
+          <Form.Item
+            name="categoryAdd"
+            label="Add a Category"
+            rules={[
+              {
+                required: true,
+                message: "Please input the categories!",
+              },
+              {
+                validator: async (rule, value) => {
+                  if (
+                    positionsList.categoryList.some(
+                      (category) => category === value
+                    )
+                  ) {
+                    throw new Error(value + " already exists");
+                  }
+                },
+              },
+              {
+                // prevent trailing or leading spaces
+                validator: async (_, value) =>
+                  value.trim() === value
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        new Error("No leading or trailing spaces are allowed")
+                      ),
+              },
+            ]}
+          >
+            <Input placeholder="Type the new category name" />
           </Form.Item>
         </Form>
       </Modal>
