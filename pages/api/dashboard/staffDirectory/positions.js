@@ -103,6 +103,7 @@ export default async function handler(req, res) {
       const response = () =>
         database
           .deleteAttribute(databaseId, collectionId, "category")
+          .then((deleteResponse) => deleteResponse.json())
           .then(
             database.createEnumAttribute(
               databaseId,

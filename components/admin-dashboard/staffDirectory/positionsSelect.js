@@ -11,6 +11,7 @@ import {
   Form,
   Input,
   Select,
+  Dropdown,
 } from "antd";
 import { useState } from "react";
 import {
@@ -19,6 +20,7 @@ import {
   PlusCircleOutlined,
   LeftOutlined,
   RightOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 
 import { AiOutlineQuestionCircle } from "react-icons/ai";
@@ -59,9 +61,31 @@ export default function PositionsList({
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [deleteCategoryModalOpen, setDeleteCategoryModalOpen] = useState(false);
   const [formEditPosition] = Form.useForm();
   const [formAddPosition] = Form.useForm();
   const [formAddCategory] = Form.useForm();
+  const [formDeleteCategory] = Form.useForm();
+
+  const items = [
+    {
+      key: "1",
+      label: "Add a Category",
+      icon: <PlusCircleOutlined />,
+      onClick: () => {
+        setCategoryModalOpen(true);
+      },
+    },
+    {
+      key: "2",
+      label: "Delete a Category",
+      icon: <DeleteOutlined />,
+      onClick: () => {
+        setCategoryModalOpen(true);
+      },
+      danger: true,
+    },
+  ];
   return (
     <div>
       {contextHolder}
@@ -129,7 +153,6 @@ export default function PositionsList({
           footer={
             <Space className="flex flex-row justify-end">
               <Button
-                type="text"
                 icon={<PlusCircleOutlined />}
                 onClick={() => {
                   setModalOpen(true);
@@ -137,15 +160,18 @@ export default function PositionsList({
               >
                 Add a Position
               </Button>
-              <Button
-                type="text"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setCategoryModalOpen(true);
+              <Dropdown
+                menu={{
+                  items,
                 }}
               >
-                Categories
-              </Button>
+                <Button>
+                  <Space>
+                    Categories
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
             </Space>
           }
           dataSource={positionsList?.data}
@@ -158,6 +184,7 @@ export default function PositionsList({
                       type="text"
                       icon={<EditOutlined />}
                       onClick={() => {
+                        console.log(item.category);
                         setEditModalOpen(true);
                         formEditPosition.setFieldsValue({
                           key: item.key,
@@ -683,7 +710,7 @@ export const EditCategoriesModal = ({
               }
             }}
           >
-            Add
+            Confirm
           </Button>,
         ]}
       >
