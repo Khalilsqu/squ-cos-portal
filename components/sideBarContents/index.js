@@ -1,4 +1,4 @@
-import { Button, Menu, Space, Typography } from "antd";
+import { Menu, Space, Typography } from "antd";
 import { useSession } from "next-auth/react";
 import { FaUniversity } from "react-icons/fa";
 import { GiTeacher } from "react-icons/gi";
