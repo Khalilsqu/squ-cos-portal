@@ -7,7 +7,7 @@ import { create } from "zustand";
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import SiderComponent from "./siderbar";
-import CascaderNav from "@/components/cascaderNav";
+import CascaderNav from "@/components/CascaderNav";
 import { useWindowSize } from "../utils/windowSize";
 
 const { Content } = Layout;

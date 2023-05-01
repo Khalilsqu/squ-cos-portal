@@ -33,7 +33,7 @@ export default function CascaderNav({ setBreakPoint, showAdminPanel }) {
         maxAge: 60 * 60 * 24 * 90,
       }); // 90 days
     }
-  }, [width]);
+  }, [width, setBreakPoint]);
 
   const items = [
     {
